@@ -1,8 +1,6 @@
 # MetaUFinal
 
 ### 1. User Stories
-
-**MetaU Intern - Alex**
 1. As a high school student, I want to be able to search through a list of volunteer opportunities so that I can easily sign up
 2. As a high school student, I want to be provided a curated list of volunteer opportunities based on personal details like career interests, time commitment, location preferences so that I can only find volunteer opportunities that meet my needs
 3. As a high school student, I want to have one central location to track all of my volunteer history including hours, details about each event, admin’s contact info so that it is easier to access the information when I apply for scholarships
