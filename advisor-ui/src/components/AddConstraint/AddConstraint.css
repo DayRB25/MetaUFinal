@@ -1,0 +1,12 @@
+.addconstraint {
+    padding: 2px 4px;
+    background: none;
+    border: 1px solid black;
+    font-size: 14px;
+    width: fit-content;
+    height: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
