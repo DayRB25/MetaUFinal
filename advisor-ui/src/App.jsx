@@ -8,6 +8,7 @@ import "./App.css";
 import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
 import StudentLanding from "./pages/StudentLanding/StudentLanding";
+import ScheduleTool from "./pages/ScheduleTool/ScheduleTool";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/student/login" element={<Login />} />
           <Route path="/student/landing" element={<StudentLanding />} />
+          <Route path="/student/schedule" element={<ScheduleTool />} />
         </Routes>
       </BrowserRouter>
     </div>
