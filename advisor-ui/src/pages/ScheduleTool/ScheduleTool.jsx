@@ -6,9 +6,18 @@ import Constraints from "../../components/Constraints/Constraints";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
 
 export default function ScheduleTool() {
+  const [constraints, setConstraints] = useState([]);
+
+  const addConstraint = () => {
+    setConstraints((prevConstraints) => [
+      ...prevConstraints,
+      { type: "Class", value: "Calculus 3" },
+    ]);
+  };
+
   return (
     <div className="scheduletool">
-      <Constraints />
+      <Constraints constraints={constraints} addConstraint={addConstraint} />
       <ScheduleDetails />
     </div>
   );
