@@ -22,7 +22,7 @@ export default function Login() {
     if (!email || !password) {
       alert("Ensure an email and password have been entered.");
     } else {
-      navigate("/student/dashboard");
+      navigate("/student/landing");
     }
   };
 
