@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import Landing from "./pages/Landing/Landing";
+import Login from "./pages/Login/Login";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -15,6 +16,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/student/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </div>
