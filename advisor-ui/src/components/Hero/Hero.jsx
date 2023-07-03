@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import "./Hero.css";
 
@@ -14,7 +15,9 @@ export default function Hero() {
         <div className="continue">
           <h2>Continue as:</h2>
           <div className="buttons">
-            <button className="btn">Student</button>
+            <Link to="/student/login">
+              <button className="btn">Student</button>
+            </Link>
             <button className="btn">Enterprise</button>
           </div>
         </div>
