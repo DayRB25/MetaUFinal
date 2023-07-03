@@ -1,10 +1,12 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import "./Login.css";
 import InputForm from "../../components/InputForm/InputForm";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,6 +16,14 @@ export default function Login() {
 
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
+  };
+
+  const handleLogin = () => {
+    if (!email || !password) {
+      alert("Ensure an email and password have been entered.");
+    } else {
+      navigate("/student/dashboard");
+    }
   };
 
   return (
@@ -30,6 +40,7 @@ export default function Login() {
         type="password"
         placeholder="Enter password"
       />
+      <button onClick={handleLogin}>Log In</button>
     </div>
   );
 }
