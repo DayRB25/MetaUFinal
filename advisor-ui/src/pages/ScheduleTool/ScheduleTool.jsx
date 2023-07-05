@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import "./ScheduleTool.css";
 import Constraints from "../../components/Constraints/Constraints";
@@ -186,6 +187,7 @@ export default function ScheduleTool() {
   return (
     <div className="scheduletool">
       <div className="content">
+        <Link to="/student/landing">Back</Link>
         <Constraints constraints={constraints} addConstraint={addConstraint} />
         <button onClick={generateNewSchedule}>Generate New Schedule:</button>
         <ScheduleDetails years={schedule} />
