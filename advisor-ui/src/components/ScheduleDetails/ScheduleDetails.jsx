@@ -2,8 +2,8 @@ import React from "react";
 import "./ScheduleDetails.css";
 import YearDetails from "../YearDetails/YearDetails";
 export default function ScheduleDetails({ years }) {
-  const yearItems = years.map((year) => (
-    <YearDetails number={year.number} semesters={year.semesters} />
+  const yearItems = years.map((year, index) => (
+    <YearDetails key={index} number={year.number} semesters={year.semesters} />
   ));
   return (
     <div className="scheduledetails">

@@ -17,9 +17,9 @@ export default function Constraints({ addConstraint, constraints }) {
     setAnchorElement(null);
   };
 
-  const constraintItems = constraints.map((constraint) => (
+  const constraintItems = constraints.map((constraint, index) => (
     <ConstraintItem
-      key={constraint.value}
+      key={index}
       type={constraint.type}
       value={constraint.value}
     />
@@ -42,7 +42,10 @@ export default function Constraints({ addConstraint, constraints }) {
             horizontal: "left",
           }}
         >
-          <ConstraintPopover />
+          <ConstraintPopover
+            addConstraint={addConstraint}
+            handleClose={handleClose}
+          />
         </Popover>
       </div>
     </div>

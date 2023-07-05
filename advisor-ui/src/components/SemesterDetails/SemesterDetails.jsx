@@ -3,8 +3,8 @@ import "./SemesterDetails.css";
 import ClassDetails from "../ClassDetails/ClassDetails";
 
 export default function SemesterDetails({ number, classes }) {
-  const classItems = classes.map((item) => (
-    <ClassDetails title={item.title} units={item.units} />
+  const classItems = classes.map((item, index) => (
+    <ClassDetails key={index} title={item.title} units={item.units} />
   ));
   return (
     <div className="semesterdetails">

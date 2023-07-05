@@ -8,10 +8,10 @@ import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
 
-  const addConstraint = () => {
+  const addConstraint = (type, value) => {
     setConstraints((prevConstraints) => [
       ...prevConstraints,
-      { type: "Class", value: "Calculus 3" },
+      { type: type, value: value },
     ]);
   };
 

@@ -3,8 +3,12 @@ import "./YearDetails.css";
 import SemesterDetails from "../SemesterDetails/SemesterDetails";
 
 export default function YearDetails({ number, semesters }) {
-  const semesterItems = semesters.map((semester) => (
-    <SemesterDetails number={semester.number} classes={semester.classes} />
+  const semesterItems = semesters.map((semester, index) => (
+    <SemesterDetails
+      key={index}
+      number={semester.number}
+      classes={semester.classes}
+    />
   ));
   return (
     <div className="yeardetails">

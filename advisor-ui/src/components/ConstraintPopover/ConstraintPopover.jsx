@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
-export default function ConstraintPopover() {
+export default function ConstraintPopover({ addConstraint, handleClose }) {
   const [type, setType] = useState("");
   const [value, setValue] = useState("");
 
@@ -14,6 +14,15 @@ export default function ConstraintPopover() {
 
   const handleChangeValue = (event) => {
     setValue(event.target.value);
+  };
+
+  const handleConstraintSubmit = (type, value) => {
+    if (type === "" || value === "") {
+      alert("Enter both a type and value!");
+      return;
+    }
+    addConstraint(type, value);
+    handleClose();
   };
 
   return (
@@ -35,7 +44,9 @@ export default function ConstraintPopover() {
         value={value}
         onChange={handleChangeValue}
       />
-      <button>Add Constraint</button>
+      <button onClick={() => handleConstraintSubmit(type, value)}>
+        Add Constraint
+      </button>
     </div>
   );
 }
