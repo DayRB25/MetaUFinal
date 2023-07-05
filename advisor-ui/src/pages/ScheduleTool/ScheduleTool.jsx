@@ -17,8 +17,10 @@ export default function ScheduleTool() {
 
   return (
     <div className="scheduletool">
-      <Constraints constraints={constraints} addConstraint={addConstraint} />
-      <ScheduleDetails />
+      <div className="content">
+        <Constraints constraints={constraints} addConstraint={addConstraint} />
+        <ScheduleDetails />
+      </div>
     </div>
   );
 }

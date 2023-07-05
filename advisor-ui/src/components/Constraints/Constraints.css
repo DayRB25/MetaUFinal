@@ -1,17 +1,10 @@
 .constraints .content {
     border: 1px solid black;
-    width: 50%;
+    width: 452px;
     height: 100px;
     padding: 3px;
     display: flex;
+    flex-wrap: wrap;
     flex: 1;
     gap: 4px;
-}
-
-.constraints button {
-    padding: 2px 4px;
-    background: none;
-    border: 1px solid black;
-    font-size: 14px;
-    height: 20px;
 }

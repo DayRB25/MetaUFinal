@@ -3,7 +3,7 @@
     background: none;
     border: 1px solid black;
     font-size: 14px;
-    width: fit-content;
+    width: 100px;
     height: 20px;
     display: flex;
     flex-direction: column;
