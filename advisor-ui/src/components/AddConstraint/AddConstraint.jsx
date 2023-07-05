@@ -1,9 +1,9 @@
 import React from "react";
 import "./AddConstraint.css";
 
-export default function AddConstraint({ addConstraint }) {
+export default function AddConstraint({ openPopover }) {
   return (
-    <div className="addconstraint" onClick={addConstraint}>
+    <div className="addconstraint" onClick={openPopover}>
       <p>Add Constraint</p>
     </div>
   );
