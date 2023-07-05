@@ -8,11 +8,30 @@ import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
 
+  const containDuplicate = (constraints, newConstraint) => {
+    let flag = false;
+    constraints.forEach((constraint) => {
+      if (
+        constraint.value === newConstraint.value &&
+        constraint.type === newConstraint.type
+      ) {
+        flag = true;
+      }
+    });
+    return flag;
+  };
+
   const addConstraint = (type, value) => {
-    setConstraints((prevConstraints) => [
-      ...prevConstraints,
-      { type: type, value: value },
-    ]);
+    const newConstraint = { type, value };
+    if (containDuplicate(constraints, newConstraint)) {
+      return false;
+    } else {
+      setConstraints((prevConstraints) => [
+        ...prevConstraints,
+        { type, value },
+      ]);
+      return true;
+    }
   };
 
   const years = [

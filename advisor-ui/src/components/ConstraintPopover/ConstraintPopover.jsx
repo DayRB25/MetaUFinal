@@ -21,8 +21,12 @@ export default function ConstraintPopover({ addConstraint, handleClose }) {
       alert("Enter both a type and value!");
       return;
     }
-    addConstraint(type, value);
-    handleClose();
+    const insertionStatus = addConstraint(type, value);
+    if (insertionStatus === true) {
+      handleClose();
+    } else {
+      alert("This constraint already exists.");
+    }
   };
 
   return (
