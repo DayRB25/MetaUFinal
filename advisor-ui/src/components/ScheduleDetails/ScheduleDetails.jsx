@@ -8,7 +8,12 @@ export default function ScheduleDetails({ years }) {
   return (
     <div className="scheduledetails">
       <h3>Schedule Details:</h3>
-      <div className="content">{yearItems}</div>
+      <div className="content">
+        {years.length === 0 && (
+          <p>Press the button to generate a new schedule....</p>
+        )}
+        {years.length !== 0 && yearItems}
+      </div>
     </div>
   );
 }
