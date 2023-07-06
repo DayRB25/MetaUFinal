@@ -4,7 +4,7 @@ import OpportunityCard from "../OpportunityCard/OpportunityCard";
 
 export default function Explore({ events }) {
   const eventItems = events.map((eventItem, index) => (
-    <OpportunityCard id={index} title={eventItem.title} img={eventItem.img} />
+    <OpportunityCard key={index} eventItem={eventItem} />
   ));
   return (
     <div className="explore">

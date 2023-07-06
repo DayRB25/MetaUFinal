@@ -1,11 +1,13 @@
 import React from "react";
 import "./OpportunityCard.css";
 
-export default function OpportunityCard({ title, img }) {
+export default function OpportunityCard({ eventItem }) {
   return (
     <div className="opportunitycard">
-      <img src={img} alt="event cover" />
-      <p>{title}</p>
+      <div className="content">
+        <img src={eventItem.img} alt="event cover" />
+        <p>{eventItem.title}</p>
+      </div>
     </div>
   );
 }
