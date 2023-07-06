@@ -3,8 +3,8 @@ import "./Explore.css";
 import OpportunityCard from "../OpportunityCard/OpportunityCard";
 
 export default function Explore({ events }) {
-  const eventItems = events.map((eventItem) => (
-    <OpportunityCard title={eventItem.title} img={eventItem.img} />
+  const eventItems = events.map((eventItem, index) => (
+    <OpportunityCard id={index} title={eventItem.title} img={eventItem.img} />
   ));
   return (
     <div className="explore">
