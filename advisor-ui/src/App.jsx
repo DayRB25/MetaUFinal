@@ -5,8 +5,9 @@ import "./App.css";
 
 import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
-import StudentLanding from "./pages/StudentLanding/StudentLanding";
+import Signup from "./pages/Signup/Signup";
 import ScheduleTool from "./pages/ScheduleTool/ScheduleTool";
+import StudentLanding from "./pages/StudentLanding/StudentLanding";
 import VolunteerExplore from "./pages/VolunteerExplore/VolunteerExplore";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/student/signup" element={<Signup />} />
           <Route path="/student/login" element={<Login />} />
           <Route path="/student/landing" element={<StudentLanding />} />
           <Route path="/student/schedule" element={<ScheduleTool />} />
