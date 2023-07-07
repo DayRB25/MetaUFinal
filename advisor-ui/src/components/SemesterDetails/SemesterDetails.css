@@ -1,0 +1,15 @@
+.semesterdetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.semesterdetails > .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: fit-content;
+    padding: 2px;
+    text-align: center;
+    gap: 3px;
+}

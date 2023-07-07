@@ -1,0 +1,10 @@
+.constraints .content {
+    border: 1px solid black;
+    width: 452px;
+    height: 100px;
+    padding: 3px;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    gap: 4px;
+}
