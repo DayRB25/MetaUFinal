@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { UserContext } from "./UserContext";
 
 import "./App.css";
 
@@ -11,20 +12,35 @@ import StudentLanding from "./pages/StudentLanding/StudentLanding";
 import VolunteerExplore from "./pages/VolunteerExplore/VolunteerExplore";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [user, setUser] = useState(() => {
+    // Retrieve the user data from storage or set it to null if not found
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  const updateUser = (newUser) => {
+    setUser(newUser);
+  };
+
+  useEffect(() => {
+    // Save the user data to storage whenever the user state changes
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
 
   return (
     <div className="app">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/student/signup" element={<Signup />} />
-          <Route path="/student/login" element={<Login />} />
-          <Route path="/student/landing" element={<StudentLanding />} />
-          <Route path="/student/schedule" element={<ScheduleTool />} />
-          <Route path="/student/volunteer" element={<VolunteerExplore />} />
-        </Routes>
-      </BrowserRouter>
+      <UserContext.Provider value={{ user, updateUser }}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/student/signup" element={<Signup />} />
+            <Route path="/student/login" element={<Login />} />
+            <Route path="/student/landing" element={<StudentLanding />} />
+            <Route path="/student/schedule" element={<ScheduleTool />} />
+            <Route path="/student/volunteer" element={<VolunteerExplore />} />
+          </Routes>
+        </BrowserRouter>
+      </UserContext.Provider>
     </div>
   );
 }
