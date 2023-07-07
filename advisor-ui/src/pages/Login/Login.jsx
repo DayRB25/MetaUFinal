@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../../UserContext.js";
 
@@ -55,6 +55,7 @@ export default function Login() {
         placeholder="Enter password"
       />
       <button onClick={handleLogin}>Log In</button>
+      <Link to="/student/signup">Don't have an account? Sign Up!</Link>
     </div>
   );
 }
