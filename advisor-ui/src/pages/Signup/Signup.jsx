@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import InputForm from "../../components/InputForm/InputForm";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { UserContext } from "../../UserContext.js";
 
 export default function Signup() {
   const [firstname, setFirstname] = useState("");
@@ -15,6 +16,7 @@ export default function Signup() {
   const [address, setAddress] = useState("");
 
   const navigate = useNavigate();
+  const { updateUser } = useContext(UserContext);
 
   const handleFirstNameChange = (e) => {
     setFirstname(e.target.value);
@@ -77,6 +79,8 @@ export default function Signup() {
         "http://localhost:5000/api/student/create",
         body
       );
+      const newStudent = res.data.user;
+      updateUser(newStudent);
       // reset form stuff
       setFirstname("");
       setLastname("");
