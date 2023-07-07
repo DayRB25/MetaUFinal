@@ -5,8 +5,8 @@ import cors from "cors";
 import morgan from "morgan";
 import "dotenv/config";
 import { sequelize } from "./database.js";
-import { Student } from "./models/index.js";
 import studentRoute from "./routes/students.js";
+import eventRoute from "./routes/events.js";
 import SequelizeStoreInit from "connect-session-sequelize";
 
 const app = express();
@@ -42,6 +42,7 @@ app.use(
 sessionStore.sync();
 
 app.use("/api/student", studentRoute);
+app.use("/api/events", eventRoute);
 
 sequelize
   .sync({ alter: true })
