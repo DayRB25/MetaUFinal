@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import InputForm from "../../components/InputForm/InputForm";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Signup() {
   const [firstname, setFirstname] = useState("");
@@ -152,6 +152,7 @@ export default function Signup() {
           handleChange={handleAddressChange}
         />
         <button onClick={handleCreateAccount}>Submit</button>
+        <Link to="/student/login">Have an account already? Log In.</Link>
       </div>
     </div>
   );
