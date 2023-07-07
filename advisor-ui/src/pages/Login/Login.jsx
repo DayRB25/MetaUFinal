@@ -1,6 +1,8 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { UserContext } from "../../UserContext.js";
 
 import "./Login.css";
 import InputForm from "../../components/InputForm/InputForm";
@@ -9,6 +11,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { updateUser } = useContext(UserContext);
 
   const handleChangeUsername = (e) => {
     setUsername(e.target.value);
@@ -18,11 +21,22 @@ export default function Login() {
     setPassword(e.target.value);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username || !password) {
       alert("Ensure an email and password have been entered.");
     } else {
-      navigate("/student/landing");
+      try {
+        const body = { username, password };
+        const res = await axios.post(
+          "http://localhost:5000/api/student/login",
+          body
+        );
+        const newStudent = res.data.student;
+        updateUser(newStudent);
+        navigate("/student/landing");
+      } catch (err) {
+        alert("Something went wrong. Try again.");
+      }
     }
   };
 
