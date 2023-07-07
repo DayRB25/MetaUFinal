@@ -7,11 +7,11 @@ import InputForm from "../../components/InputForm/InputForm";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
+  const handleChangeUsername = (e) => {
+    setUsername(e.target.value);
   };
 
   const handleChangePassword = (e) => {
@@ -19,7 +19,7 @@ export default function Login() {
   };
 
   const handleLogin = () => {
-    if (!email || !password) {
+    if (!username || !password) {
       alert("Ensure an email and password have been entered.");
     } else {
       navigate("/student/landing");
@@ -29,10 +29,10 @@ export default function Login() {
   return (
     <div className="login">
       <InputForm
-        value={email}
-        handleChange={handleChangeEmail}
+        value={username}
+        handleChange={handleChangeUsername}
         type="text"
-        placeholder="Enter email"
+        placeholder="Enter username"
       />
       <InputForm
         value={password}
