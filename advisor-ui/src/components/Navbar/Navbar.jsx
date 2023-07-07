@@ -1,8 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-
 import "./Navbar.css";
-
 import img from "../../assets/react.svg";
 
 export default function Navbar() {
