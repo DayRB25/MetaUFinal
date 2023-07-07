@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import InputForm from "../../components/InputForm/InputForm";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [firstname, setFirstname] = useState("");
@@ -11,6 +13,8 @@ export default function Signup() {
   const [city, setCity] = useState("");
   const [locationState, setLocationState] = useState("");
   const [address, setAddress] = useState("");
+
+  const navigate = useNavigate();
 
   const handleFirstNameChange = (e) => {
     setFirstname(e.target.value);
@@ -40,6 +44,54 @@ export default function Signup() {
   };
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
+  };
+
+  const handleCreateAccount = async () => {
+    if (
+      firstname === "" ||
+      lastname === "" ||
+      username === "" ||
+      email === "" ||
+      password === "" ||
+      year === "" ||
+      city === "" ||
+      locationState === "" ||
+      address === ""
+    ) {
+      alert("Please enter all fields");
+      return;
+    }
+    const body = {
+      firstname,
+      lastname,
+      username,
+      password,
+      email,
+      year: parseInt(year),
+      city,
+      state: locationState,
+      address: address,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/student/create",
+        body
+      );
+      // reset form stuff
+      setFirstname("");
+      setLastname("");
+      setUsername("");
+      setPassword("");
+      setEmail("");
+      setYear("");
+      setCity("");
+      setLocationState("");
+      setAddress("");
+      // navigate to landing page
+      navigate("/student/landing");
+    } catch (err) {
+      alert("Something went wrong. Try again later.");
+    }
   };
 
   return (
@@ -99,6 +151,7 @@ export default function Signup() {
           value={address}
           handleChange={handleAddressChange}
         />
+        <button onClick={handleCreateAccount}>Submit</button>
       </div>
     </div>
   );
