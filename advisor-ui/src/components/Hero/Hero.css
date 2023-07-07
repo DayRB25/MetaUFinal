@@ -1,0 +1,37 @@
+.hero {
+    height: 350px;    
+}
+
+.hero .content {
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+.hero .tagline {
+    text-align: center;
+}
+
+.hero .continue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.hero .buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.hero .btn {
+    padding: 10px 18px;
+    font-size: 16px;
+    border: solid 1px rgb(0, 0, 0);
+    background: none;
+}
