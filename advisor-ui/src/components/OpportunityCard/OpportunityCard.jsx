@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import defaultImg from "../../assets/volunteer-opportunities-ideas-article-1200x800.jpg";
 import "./OpportunityCard.css";
 import OpportunityModal from "../OpportunityModal/OpportunityModal";
 
@@ -16,7 +17,7 @@ export default function OpportunityCard({ eventItem }) {
   return (
     <div className="opportunitycard">
       <div className="content" onClick={handleOpenModal}>
-        <img src={eventItem.img} alt="event cover" />
+        <img src={defaultImg} alt="event cover" />
         <p>{eventItem.title}</p>
       </div>
       {isOpen && (
