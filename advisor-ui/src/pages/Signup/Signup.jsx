@@ -139,6 +139,17 @@ export default function Signup() {
     return true;
   };
 
+  const validateState = () => {
+    const commonStateAbbreviatonLength = 2;
+    if (
+      /\d/.test(locationState) ||
+      locationState.length <= commonStateAbbreviatonLength
+    ) {
+      return false;
+    }
+    return true;
+  };
+
   const handleCreateAccount = async () => {
     if (!validateNonEmptyFields()) {
       alert("Please enter all fields");
@@ -157,6 +168,11 @@ export default function Signup() {
     } else if (!validateCity()) {
       alert("City field should not contain any numbers");
       return;
+    } else if (!validateState()) {
+      alert(
+        "State field should contain the full state name and should not contain any numbers"
+      );
+      return;
     }
     const body = {
       firstname,
@@ -169,28 +185,28 @@ export default function Signup() {
       state: locationState,
       address: address,
     };
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/student/create",
-        body
-      );
-      const newStudent = res.data.user;
-      updateUser(newStudent);
-      // reset form stuff
-      setFirstname("");
-      setLastname("");
-      setUsername("");
-      setPassword("");
-      setEmail("");
-      setYear("");
-      setCity("");
-      setLocationState("");
-      setAddress("");
-      // navigate to landing page
-      navigate("/student/landing");
-    } catch (err) {
-      alert("Something went wrong. Try again later.");
-    }
+    // try {
+    //   const res = await axios.post(
+    //     "http://localhost:5000/api/student/create",
+    //     body
+    //   );
+    //   const newStudent = res.data.user;
+    //   updateUser(newStudent);
+    //   // reset form stuff
+    //   setFirstname("");
+    //   setLastname("");
+    //   setUsername("");
+    //   setPassword("");
+    //   setEmail("");
+    //   setYear("");
+    //   setCity("");
+    //   setLocationState("");
+    //   setAddress("");
+    //   // navigate to landing page
+    //   navigate("/student/landing");
+    // } catch (err) {
+    //   alert("Something went wrong. Try again later.");
+    // }
   };
 
   return (
