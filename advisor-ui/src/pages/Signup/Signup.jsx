@@ -124,6 +124,14 @@ export default function Signup() {
     return hasSpecialCharacter && hasUpperCase;
   };
 
+  const validateYear = () => {
+    // regex test ensures year only contains digit and parseInt restricts min value of year
+    if (!/^\d+$/.test(year) || parseInt(year) <= 0) {
+      return false;
+    }
+    return true;
+  };
+
   const handleCreateAccount = async () => {
     if (!validateNonEmptyFields()) {
       alert("Please enter all fields");
@@ -135,6 +143,9 @@ export default function Signup() {
       alert(
         "Password must be at least 8 characters and contain one uppercase and special character"
       );
+      return;
+    } else if (!validateYear()) {
+      alert("Year must only contain number and must be greater than 0");
       return;
     }
     const body = {
