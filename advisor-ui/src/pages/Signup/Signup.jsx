@@ -150,6 +150,18 @@ export default function Signup() {
     return true;
   };
 
+  const resetFormState = () => {
+    setFirstname("");
+    setLastname("");
+    setUsername("");
+    setPassword("");
+    setEmail("");
+    setYear("");
+    setCity("");
+    setLocationState("");
+    setAddress("");
+  };
+
   const handleCreateAccount = async () => {
     if (!validateNonEmptyFields()) {
       alert("Please enter all fields");
@@ -185,28 +197,20 @@ export default function Signup() {
       state: locationState,
       address: address,
     };
-    // try {
-    //   const res = await axios.post(
-    //     "http://localhost:5000/api/student/create",
-    //     body
-    //   );
-    //   const newStudent = res.data.user;
-    //   updateUser(newStudent);
-    //   // reset form stuff
-    //   setFirstname("");
-    //   setLastname("");
-    //   setUsername("");
-    //   setPassword("");
-    //   setEmail("");
-    //   setYear("");
-    //   setCity("");
-    //   setLocationState("");
-    //   setAddress("");
-    //   // navigate to landing page
-    //   navigate("/student/landing");
-    // } catch (err) {
-    //   alert("Something went wrong. Try again later.");
-    // }
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/student/create",
+        body
+      );
+      const newStudent = res.data.user;
+      updateUser(newStudent);
+      // reset form fields
+      resetFormState();
+      // navigate to landing page
+      navigate("/student/landing");
+    } catch (err) {
+      alert("Something went wrong. Try again later.");
+    }
   };
 
   return (
