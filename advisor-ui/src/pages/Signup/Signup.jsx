@@ -48,7 +48,7 @@ export default function Signup() {
     setAddress(e.target.value);
   };
 
-  const handleCreateAccount = async () => {
+  const validateNonEmptyFields = () => {
     if (
       firstname === "" ||
       lastname === "" ||
@@ -60,6 +60,13 @@ export default function Signup() {
       locationState === "" ||
       address === ""
     ) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleCreateAccount = async () => {
+    if (!validateNonEmptyFields()) {
       alert("Please enter all fields");
       return;
     }
