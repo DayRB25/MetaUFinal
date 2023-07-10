@@ -100,12 +100,41 @@ export default function Signup() {
     return true;
   };
 
+  const validatePassword = () => {
+    if (password.length < 8) return false;
+    const specialCharacters = new Set(["!", "@", "#", "$", "%", "^", "&", "*"]);
+    const upperCaseA_Ascii = 65;
+    const upperCaseZ_Ascii = 90;
+    // validate presence of uppercase letter and special character
+    let hasUpperCase = false;
+    let hasSpecialCharacter = false;
+    for (let i = 0; i < password.length; i++) {
+      // if the character @ idx i's ascii value is within this range, it must be a capital letter
+      if (
+        password.charCodeAt(i) >= upperCaseA_Ascii &&
+        password.charCodeAt(i) <= upperCaseZ_Ascii
+      ) {
+        hasUpperCase = true;
+      }
+      if (specialCharacters.has(password[i])) {
+        hasSpecialCharacter = true;
+      }
+    }
+
+    return hasSpecialCharacter && hasUpperCase;
+  };
+
   const handleCreateAccount = async () => {
     if (!validateNonEmptyFields()) {
       alert("Please enter all fields");
       return;
     } else if (!validateEmail()) {
       alert("Please enter a valid email");
+      return;
+    } else if (!validatePassword()) {
+      alert(
+        "Password must be at least 8 characters and contain one uppercase and special character"
+      );
       return;
     }
     const body = {
