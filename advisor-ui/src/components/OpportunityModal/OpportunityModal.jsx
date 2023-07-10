@@ -11,7 +11,7 @@ export default function OpportunityModal({ eventItem, handleCloseModal }) {
         <button onClick={handleCloseModal}>Back</button>
         <h3>{eventItem.title}</h3>
         <div className="location">
-          <p>{eventItem.location}</p>
+          <p>{`${eventItem.city}, ${eventItem.state}`}</p>
         </div>
         <div className="date">
           <p>{eventItem.date.slice(0, standardDateLength)}</p>
