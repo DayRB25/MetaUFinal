@@ -2,11 +2,23 @@
     align-items: flex-start;
     display: flex;
     flex-direction: column;
+    gap: 10px;
+}
+.explore > .content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
 }
 
-.explore > .content {
+.explore > .content > .grid {
     display: grid;
     gap: 20px;
-    grid-template-columns: 200px 200px 200px 200px;
     grid-auto-rows: 220px;
+    grid-template-columns: 200px 200px 200px 200px;
+}
+
+.progress {
+    margin-top: 30px;
 }

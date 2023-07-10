@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./VolunteerExplore.css";
 import Explore from "../../components/Explore/Explore";
 import { Link } from "react-router-dom";
-
-import img from "../../assets/volunteer-opportunities-ideas-article-1200x800.jpg";
+import axios from "axios";
 
 export default function VolunteerExplore() {
-  const events = [
-    {
-      title: "Charity Run",
-      img: img,
-      description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laboriosam, non consequatur ab mollitia quo ullam! Ad quae, repellendus numquam praesentium iure sint ab eos corrupti officiis dignissimos, deleniti, esse maxime.",
-      location: "Chicago, IL",
-      admin: "Jamie Lee",
-      date: "07-08-2023",
-    },
-  ];
+  const [events, setEvents] = useState([]);
+
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/events/");
+      const fetchedEvents = res.data.events;
+      setEvents(fetchedEvents);
+    } catch (error) {
+      alert("Something went wrong. Try again later.");
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
   return (
     <div className="volunteerexplore">
       <div className="content">
