@@ -65,9 +65,47 @@ export default function Signup() {
     return true;
   };
 
+  const validateEmail = () => {
+    // Check if the email contains an '@' symbol
+    const atIndex = email.indexOf("@");
+    if (atIndex === -1) {
+      return false;
+    }
+
+    // Check if the email contains a domain (characters after the '@' symbol)
+    const domain = email.slice(atIndex + 1);
+    if (!domain) {
+      return false;
+    }
+
+    // Check if the domain contains a period
+    const periodIndex = domain.indexOf(".");
+    if (periodIndex === -1) {
+      return false;
+    }
+
+    // Check if the domain has at least one character before the period
+    const domainName = domain.slice(0, periodIndex);
+    if (!domainName) {
+      return false;
+    }
+
+    // Check if the domain has at least two characters after the period
+    const topLevelDomain = domain.slice(periodIndex + 1);
+    if (!topLevelDomain || topLevelDomain.length < 2) {
+      return false;
+    }
+
+    // All checks passed, email is valid
+    return true;
+  };
+
   const handleCreateAccount = async () => {
     if (!validateNonEmptyFields()) {
       alert("Please enter all fields");
+      return;
+    } else if (!validateEmail()) {
+      alert("Please enter a valid email");
       return;
     }
     const body = {
