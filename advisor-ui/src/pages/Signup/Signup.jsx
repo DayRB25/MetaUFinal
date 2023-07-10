@@ -132,6 +132,13 @@ export default function Signup() {
     return true;
   };
 
+  const validateCity = () => {
+    if (/\d/.test(city)) {
+      return false;
+    }
+    return true;
+  };
+
   const handleCreateAccount = async () => {
     if (!validateNonEmptyFields()) {
       alert("Please enter all fields");
@@ -146,6 +153,9 @@ export default function Signup() {
       return;
     } else if (!validateYear()) {
       alert("Year must only contain number and must be greater than 0");
+      return;
+    } else if (!validateCity()) {
+      alert("City field should not contain any numbers");
       return;
     }
     const body = {
