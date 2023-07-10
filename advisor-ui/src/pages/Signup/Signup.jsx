@@ -209,7 +209,14 @@ export default function Signup() {
       // navigate to landing page
       navigate("/student/landing");
     } catch (err) {
-      alert("Something went wrong. Try again later.");
+      const statusCodeLength = 3;
+      // network status code is the last 3 chars in error message, extract
+      if (err.message.slice(-statusCodeLength) === "400") {
+        alert("Username or email taken.");
+        return;
+      } else {
+        alert("Something went wrong. Try again later.");
+      }
     }
   };
 
