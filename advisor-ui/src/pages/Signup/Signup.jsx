@@ -3,6 +3,8 @@ import InputForm from "../../components/InputForm/InputForm";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../../UserContext.js";
+import { Button } from "@mui/material";
+import "./Signup.css";
 
 export default function Signup() {
   const [firstname, setFirstname] = useState("");
@@ -222,6 +224,7 @@ export default function Signup() {
 
   return (
     <div className="signup">
+      <h3>Sign Up:</h3>
       <div className="content">
         <InputForm
           type="text"
@@ -277,7 +280,9 @@ export default function Signup() {
           value={address}
           handleChange={handleAddressChange}
         />
-        <button onClick={handleCreateAccount}>Submit</button>
+        <Button variant="outlined" onClick={handleCreateAccount}>
+          Submit
+        </Button>
         <Link to="/student/login">Have an account already? Log In.</Link>
       </div>
     </div>
