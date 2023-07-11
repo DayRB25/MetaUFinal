@@ -63,6 +63,9 @@ export default function ScheduleTool() {
         <ScheduleDetails
           years={schedule}
           handleDisplayYear={handleDisplayYear}
+          year={year}
+          displayYear={displayYear}
+          handleCloseYear={handleCloseYear}
         />
       </div>
     </div>

@@ -4,7 +4,7 @@
     align-items: center;
 }
 
-.scheduledetails > .content {
+.scheduledetails > .content > .display-years {
     display: flex;
     gap: 30px;
 }
