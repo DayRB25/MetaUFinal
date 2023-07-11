@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../UserContext.js";
+import { Button } from "@mui/material";
 
 import "./StudentLanding.css";
 
@@ -15,15 +16,25 @@ export default function StudentLanding() {
 
   return (
     <div className="studentlanding">
-      <h1>{`Welcome ${user.firstname}!`}</h1>
+      <h1>{`Welcome, ${user.firstname}!`}</h1>
       <div className="buttons">
         <Link to="/student/schedule">
-          <button>Course Schedule Tool</button>
+          <Button variant="outlined" style={{ width: "220px" }}>
+            Course Schedule Tool
+          </Button>
         </Link>
         <Link to="/student/volunteer">
-          <button>Volunteer Tool</button>
+          <Button variant="outlined" style={{ width: "220px" }}>
+            Volunteer Tool
+          </Button>
         </Link>
-        <button onClick={handleLogout}>Logout</button>
+        <Button
+          onClick={handleLogout}
+          variant="outlined"
+          style={{ width: "220px" }}
+        >
+          Logout
+        </Button>
       </div>
     </div>
   );
