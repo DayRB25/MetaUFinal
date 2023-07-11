@@ -1,0 +1,22 @@
+.signup {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100vh;
+  margin-top: 30px;
+  width: 100vw;
+}
+
+.signup > .content {
+  align-items: center;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: fit-content;
+  justify-content: space-evenly;
+  padding: 10px;
+  width: 300px;
+}
