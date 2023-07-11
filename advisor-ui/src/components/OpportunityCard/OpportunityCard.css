@@ -1,4 +1,14 @@
+.opportunitycard {
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  cursor: pointer;
+  height: 240px;
+  padding: 10px;
+  width: fit-content;
+}
+
 .opportunitycard img {
-    height: 200px;
-    width: 200px;
+  border-radius: 5px;
+  height: 200px;
+  width: 200px;
 }

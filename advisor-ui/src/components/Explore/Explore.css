@@ -1,24 +1,24 @@
 .explore {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .explore > .content {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
 }
 
 .explore > .content > .grid {
-    display: grid;
-    gap: 20px;
-    grid-auto-rows: 220px;
-    grid-template-columns: 200px 200px 200px 200px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 215px 215px 215px 215px;
+  grid-auto-rows: 255px;
 }
 
 .progress {
-    margin-top: 30px;
+  margin-top: 30px;
 }
