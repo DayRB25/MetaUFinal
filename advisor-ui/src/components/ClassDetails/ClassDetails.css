@@ -5,5 +5,5 @@
 }
 
 .scheduledetails > .content > .display-year > .yeardetails > .content > .semesterdetails > .content > .classdetails {
-    height: 80px;
+    height: fit-content;
 }
