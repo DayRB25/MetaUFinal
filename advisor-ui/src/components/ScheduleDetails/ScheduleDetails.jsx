@@ -3,7 +3,7 @@ import "./ScheduleDetails.css";
 import YearDetails from "../YearDetails/YearDetails";
 export default function ScheduleDetails({ years }) {
   const yearItems = years.map((year, index) => (
-    <YearDetails key={index} number={year.number} semesters={year.semesters} />
+    <YearDetails key={index} year={year} />
   ));
   return (
     <div className="scheduledetails">

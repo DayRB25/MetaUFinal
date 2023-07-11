@@ -1,10 +1,10 @@
 import React from "react";
 import "./ClassDetails.css";
 
-export default function ClassDetails({ title, units }) {
+export default function ClassDetails({ classItem }) {
   return (
     <div className="classdetails">
-      <p>{title}</p>
+      <p>{classItem.title}</p>
       {/* <p>{`Units: ${units}`}</p> */}
     </div>
   );
