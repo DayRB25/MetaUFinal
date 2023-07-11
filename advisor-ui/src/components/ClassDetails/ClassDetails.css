@@ -3,3 +3,7 @@
     padding: 2px 4px;
     width: 120px;
 }
+
+.scheduledetails > .content > .display-year > .yeardetails > .content > .semesterdetails > .content > .classdetails {
+    height: fit-content;
+}

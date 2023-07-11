@@ -1,11 +1,17 @@
 import React from "react";
 import "./ClassDetails.css";
 
-export default function ClassDetails({ title, units }) {
+export default function ClassDetails({ classItem, displayYear }) {
   return (
     <div className="classdetails">
-      <p>{title}</p>
-      {/* <p>{`Units: ${units}`}</p> */}
+      <p>{classItem.title}</p>
+      {displayYear && (
+        <div className="details">
+          <p>{`Units: ${classItem.units}`}</p>
+          <p>{`Time: ${classItem.time}`}</p>
+          <p>{`Days: ${classItem.days}`}</p>
+        </div>
+      )}
     </div>
   );
 }

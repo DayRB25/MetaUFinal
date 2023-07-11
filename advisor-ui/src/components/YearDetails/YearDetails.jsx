@@ -2,18 +2,24 @@ import React from "react";
 import "./YearDetails.css";
 import SemesterDetails from "../SemesterDetails/SemesterDetails";
 
-export default function YearDetails({ number, semesters }) {
-  const semesterItems = semesters.map((semester, index) => (
+export default function YearDetails({
+  year,
+  handleDisplayYear = () => {},
+  displayYear = false,
+}) {
+  const semesterItems = year.semesters.map((semester, index) => (
     <SemesterDetails
       key={index}
-      number={semester.number}
-      classes={semester.classes}
+      semester={semester}
+      displayYear={displayYear}
     />
   ));
   return (
     <div className="yeardetails">
-      <h4>{`Year: ${number}`}</h4>
-      <div className="content">{semesterItems}</div>
+      <h4>{`Year: ${year.number}`}</h4>
+      <div className="content" onClick={() => handleDisplayYear(year.number)}>
+        {semesterItems}
+      </div>
     </div>
   );
 }
