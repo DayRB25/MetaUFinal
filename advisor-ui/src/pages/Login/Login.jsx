@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../../UserContext.js";
+import { Button } from "@mui/material";
 
 import "./Login.css";
 import InputForm from "../../components/InputForm/InputForm";
@@ -42,20 +43,25 @@ export default function Login() {
 
   return (
     <div className="login">
-      <InputForm
-        value={username}
-        handleChange={handleChangeUsername}
-        type="text"
-        placeholder="Enter username"
-      />
-      <InputForm
-        value={password}
-        handleChange={handleChangePassword}
-        type="password"
-        placeholder="Enter password"
-      />
-      <button onClick={handleLogin}>Log In</button>
-      <Link to="/student/signup">Don't have an account? Sign Up!</Link>
+      <h3>Login:</h3>
+      <div className="content">
+        <InputForm
+          value={username}
+          handleChange={handleChangeUsername}
+          type="text"
+          placeholder="Enter username"
+        />
+        <InputForm
+          value={password}
+          handleChange={handleChangePassword}
+          type="password"
+          placeholder="Enter password"
+        />
+        <Button variant="outlined" onClick={handleLogin}>
+          Log In
+        </Button>
+        <Link to="/student/signup">Don't have an account? Sign Up!</Link>
+      </div>
     </div>
   );
 }
