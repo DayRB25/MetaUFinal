@@ -13,3 +13,9 @@
     text-align: center;
     gap: 3px;
 }
+
+.scheduledetails > .content > .display-year > .yeardetails > .content > .semesterdetails > .content {
+    display: flex;
+    flex-direction: row;
+    gap: 10px
+}
