@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import "./ScheduleTool.css";
 import Constraints from "../../components/Constraints/Constraints";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
-import YearDetails from "../../components/YearDetails/YearDetails";
 import { years } from "../../../sampleYearData";
 
 export default function ScheduleTool() {
@@ -61,7 +60,10 @@ export default function ScheduleTool() {
         <Link to="/student/landing">Back</Link>
         <Constraints constraints={constraints} addConstraint={addConstraint} />
         <button onClick={generateNewSchedule}>Generate New Schedule:</button>
-        <ScheduleDetails years={schedule} />
+        <ScheduleDetails
+          years={schedule}
+          handleDisplayYear={handleDisplayYear}
+        />
       </div>
     </div>
   );
