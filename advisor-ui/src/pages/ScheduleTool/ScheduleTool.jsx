@@ -5,10 +5,25 @@ import { Link } from "react-router-dom";
 import "./ScheduleTool.css";
 import Constraints from "../../components/Constraints/Constraints";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
+import YearDetails from "../../components/YearDetails/YearDetails";
 import { years } from "../../../sampleYearData";
+
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
   const [schedule, setSchedule] = useState([]);
+  const [displayYear, setDisplayYear] = useState(false);
+  const [year, setYear] = useState(null);
+
+  const handleDisplayYear = (number) => {
+    const yearIdx = schedule.findIndex((year) => year.number === number);
+    setYear(schedule[yearIdx]);
+    setDisplayYear(true);
+  };
+
+  const handleCloseYear = () => {
+    setDisplayYear(false);
+    setYear(null);
+  };
 
   const containDuplicate = (constraints, newConstraint) => {
     let flag = false;
