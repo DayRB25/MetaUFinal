@@ -18,5 +18,25 @@
   > .semesterdetails
   > .content
   > .classdetails {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   height: fit-content;
+  width: fit-content;
+}
+
+.scheduledetails
+  > .content
+  > .display-year
+  > .yeardetails
+  > .content
+  > .semesterdetails
+  > .content
+  > .classdetails
+  > .details {
+  align-items: first baseline;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
