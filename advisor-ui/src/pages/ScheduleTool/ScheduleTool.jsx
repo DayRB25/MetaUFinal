@@ -1,6 +1,8 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import "./ScheduleTool.css";
 import Constraints from "../../components/Constraints/Constraints";
@@ -57,9 +59,15 @@ export default function ScheduleTool() {
   return (
     <div className="scheduletool">
       <div className="content">
-        <Link to="/student/landing">Back</Link>
+        <div className="back-btn">
+          <Link to="/student/landing">
+            <ArrowBackIcon className="back" />
+          </Link>
+        </div>
         <Constraints constraints={constraints} addConstraint={addConstraint} />
-        <button onClick={generateNewSchedule}>Generate New Schedule:</button>
+        <Button variant="outlined" onClick={generateNewSchedule}>
+          Generate New Schedule:
+        </Button>
         <ScheduleDetails
           years={schedule}
           handleDisplayYear={handleDisplayYear}
