@@ -3,6 +3,7 @@ import "./VolunteerExplore.css";
 import Explore from "../../components/Explore/Explore";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
@@ -24,7 +25,9 @@ export default function VolunteerExplore() {
   return (
     <div className="volunteerexplore">
       <div className="content">
-        <Link to="/student/landing">Back</Link>
+        <Link to="/student/landing">
+          <ArrowBackIcon className="back" />
+        </Link>
         <Explore events={events} />
       </div>
     </div>

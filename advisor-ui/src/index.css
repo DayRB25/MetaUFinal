@@ -11,3 +11,17 @@ h3 {
   font-size: 30px;
   font-weight: 500;
 }
+
+.back:hover {
+  color: lightgray;
+  cursor: pointer;
+}
+
+.close {
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.close:hover {
+  color: lightgray;
+}
