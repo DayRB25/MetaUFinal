@@ -18,7 +18,7 @@
 .oppmodal .content {
   align-items: flex-start;
   background-color: white;
-  border: 1px solid #1976d2;
+  border: 1px solid lightgray;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
