@@ -3,6 +3,10 @@ import { useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import "./ConstraintPopover.css";
+import { Button } from "@mui/material";
+import InputForm from "../InputForm/InputForm";
+import FormControl from "@mui/material/FormControl";
 
 export default function ConstraintPopover({ addConstraint, handleClose }) {
   const [type, setType] = useState("");
@@ -31,26 +35,31 @@ export default function ConstraintPopover({ addConstraint, handleClose }) {
 
   return (
     <div className="constraintpopover">
-      <InputLabel id="demo-simple-select-label">Type</InputLabel>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={type}
-        label="type"
-        onChange={handleChangeType}
-      >
-        <MenuItem value={"Class"}>Class</MenuItem>
-        <MenuItem value={"Graduation"}>Graduation</MenuItem>
-      </Select>
-      <input
+      <FormControl sx={{ minWidth: 120 }} size="small">
+        <InputLabel id="select-label">Type</InputLabel>
+        <Select
+          labelId="select-label"
+          id="simple-select"
+          value={type}
+          label="type"
+          onChange={handleChangeType}
+        >
+          <MenuItem value={"Class"}>Class</MenuItem>
+          <MenuItem value={"Graduation"}>Graduation</MenuItem>
+        </Select>
+      </FormControl>
+      <InputForm
         type="text"
         placeholder="Enter value"
         value={value}
-        onChange={handleChangeValue}
+        handleChange={handleChangeValue}
       />
-      <button onClick={() => handleConstraintSubmit(type, value)}>
+      <Button
+        variant="outlined"
+        onClick={() => handleConstraintSubmit(type, value)}
+      >
         Add Constraint
-      </button>
+      </Button>
     </div>
   );
 }
