@@ -9,7 +9,7 @@ import InputForm from "../InputForm/InputForm";
 import FormControl from "@mui/material/FormControl";
 
 export default function ConstraintPopover({ addConstraint, handleClose }) {
-  const [type, setType] = useState("");
+  const [type, setType] = useState("Graduation");
   const [value, setValue] = useState("");
 
   const handleChangeType = (event) => {
@@ -44,13 +44,13 @@ export default function ConstraintPopover({ addConstraint, handleClose }) {
           label="type"
           onChange={handleChangeType}
         >
-          <MenuItem value={"Class"}>Class</MenuItem>
           <MenuItem value={"Graduation"}>Graduation</MenuItem>
+          <MenuItem value={"Class"}>Class</MenuItem>
         </Select>
       </FormControl>
       <InputForm
         type="text"
-        placeholder="Enter value"
+        placeholder={type === "Class" ? "Enter Class" : "Enter Graduation Year"}
         value={value}
         handleChange={handleChangeValue}
       />
