@@ -1,9 +1,22 @@
 .classdetails {
-    border: 1px solid black;
-    padding: 2px 4px;
-    width: 120px;
+  align-items: center;
+  border: 1px solid #1976d2;
+  border-radius: 3px;
+  display: flex;
+  font-size: 18px;
+  height: 40px;
+  justify-content: center;
+  padding: 2px 4px;
+  width: 150px;
 }
 
-.scheduledetails > .content > .display-year > .yeardetails > .content > .semesterdetails > .content > .classdetails {
-    height: fit-content;
+.scheduledetails
+  > .content
+  > .display-year
+  > .yeardetails
+  > .content
+  > .semesterdetails
+  > .content
+  > .classdetails {
+  height: fit-content;
 }
