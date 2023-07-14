@@ -40,4 +40,21 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// Route for fetching student-events connected to a particular student ID
+router.get("/:studentId", async (req, res) => {
+  const StudentId = req.params.studentId;
+
+  try {
+    // Fetch student events with Student ID
+    const studentEvents = await StudentEvent.findAll({
+      where: { StudentId },
+      include: { model: EventDetails },
+    });
+    // Return the student event data in the response
+    res.json({ studentEvents });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 export default router;
