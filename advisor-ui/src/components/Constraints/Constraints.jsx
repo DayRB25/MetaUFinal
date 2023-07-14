@@ -31,8 +31,10 @@ export default function Constraints({ addConstraint, constraints }) {
     <div className="constraints">
       <h3>Constraints:</h3>
       <div className="content">
-        {constraintItems}
-        <AddConstraint openPopover={handleClick} />
+        <div className="grid">
+          {constraintItems}
+          <AddConstraint openPopover={handleClick} />
+        </div>
         <Popover
           open={open}
           anchorEl={anchorElement}

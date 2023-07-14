@@ -1,6 +1,7 @@
 import React from "react";
 import "./ScheduleDetails.css";
 import YearDetails from "../YearDetails/YearDetails";
+import { Button } from "@mui/material";
 export default function ScheduleDetails({
   years,
   handleDisplayYear,
@@ -31,7 +32,9 @@ export default function ScheduleDetails({
         {displayYear && (
           <div className="display-year">
             <YearDetails year={year} displayYear={displayYear} />
-            <button onClick={handleCloseYear}>Back To Schedule</button>
+            <Button variant="outlined" onClick={handleCloseYear}>
+              Back To Schedule
+            </Button>
           </div>
         )}
       </div>
