@@ -57,4 +57,21 @@ router.get("/:studentId", async (req, res) => {
   }
 });
 
+// Route for deleting student-event with provided ID
+router.delete("/:studentEventId", async (req, res) => {
+  const id = req.params.studentEventId;
+
+  try {
+    // delete student event
+    const deletedEvent = await StudentEvent.destroy({
+      where: { id },
+    });
+
+    // Return delete message
+    res.json({ message: "Event deleted." });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 export default router;
