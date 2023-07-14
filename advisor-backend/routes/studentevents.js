@@ -36,7 +36,6 @@ router.post("/create", async (req, res) => {
     // Return the student data in the response
     res.json({ newStudentEvent });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error" });
   }
 });
