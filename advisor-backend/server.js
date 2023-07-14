@@ -8,6 +8,7 @@ import { sequelize } from "./database.js";
 import studentRoute from "./routes/students.js";
 import eventRoute from "./routes/events.js";
 import SequelizeStoreInit from "connect-session-sequelize";
+import studentEventRoute from "./routes/studentevents.js";
 
 const app = express();
 
@@ -43,6 +44,7 @@ sessionStore.sync();
 
 app.use("/api/student", studentRoute);
 app.use("/api/events", eventRoute);
+app.use("/api/student-event", studentEventRoute);
 
 sequelize
   .sync({ alter: true })
