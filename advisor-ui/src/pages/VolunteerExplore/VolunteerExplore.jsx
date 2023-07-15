@@ -28,6 +28,7 @@ export default function VolunteerExplore() {
         <Link to="/student/landing">
           <ArrowBackIcon className="back" />
         </Link>
+        <Link to="/student/volunteer/hours">View Your Volunteer History</Link>
         <Explore events={events} />
       </div>
     </div>
