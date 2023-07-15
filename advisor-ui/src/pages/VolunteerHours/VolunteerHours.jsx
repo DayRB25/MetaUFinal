@@ -31,6 +31,35 @@ export default function VolunteerHours() {
     fetchStudentEvents();
   }, []);
 
+  const deleteStudentEventFromState = (id) => {
+    const filteredEvents = studentEvents.filter(
+      (studentEvent) => studentEvent.id !== id
+    );
+    setStudentEvents(filteredEvents);
+  };
+
+  const deleteStudentEventFromDB = async (id) => {
+    try {
+      const res = axios.delete(
+        `http://localhost:5000/api/student-event/${id}`,
+        { params: { studentEventId: id } }
+      );
+      return true;
+    } catch (error) {
+      alert("Unable to delete. Try again later.");
+      return false;
+    }
+  };
+
+  const handleDeleteStudentEvent = async (id) => {
+    // step 1 delete DB record
+    const successfulDelete = await deleteStudentEventFromDB(id);
+    // step 2 delete from local state copy
+    if (successfulDelete) {
+      deleteStudentEventFromState(id);
+    }
+  };
+
   const createDateFromTimeStamp = (timestamp) => {
     const date = new Date(timestamp);
     const year = date.getFullYear();
