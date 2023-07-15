@@ -31,6 +31,35 @@ export default function VolunteerHours() {
     fetchStudentEvents();
   }, []);
 
+  const createDateFromTimeStamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}-${month}-${day}`;
+  };
+
+  const studentEventRows = studentEvents.map((studentEvent) => {
+    const eventDetails = studentEvent.EventDetail;
+    const hours = studentEvent.hours;
+    return (
+      <TableRow key={studentEvent.id}>
+        <TableCell>{eventDetails.title}</TableCell>
+        <TableCell align="right">
+          {createDateFromTimeStamp(eventDetails.date)}
+        </TableCell>
+        <TableCell align="right">{`${eventDetails.city}, ${eventDetails.state}`}</TableCell>
+        <TableCell align="right">{eventDetails.admin}</TableCell>
+        <TableCell align="right">{hours}</TableCell>
+        <TableCell align="right">
+          <IconButton onClick={() => handleDeleteStudentEvent(studentEvent.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    );
+  });
+
   return (
     <div className="volunteer-hours">
       <TableContainer>
@@ -45,6 +74,7 @@ export default function VolunteerHours() {
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
+          <TableBody>{studentEventRows}</TableBody>
         </Table>
       </TableContainer>
     </div>
