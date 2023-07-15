@@ -23,7 +23,6 @@ export default function VolunteerHours() {
       const fetchedStudentEvents = res.data.studentEvents;
       setStudentEvents(fetchedStudentEvents);
     } catch (error) {
-      console.log(error);
       alert("Something went wrong!");
     }
   };
