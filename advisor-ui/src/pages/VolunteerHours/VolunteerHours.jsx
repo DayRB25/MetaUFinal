@@ -31,5 +31,22 @@ export default function VolunteerHours() {
     fetchStudentEvents();
   }, []);
 
-  return <div>VolunteerHours</div>;
+  return (
+    <div className="volunteer-hours">
+      <TableContainer>
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell align="right">Date</TableCell>
+              <TableCell align="right">Location</TableCell>
+              <TableCell align="right">Admin</TableCell>
+              <TableCell align="right">Hours</TableCell>
+              <TableCell align="right">Actions</TableCell>
+            </TableRow>
+          </TableHead>
+        </Table>
+      </TableContainer>
+    </div>
+  );
 }
