@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database.js";
 
-export const EventDetails = sequelize.define("EventDetails", {
+export const EventDetail = sequelize.define("EventDetail", {
   title: {
     type: DataTypes.STRING,
     allowNull: false,

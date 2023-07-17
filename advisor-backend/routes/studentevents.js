@@ -1,6 +1,6 @@
 import express from "express";
 import { Student } from "../models/index.js";
-import { EventDetails } from "../models/index.js";
+import { EventDetail } from "../models/index.js";
 import { StudentEvent } from "../models/index.js";
 
 const router = express.Router();
@@ -19,7 +19,7 @@ router.post("/create", async (req, res) => {
       return res.status(400).json({ error: "Student does not exist" });
     }
     // Check if the event with id exists
-    const eventDetail = await EventDetails.findOne({
+    const eventDetail = await EventDetail.findOne({
       where: { id: EventDetailId },
     });
     if (!eventDetail) {
@@ -48,7 +48,7 @@ router.get("/:studentId", async (req, res) => {
     // Fetch student events with Student ID
     const studentEvents = await StudentEvent.findAll({
       where: { StudentId },
-      include: { model: EventDetails },
+      include: { model: EventDetail },
     });
     // Return the student event data in the response
     res.json({ studentEvents });
