@@ -30,7 +30,7 @@ router.get("/:page", async (req, res) => {
 router.get("/:eventId", async (req, res) => {
   try {
     const eventId = req.params.eventId;
-    const event = await EventDetail.findByPk(eventId);
+    const event = await EventDetail.findOne({ where: { id: eventId } });
     if (!event) {
       res.status(404).json({ error: "Resource not found" });
       return;
