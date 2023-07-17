@@ -18,7 +18,7 @@ export default function OpportunityCard({ eventItem }) {
   return (
     <div className="opportunity-card">
       <div className="content" onClick={handleOpenModal}>
-        <img src={defaultImg} alt="event cover" />
+        <img src={eventItem.img ?? defaultImg} alt="event cover" />
         <p>{eventItem.title}</p>
       </div>
       <Modal
