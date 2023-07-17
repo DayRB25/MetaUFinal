@@ -152,18 +152,6 @@ export default function Signup() {
     return true;
   };
 
-  const resetFormState = () => {
-    setFirstname("");
-    setLastname("");
-    setUsername("");
-    setPassword("");
-    setEmail("");
-    setYear("");
-    setCity("");
-    setLocationState("");
-    setAddress("");
-  };
-
   const handleCreateAccount = async () => {
     if (!validateNonEmptyFields()) {
       alert("Please enter all fields");
@@ -206,8 +194,6 @@ export default function Signup() {
       );
       const newStudent = res.data.user;
       updateUser(newStudent);
-      // reset form fields
-      resetFormState();
       // navigate to landing page
       navigate("/student/landing");
     } catch (err) {
