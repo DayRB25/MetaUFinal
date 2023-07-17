@@ -1,11 +1,15 @@
 import express from "express";
 import { EventDetails } from "../models/event.js";
-
+const pageLimit = 8;
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/:page", async (req, res) => {
+  const page = req.params.page;
   try {
-    const events = await EventDetails.findAll();
+    const events = await EventDetails.findAll({
+      limit: pageLimit,
+      offset: (page - 1) * pageLimit,
+    });
     res.json({ events });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
