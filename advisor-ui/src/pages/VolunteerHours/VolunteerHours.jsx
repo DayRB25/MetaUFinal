@@ -93,24 +93,29 @@ export default function VolunteerHours() {
 
   return (
     <div className="volunteer-hours">
-      <Link to="/student/volunteer">
-        <ArrowBackIcon className="back" />
-      </Link>
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Date</TableCell>
-              <TableCell align="right">Location</TableCell>
-              <TableCell align="right">Admin</TableCell>
-              <TableCell align="right">Hours</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{studentEventRows}</TableBody>
-        </Table>
-      </TableContainer>
+      <div className="content">
+        <Link to="/student/volunteer">
+          <ArrowBackIcon className="back" />
+        </Link>
+        <div className="table">
+          <h3>Your Volunteer History:</h3>
+          <TableContainer>
+            <Table sx={{ minWidth: 650 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Title</TableCell>
+                  <TableCell align="right">Date</TableCell>
+                  <TableCell align="right">Location</TableCell>
+                  <TableCell align="right">Admin</TableCell>
+                  <TableCell align="right">Hours</TableCell>
+                  <TableCell align="right">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{studentEventRows}</TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      </div>
     </div>
   );
 }
