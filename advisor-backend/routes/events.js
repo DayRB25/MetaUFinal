@@ -1,5 +1,6 @@
 import express from "express";
 import { EventDetails } from "../models/event.js";
+// number of elements to be displayed on the page
 const pageLimit = 8;
 const router = express.Router();
 
