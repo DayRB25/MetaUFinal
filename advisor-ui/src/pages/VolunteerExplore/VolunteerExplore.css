@@ -27,3 +27,10 @@
 #volunteer-history:hover {
   color: lightgray;
 }
+
+.pagination {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}

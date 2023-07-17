@@ -1,11 +1,26 @@
 import express from "express";
 import { EventDetails } from "../models/event.js";
-
+// number of elements to be displayed on the page
+const pageLimit = 8;
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/page-count", async (req, res) => {
   try {
-    const events = await EventDetails.findAll();
+    const count = await EventDetails.count();
+    const pageCount = Math.ceil(count / pageLimit);
+    res.status(200).json({ pageCount });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/:page", async (req, res) => {
+  const page = req.params.page;
+  try {
+    const events = await EventDetails.findAll({
+      limit: pageLimit,
+      offset: (page - 1) * pageLimit,
+    });
     res.json({ events });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
