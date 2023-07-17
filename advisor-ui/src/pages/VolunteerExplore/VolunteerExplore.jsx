@@ -10,7 +10,7 @@ export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
   const [pageCount, setPageCount] = useState(null);
 
-  const fetchEvents = async (page) => {
+  const fetchEventsByPage = async (page) => {
     try {
       const res = await axios.get(`http://localhost:5000/api/events/${page}`, {
         params: { page },
@@ -36,7 +36,7 @@ export default function VolunteerExplore() {
 
   useEffect(() => {
     fetchPageCount();
-    fetchEvents(1);
+    fetchEventsByPage(1);
   }, []);
 
   return (
@@ -55,7 +55,7 @@ export default function VolunteerExplore() {
           <div className="pagination">
             <Pagination
               count={pageCount}
-              onChange={(event, page) => fetchEvents(page)}
+              onChange={(event, page) => fetchEventsByPage(page)}
             />
           </div>
         )}
