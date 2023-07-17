@@ -18,3 +18,12 @@
   justify-content: space-between;
   width: 100%;
 }
+
+#volunteer-history {
+  color: black;
+  text-decoration: none;
+}
+
+#volunteer-history:hover {
+  color: lightgray;
+}
