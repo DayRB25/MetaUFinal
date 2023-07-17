@@ -8,9 +8,11 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
 
-  const fetchEvents = async () => {
+  const fetchEvents = async (page) => {
     try {
-      const res = await axios.get("http://localhost:5000/api/events/");
+      const res = await axios.get(`http://localhost:5000/api/events/${page}`, {
+        params: { page },
+      });
       const fetchedEvents = res.data.events;
       setEvents(fetchedEvents);
     } catch (error) {
@@ -19,7 +21,7 @@ export default function VolunteerExplore() {
   };
 
   useEffect(() => {
-    fetchEvents();
+    fetchEvents(1);
   }, []);
 
   return (
