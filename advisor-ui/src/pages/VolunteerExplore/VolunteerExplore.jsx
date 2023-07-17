@@ -7,6 +7,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
+  const [pageCount, setPageCount] = useState(null);
 
   const fetchEvents = async (page) => {
     try {
@@ -20,7 +21,20 @@ export default function VolunteerExplore() {
     }
   };
 
+  const fetchPageCount = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/events/page-count"
+      );
+      const pageCount = res.data.pageCount;
+      setPageCount(pageCount);
+    } catch (error) {
+      alert("Something went wrong. Try again later.");
+    }
+  };
+
   useEffect(() => {
+    fetchPageCount();
     fetchEvents(1);
   }, []);
 
