@@ -56,3 +56,11 @@
 .description > p {
   font-size: 24px;
 }
+
+.add-student-event {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}

@@ -10,6 +10,7 @@ import Signup from "./pages/Signup/Signup";
 import ScheduleTool from "./pages/ScheduleTool/ScheduleTool";
 import StudentLanding from "./pages/StudentLanding/StudentLanding";
 import VolunteerExplore from "./pages/VolunteerExplore/VolunteerExplore";
+import VolunteerHours from "./pages/VolunteerHours/VolunteerHours";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -38,6 +39,10 @@ function App() {
             <Route path="/student/landing" element={<StudentLanding />} />
             <Route path="/student/schedule" element={<ScheduleTool />} />
             <Route path="/student/volunteer" element={<VolunteerExplore />} />
+            <Route
+              path="/student/volunteer/hours"
+              element={<VolunteerHours />}
+            />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
