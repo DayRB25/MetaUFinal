@@ -4,6 +4,7 @@ import Explore from "../../components/Explore/Explore";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Pagination from "@mui/material/Pagination";
 
 export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
@@ -50,6 +51,14 @@ export default function VolunteerExplore() {
           </Link>
         </div>
         <Explore events={events} />
+        {pageCount !== null && (
+          <div className="pagination">
+            <Pagination
+              count={pageCount}
+              onChange={(event, page) => fetchEvents(page)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
