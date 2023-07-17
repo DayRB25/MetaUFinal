@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import defaultImg from "../../assets/volunteer-opportunities-ideas-article-1200x800.jpg";
 import "./OpportunityCard.css";
 import OpportunityModal from "../OpportunityModal/OpportunityModal";
+import Modal from "../Modal/Modal";
 
 export default function OpportunityCard({ eventItem }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,12 +21,11 @@ export default function OpportunityCard({ eventItem }) {
         <img src={defaultImg} alt="event cover" />
         <p>{eventItem.title}</p>
       </div>
-      {isOpen && (
-        <OpportunityModal
-          eventItem={eventItem}
-          handleCloseModal={handleCloseModal}
-        />
-      )}
+      <Modal
+        isOpen={isOpen}
+        handleCloseModal={handleCloseModal}
+        content={<OpportunityModal eventItem={eventItem} />}
+      />
     </div>
   );
 }

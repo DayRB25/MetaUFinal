@@ -3,14 +3,13 @@ import "./OpportunityModal.css";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import CloseIcon from "@mui/icons-material/Close";
 import InfoIcon from "@mui/icons-material/Info";
 import InputForm from "../InputForm/InputForm";
 import { Button } from "@mui/material";
 import { UserContext } from "../../UserContext.js";
 import axios from "axios";
 
-export default function OpportunityModal({ eventItem, handleCloseModal }) {
+export default function OpportunityModal({ eventItem }) {
   // YYYY-MM-DD = 10 chars
   const standardDateLength = 10;
   const [hours, setHours] = useState("");
@@ -72,7 +71,6 @@ export default function OpportunityModal({ eventItem, handleCloseModal }) {
   return (
     <div className="oppmodal">
       <div className="content">
-        <CloseIcon className="close" onClick={handleCloseModal} />
         <h3>{eventItem.title}</h3>
         <div className="location">
           <LocationOnIcon />
