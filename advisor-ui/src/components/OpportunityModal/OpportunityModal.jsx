@@ -12,8 +12,27 @@ export default function OpportunityModal({ eventItem, handleCloseModal }) {
   // YYYY-MM-DD = 10 chars
   const standardDateLength = 10;
   const [hours, setHours] = useState("");
+  const [openHoursInput, setOpenHoursInput] = useState(false);
+
   const handleChangeHours = (e) => {
     setHours(e.target.value);
+  };
+
+  const handleAttended = () => {
+    setOpenHoursInput(true);
+  };
+
+  const handleSubmit = () => {
+    setOpenHoursInput(false);
+    setHours("");
+  };
+
+  const handleButtonClick = () => {
+    if (openHoursInput) {
+      handleSubmit();
+    } else {
+      handleAttended();
+    }
   };
 
   return (
@@ -41,13 +60,17 @@ export default function OpportunityModal({ eventItem, handleCloseModal }) {
           <p>{eventItem.description}</p>
         </div>
         <div className="add-student-event">
-          <InputForm
-            type="text"
-            placeholder="Enter number of hours"
-            value={hours}
-            handleChange={handleChangeHours}
-          />
-          <Button variant="outlined">Attended Event</Button>
+          {openHoursInput && (
+            <InputForm
+              type="text"
+              placeholder="Enter number of hours"
+              value={hours}
+              handleChange={handleChangeHours}
+            />
+          )}
+          <Button variant="outlined" onClick={handleButtonClick}>
+            {openHoursInput ? "submit" : "attended event"}
+          </Button>
         </div>
       </div>
     </div>
