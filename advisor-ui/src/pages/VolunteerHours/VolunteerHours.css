@@ -1,0 +1,19 @@
+.volunteer-hours {
+  height: 100vh;
+  width: 100vw;
+}
+
+.volunteer-hours > .content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 0 auto;
+  margin-top: 30px;
+  max-width: 1200px;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
