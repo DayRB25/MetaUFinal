@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./OpportunityModal.css";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -7,12 +7,31 @@ import CloseIcon from "@mui/icons-material/Close";
 import InfoIcon from "@mui/icons-material/Info";
 import InputForm from "../InputForm/InputForm";
 import { Button } from "@mui/material";
+import { UserContext } from "../../UserContext.js";
+import axios from "axios";
 
 export default function OpportunityModal({ eventItem, handleCloseModal }) {
   // YYYY-MM-DD = 10 chars
   const standardDateLength = 10;
   const [hours, setHours] = useState("");
   const [openHoursInput, setOpenHoursInput] = useState(false);
+  const { user } = useContext(UserContext);
+
+  const addStudentEventToDB = async () => {
+    const body = {
+      studentId: user.id,
+      eventDetailId: eventItem.id,
+      hours: parseInt(hours),
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/student-event/create",
+        body
+      );
+    } catch (error) {
+      alert("Could not add event. Try later.");
+    }
+  };
 
   const handleChangeHours = (e) => {
     setHours(e.target.value);
@@ -22,14 +41,15 @@ export default function OpportunityModal({ eventItem, handleCloseModal }) {
     setOpenHoursInput(true);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    await addStudentEventToDB();
     setOpenHoursInput(false);
     setHours("");
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (openHoursInput) {
-      handleSubmit();
+      await handleSubmit();
     } else {
       handleAttended();
     }
