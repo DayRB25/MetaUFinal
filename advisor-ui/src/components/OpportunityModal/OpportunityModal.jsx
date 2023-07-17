@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./OpportunityModal.css";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -15,6 +15,7 @@ export default function OpportunityModal({ eventItem, handleCloseModal }) {
   const standardDateLength = 10;
   const [hours, setHours] = useState("");
   const [openHoursInput, setOpenHoursInput] = useState(false);
+  const [eventOccurred, setEventOccurred] = useState(false);
   const { user } = useContext(UserContext);
 
   const addStudentEventToDB = async () => {
@@ -55,6 +56,19 @@ export default function OpportunityModal({ eventItem, handleCloseModal }) {
     }
   };
 
+  const compareDates = () => {
+    const eventDate = new Date(eventItem.date);
+    const currentDate = new Date();
+
+    if (eventDate.getTime() < currentDate.getTime()) {
+      setEventOccurred(true);
+    }
+  };
+
+  useEffect(() => {
+    compareDates();
+  }, []);
+
   return (
     <div className="oppmodal">
       <div className="content">
@@ -88,9 +102,11 @@ export default function OpportunityModal({ eventItem, handleCloseModal }) {
               handleChange={handleChangeHours}
             />
           )}
-          <Button variant="outlined" onClick={handleButtonClick}>
-            {openHoursInput ? "submit" : "attended event"}
-          </Button>
+          {eventOccurred && (
+            <Button variant="outlined" onClick={handleButtonClick}>
+              {openHoursInput ? "submit" : "attended event"}
+            </Button>
+          )}
         </div>
       </div>
     </div>
