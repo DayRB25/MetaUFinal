@@ -9,6 +9,8 @@ import axios from "axios";
 import { UserContext } from "../../UserContext.js";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Link } from "react-router-dom";
 
 export default function VolunteerHours() {
   const [studentEvents, setStudentEvents] = useState([]);
@@ -91,6 +93,9 @@ export default function VolunteerHours() {
 
   return (
     <div className="volunteer-hours">
+      <Link to="/student/volunteer">
+        <ArrowBackIcon className="back" />
+      </Link>
       <TableContainer>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
