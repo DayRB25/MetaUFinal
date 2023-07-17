@@ -40,7 +40,7 @@ export default function VolunteerExplore() {
   }, []);
 
   return (
-    <div className="volunteerexplore">
+    <div className="volunteer-explore">
       <div className="content">
         <div className="nav-links">
           <Link to="/student/landing">

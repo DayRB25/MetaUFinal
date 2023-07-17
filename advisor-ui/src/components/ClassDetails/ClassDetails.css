@@ -1,4 +1,4 @@
-.classdetails {
+.class-details {
   align-items: center;
   border: 1px solid #1976d2;
   border-radius: 3px;
@@ -10,14 +10,14 @@
   width: 150px;
 }
 
-.scheduledetails
+.schedule-details
   > .content
   > .display-year
-  > .yeardetails
+  > .year-details
   > .content
-  > .semesterdetails
+  > .semester-details
   > .content
-  > .classdetails {
+  > .class-details {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -26,14 +26,14 @@
   width: fit-content;
 }
 
-.scheduledetails
+.schedule-details
   > .content
   > .display-year
-  > .yeardetails
+  > .year-details
   > .content
-  > .semesterdetails
+  > .semester-details
   > .content
-  > .classdetails
+  > .class-details
   > .details {
   align-items: first baseline;
   display: flex;

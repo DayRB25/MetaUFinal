@@ -15,7 +15,7 @@ export default function StudentLanding() {
   };
 
   return (
-    <div className="studentlanding">
+    <div className="student-landing">
       <h1>{`Welcome, ${user.firstname}!`}</h1>
       <div className="buttons">
         <Link to="/student/schedule">

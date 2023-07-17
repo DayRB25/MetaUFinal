@@ -15,7 +15,7 @@ export default function YearDetails({
     />
   ));
   return (
-    <div className="yeardetails">
+    <div className="year-details">
       <h4>{`Year: ${year.number}`}</h4>
       <div className="content" onClick={() => handleDisplayYear(year.number)}>
         {semesterItems}

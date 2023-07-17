@@ -1,11 +1,11 @@
-.semesterdetails {
+.semester-details {
   align-items: center;
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.semesterdetails > .content {
+.semester-details > .content {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -15,12 +15,12 @@
   width: fit-content;
 }
 
-.scheduledetails
+.schedule-details
   > .content
   > .display-year
-  > .yeardetails
+  > .year-details
   > .content
-  > .semesterdetails
+  > .semester-details
   > .content {
   display: flex;
   flex-direction: row;

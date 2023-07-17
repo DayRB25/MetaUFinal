@@ -69,7 +69,7 @@ export default function OpportunityModal({ eventItem }) {
   }, []);
 
   return (
-    <div className="oppmodal">
+    <div className="opp-modal">
       <div className="content">
         <h3>{eventItem.title}</h3>
         <div className="location">

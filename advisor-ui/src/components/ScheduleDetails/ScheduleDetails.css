@@ -1,16 +1,16 @@
-.scheduledetails {
+.schedule-details {
   align-items: center;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.scheduledetails > .content > .display-years {
+.schedule-details > .content > .display-years {
   display: flex;
   gap: 30px;
 }
 
-.scheduledetails > .content > .display-year {
+.schedule-details > .content > .display-year {
   align-items: center;
   display: flex;
   flex-direction: column;

@@ -223,7 +223,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="signup">
+    <div className="sign-up">
       <h3>Sign Up:</h3>
       <div className="content">
         <InputForm

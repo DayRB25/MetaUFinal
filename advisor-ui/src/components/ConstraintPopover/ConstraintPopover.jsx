@@ -34,7 +34,7 @@ export default function ConstraintPopover({ addConstraint, handleClose }) {
   };
 
   return (
-    <div className="constraintpopover">
+    <div className="constraint-popover">
       <FormControl sx={{ minWidth: 120 }} size="small">
         <InputLabel id="select-label">Type</InputLabel>
         <Select

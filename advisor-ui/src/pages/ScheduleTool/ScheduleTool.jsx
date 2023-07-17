@@ -57,7 +57,7 @@ export default function ScheduleTool() {
   };
 
   return (
-    <div className="scheduletool">
+    <div className="schedule-tool">
       <div className="content">
         <div className="back-btn">
           <Link to="/student/landing">
