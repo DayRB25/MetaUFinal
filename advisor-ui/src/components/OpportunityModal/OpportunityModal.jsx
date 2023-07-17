@@ -55,6 +55,14 @@ export default function OpportunityModal({ eventItem }) {
     }
   };
 
+  const createDateFromTimeStamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}-${month}-${day}`;
+  };
+
   const compareDates = () => {
     const eventDate = new Date(eventItem.date);
     const currentDate = new Date();
@@ -78,7 +86,7 @@ export default function OpportunityModal({ eventItem }) {
         </div>
         <div className="date">
           <CalendarMonthIcon />
-          <p>{eventItem.date.slice(0, standardDateLength)}</p>
+          <p>{createDateFromTimeStamp(eventItem.date)}</p>
         </div>
         <div className="admin">
           <SupervisorAccountIcon />
