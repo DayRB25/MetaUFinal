@@ -1,0 +1,5 @@
+.close-container {
+  align-items: flex-end;
+  display: flex;
+  width: 100%;
+}
