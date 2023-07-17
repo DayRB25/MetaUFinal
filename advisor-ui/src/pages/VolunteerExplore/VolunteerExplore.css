@@ -1,13 +1,20 @@
 .volunteerexplore {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .volunteerexplore > .content {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 30px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.nav-links {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }

@@ -25,10 +25,12 @@ export default function VolunteerExplore() {
   return (
     <div className="volunteerexplore">
       <div className="content">
-        <Link to="/student/landing">
-          <ArrowBackIcon className="back" />
-        </Link>
-        <Link to="/student/volunteer/hours">View Your Volunteer History</Link>
+        <div className="nav-links">
+          <Link to="/student/landing">
+            <ArrowBackIcon className="back" />
+          </Link>
+          <Link to="/student/volunteer/hours">View Your Volunteer History</Link>
+        </div>
         <Explore events={events} />
       </div>
     </div>
