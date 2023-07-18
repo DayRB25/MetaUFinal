@@ -1,12 +1,12 @@
 import express from "express";
-import { EventDetails } from "../models/event.js";
+import { EventDetail } from "../models/event.js";
 // number of elements to be displayed on the page
 const pageLimit = 8;
 const router = express.Router();
 
 router.get("/page-count", async (req, res) => {
   try {
-    const count = await EventDetails.count();
+    const count = await EventDetail.count();
     const pageCount = Math.ceil(count / pageLimit);
     res.status(200).json({ pageCount });
   } catch (error) {
@@ -17,7 +17,7 @@ router.get("/page-count", async (req, res) => {
 router.get("/:page", async (req, res) => {
   const page = req.params.page;
   try {
-    const events = await EventDetails.findAll({
+    const events = await EventDetail.findAll({
       limit: pageLimit,
       offset: (page - 1) * pageLimit,
     });
@@ -30,7 +30,7 @@ router.get("/:page", async (req, res) => {
 router.get("/:eventId", async (req, res) => {
   try {
     const eventId = req.params.eventId;
-    const event = await EventDetails.findByPk(eventId);
+    const event = await EventDetail.findOne({ where: { id: eventId } });
     if (!event) {
       res.status(404).json({ error: "Resource not found" });
       return;

@@ -3,7 +3,7 @@ import "./ClassDetails.css";
 
 export default function ClassDetails({ classItem, displayYear }) {
   return (
-    <div className="classdetails">
+    <div className="class-details">
       <p>{classItem.title}</p>
       {displayYear && (
         <div className="details">

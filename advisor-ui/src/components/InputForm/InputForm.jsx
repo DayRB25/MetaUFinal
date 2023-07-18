@@ -5,7 +5,7 @@ import "./InputForm.css";
 
 export default function InputForm({ value, handleChange, type, placeholder }) {
   return (
-    <div className="inputform">
+    <div className="input-form">
       <input
         type={type}
         value={value}

@@ -36,7 +36,17 @@ router.post("/login", async (req, res) => {
 
 // Route for student account creation
 router.post("/create", async (req, res) => {
-  const { username, password, email, ...otherFields } = req.body;
+  const {
+    username,
+    password,
+    email,
+    firstname,
+    lastname,
+    year,
+    city,
+    state,
+    address,
+  } = req.body;
 
   try {
     // Check if username or email already exists
@@ -60,7 +70,12 @@ router.post("/create", async (req, res) => {
       username,
       password: hashedPassword,
       email,
-      ...otherFields,
+      firstname,
+      lastname,
+      year,
+      city,
+      state,
+      address,
     });
 
     // Set the student in the session

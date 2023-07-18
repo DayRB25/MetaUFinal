@@ -7,7 +7,7 @@ export default function SemesterDetails({ semester, displayYear }) {
     <ClassDetails key={index} classItem={classItem} displayYear={displayYear} />
   ));
   return (
-    <div className="semesterdetails">
+    <div className="semester-details">
       <h5>{`Semester: ${semester.number}`}</h5>
       <div className="content">{classItems}</div>
     </div>

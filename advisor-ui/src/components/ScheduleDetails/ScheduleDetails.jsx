@@ -17,7 +17,7 @@ export default function ScheduleDetails({
     />
   ));
   return (
-    <div className="scheduledetails">
+    <div className="schedule-details">
       <h3>Schedule Details:</h3>
       <div className="content">
         {!displayYear && (

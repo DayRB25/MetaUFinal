@@ -1,15 +1,15 @@
-const port = process.env.PORT || 5000;
+import "dotenv/config";
+import cors from "cors";
 import express from "express";
 import session from "express-session";
-import cors from "cors";
 import morgan from "morgan";
-import "dotenv/config";
 import { sequelize } from "./database.js";
+import SequelizeStoreInit from "connect-session-sequelize";
 import studentRoute from "./routes/students.js";
 import eventRoute from "./routes/events.js";
-import SequelizeStoreInit from "connect-session-sequelize";
 import studentEventRoute from "./routes/studentevents.js";
 
+const port = process.env.PORT || 5000;
 const app = express();
 
 app.use(

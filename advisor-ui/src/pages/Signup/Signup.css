@@ -1,4 +1,4 @@
-.signup {
+.sign-up {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -8,7 +8,7 @@
   width: 100vw;
 }
 
-.signup > .content {
+.sign-up > .content {
   align-items: center;
   border: 1px solid #1976d2;
   border-radius: 10px;

@@ -1,4 +1,4 @@
-.opportunitycard {
+.opportunity-card {
   border-radius: 5px;
   border: 1px solid lightgray;
   cursor: pointer;
@@ -7,7 +7,7 @@
   width: fit-content;
 }
 
-.opportunitycard img {
+.opportunity-card img {
   border-radius: 5px;
   height: 200px;
   width: 200px;
