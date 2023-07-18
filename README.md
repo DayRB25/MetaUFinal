@@ -1,4 +1,4 @@
-# MetaUFinal
+# EduPathAdvisor
 
 ### 1. Market
 Education
@@ -12,17 +12,13 @@ How might we provide underserved students in low-income communities with equitab
 The solution is an enterprise product marketed to schools. The product offers two comprehensive tools to students. The first is an automated recommendation system to provide them with a curated list of volunteer opportunities based on factors like location, skills, and time commitment. The second tool is a What-If? Academic planner that provides students with the ability to track their academic progress with respect to their state’s requirements while also providing future schedules optimized for working towards their desired majors, universities, and graduation dates.
 
 ### 5. User Stories
-1. As a high school student, I want to be able to search through a list of volunteer opportunities so that I can easily sign up
+1. As a high school student, I want to be able to search through a list of volunteer opportunities so that I can easily sign up.
 2. As a high school student, I want to be provided a curated list of volunteer opportunities based on personal details like career interests, time commitment, location preferences so that I can only find volunteer opportunities that meet my needs
 3. As a high school student, I want to have one central location to track all of my volunteer history including hours, details about each event, admin’s contact info so that it is easier to access the information when I apply for scholarships
 4. As a high school student, I want to be able to track my academic progress against my state’s graduation requirements so that I can ensure I graduate at the time I expect.
-5. As a high school student, I want to know what available courses at my school best align with my career interests so that I can make informed decisions about my academic path.
-6. As a high school student, I want to create an account on the app so that I can store my information and gain access to the services the app provides.
-7. As a high school student, I want to see how my profile compares to the profile of those in careers/universities/majors I desire.
-8. As a high school student, I want to hear success stories from people with backgrounds like mine.
-9. As a high school student, I want to be suggested ways by which I can improve on course areas I am weakest in.
-10. As a high school student, I want to see what scholarships match my profile.
-11. As a high school student, I want to be suggested a set of extracurricular activities, summer programs, and more that will help me achieve my college and career goals.
+5. As a high school student, I want to create an account on the app so that I can store my information and gain access to the services the app provides.
+6. As a high school student, I want to be able to generate class schedule variations that both ensure I graduate by the desired time and align with preferences I have towards classes so that I can better explore my options.
+
 
 ### 6. User Personas
 1. James Wright, a Junior residing in Chicago, Illinois, is determined to break the cycle in his family and become the first high school graduate. Despite lacking any family members who have completed high school, James remains driven to make a difference. Regrettably, both the school advisors and his family are unable to offer guidance in choosing his classes, leaving James feeling significantly behind. Feeling a great deal of angst, James is eager to determine the necessary courses for graduation and determine if he can still graduate within the expected timeframe.
