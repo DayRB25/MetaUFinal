@@ -37,6 +37,13 @@ router.get("/:page", async (req, res) => {
       [Op.in]: states,
     };
   }
+
+  if (req.query.time_commitment) {
+    const timeCommitment = req.query.time_commitment;
+    queries.time_commitment = {
+      [Op.lte]: timeCommitment,
+    };
+  }
   try {
     const events = await EventDetail.findAll({
       where: {
