@@ -52,6 +52,14 @@ router.get("/:page", async (req, res) => {
       [Op.between]: [startDate, endDate],
     };
   }
+
+  if (req.query.start_time && req.query.end_time) {
+    const startTime = req.query.start_time;
+    const endTime = req.query.end_time;
+    queries.time = {
+      [Op.between]: [startTime, endTime],
+    };
+  }
   try {
     const events = await EventDetail.findAll({
       where: {
