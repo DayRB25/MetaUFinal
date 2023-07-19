@@ -5,6 +5,27 @@ import { Op } from "sequelize";
 const pageLimit = 8;
 const router = express.Router();
 
+const parseAndCreateLocationQuery = (query) => {
+  let cities = [];
+  let states = [];
+  const locations = query;
+  for (let i = 0; i < locations.length; i++) {
+    const location = locations[i];
+    const [city, state] = location.split(",");
+    cities.push(city);
+    states.push(state);
+  }
+
+  return {
+    city: {
+      [Op.in]: cities,
+    },
+    state: {
+      [Op.in]: states,
+    },
+  };
+};
+
 router.get("/page-count", async (req, res) => {
   try {
     const count = await EventDetail.count();
@@ -19,22 +40,9 @@ router.get("/:page", async (req, res) => {
   const page = req.params.page;
   let queries = {};
   if (req.query.location) {
-    let cities = [];
-    let states = [];
-    const locations = req.query.location;
-    for (let i = 0; i < locations.length; i++) {
-      const location = locations[i];
-      const splitLocation = location.split(",");
-      const city = splitLocation[0];
-      const state = splitLocation[1];
-      cities.push(city);
-      states.push(state);
-    }
-    queries.city = {
-      [Op.in]: cities,
-    };
-    queries.state = {
-      [Op.in]: states,
+    queries = {
+      ...queries,
+      ...parseAndCreateLocationQuery(req.query.location),
     };
   }
 
