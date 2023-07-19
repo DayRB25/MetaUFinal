@@ -35,6 +35,14 @@ const parseAndCreateTimeCommitmentQuery = (query) => {
   };
 };
 
+const parseAndCreateDateRangeQuery = (startDate, endDate) => {
+  return {
+    date: {
+      [Op.between]: [startDate, endDate],
+    },
+  };
+};
+
 router.get("/page-count", async (req, res) => {
   try {
     const count = await EventDetail.count();
@@ -65,8 +73,9 @@ router.get("/:page", async (req, res) => {
   if (req.query.start_date && req.query.end_date) {
     const startDate = new Date(req.query.start_date);
     const endDate = new Date(req.query.end_date);
-    queries.date = {
-      [Op.between]: [startDate, endDate],
+    queries = {
+      ...queries,
+      ...parseAndCreateDateRangeQuery(startDate, endDate),
     };
   }
 
