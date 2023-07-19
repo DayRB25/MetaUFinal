@@ -26,6 +26,15 @@ const parseAndCreateLocationQuery = (query) => {
   };
 };
 
+const parseAndCreateTimeCommitmentQuery = (query) => {
+  const timeCommitment = query;
+  return {
+    time_commitment: {
+      [Op.lte]: timeCommitment,
+    },
+  };
+};
+
 router.get("/page-count", async (req, res) => {
   try {
     const count = await EventDetail.count();
@@ -47,9 +56,9 @@ router.get("/:page", async (req, res) => {
   }
 
   if (req.query.time_commitment) {
-    const timeCommitment = req.query.time_commitment;
-    queries.time_commitment = {
-      [Op.lte]: timeCommitment,
+    queries = {
+      ...queries,
+      ...parseAndCreateTimeCommitmentQuery(req.query.time_commitment),
     };
   }
 
