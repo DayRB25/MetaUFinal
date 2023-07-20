@@ -121,6 +121,10 @@ router.get("/recommended", async (req, res) => {
       id,
       city,
         state,
+        description,
+        admin,
+        date,
+        title,
         time,
         time_commitment,
         CASE
@@ -146,6 +150,10 @@ router.get("/recommended", async (req, res) => {
     id,
     city,
       state,
+      description,
+      admin,
+      date,
+      title,
       (location_score + starttime_score + commitment_score + date_score) AS total_score
     FROM EventScores
     ORDER BY total_score DESC
