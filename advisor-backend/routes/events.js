@@ -1,29 +1,28 @@
 import express from "express";
 import { EventDetail } from "../models/event.js";
 import { Op } from "sequelize";
+import { sequelize } from "../database.js";
+import Sequelize from "sequelize";
 // number of elements to be displayed on the page
 const pageLimit = 8;
+// number of elements to be recommended
+const recommendationLimit = 8;
+
 const router = express.Router();
 
-const parseAndCreateLocationQuery = (query) => {
-  let cities = [];
-  let states = [];
+const parseAndCreateLocationQueryString = (query) => {
+  let queryString = "(";
   const locations = query;
   for (let i = 0; i < locations.length; i++) {
     const location = locations[i];
     const [city, state] = location.split(",");
-    cities.push(city);
-    states.push(state);
+    if (i === locations.length - 1) {
+      queryString += `('${city}', '${state}'))`;
+    } else {
+      queryString += `('${city}', '${state}'),`;
+    }
   }
-
-  return {
-    city: {
-      [Op.in]: cities,
-    },
-    state: {
-      [Op.in]: states,
-    },
-  };
+  return queryString;
 };
 
 const parseAndCreateTimeCommitmentQuery = (query) => {
@@ -61,13 +60,14 @@ router.get("/page-count", async (req, res) => {
   }
 });
 
-router.get("/:page", async (req, res) => {
+// TO DO IN DIFFERENT COMMIT: ADJUST THIS ROUTE BY REMOVING parseAndCreate methods..., REVERT BACK TO GENERAL PAGINATED QUERIES
+router.get("/page/:page", async (req, res) => {
   const page = req.params.page;
   let queries = {};
   if (req.query.location) {
     queries = {
       ...queries,
-      ...parseAndCreateLocationQuery(req.query.location),
+      ...parseAndCreateLocationQueryString(req.query.location),
     };
   }
 
@@ -104,6 +104,60 @@ router.get("/:page", async (req, res) => {
       offset: (page - 1) * pageLimit,
     });
     res.json({ events });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/recommended", async (req, res) => {
+  const locationQueryString = parseAndCreateLocationQueryString(
+    req.query.location
+  );
+
+  try {
+    const query = `
+    WITH EventScores AS (
+      SELECT
+      id,
+      city,
+        state,
+        time,
+        time_commitment,
+        CASE
+          WHEN (city,state) IN ${locationQueryString} THEN 4
+          ELSE 0
+        END AS location_score,
+        CASE
+          WHEN (time >= '${req.query.start_time}' AND time < '${req.query.end_time}') THEN 2
+          ELSE 0
+        END AS starttime_score,
+        CASE
+          WHEN time_commitment <= '${req.query.time_commitment}' THEN 2
+          ELSE 0
+        END AS commitment_score,
+        CASE
+          WHEN date >= '${req.query.start_date}' and date < '${req.query.end_date}' THEN 2
+          ELSE 0
+        END AS date_score
+      FROM "public"."EventDetails"
+    )
+    
+    SELECT
+    id,
+    city,
+      state,
+      (location_score + starttime_score + commitment_score + date_score) AS total_score
+    FROM EventScores
+    ORDER BY total_score DESC
+    LIMIT ${recommendationLimit};
+    `;
+    const events = await sequelize.query(query, {
+      type: Sequelize.QueryTypes.SELECT,
+      model: EventDetail,
+      mapToModel: true,
+    });
+
+    return res.json({ events });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
