@@ -137,6 +137,7 @@ router.get("/recommended", async (req, res) => {
         END AS starttime_score,
         CASE
           WHEN time_commitment <= '${req.query.time_commitment}' THEN 2
+          WHEN (time_commitment > '${req.query.time_commitment}' AND time_commitment - '${req.query.time_commitment}' <= 60) THEN 1
           ELSE 0
         END AS commitment_score,
         CASE
