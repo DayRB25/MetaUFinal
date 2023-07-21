@@ -3,6 +3,7 @@ import { EventDetail } from "../models/event.js";
 import { Op } from "sequelize";
 import { sequelize } from "../database.js";
 import Sequelize from "sequelize";
+import { Student } from "../models/index.js";
 // number of elements to be displayed on the page
 const pageLimit = 8;
 // number of elements to be recommended
@@ -110,11 +111,14 @@ router.get("/page/:page", async (req, res) => {
 });
 
 router.get("/recommended", async (req, res) => {
-  const locationQueryString = parseAndCreateLocationQueryString(
-    req.query.location
-  );
+  const studentId = req.body.studentId;
 
   try {
+    // fetch student coords
+    const student = await Student.findOne({ where: { id: studentId } });
+    const studentLatitude = student.latitude;
+    const studentLongitude = student.longitude;
+
     const query = `
     WITH EventScores AS (
       SELECT
@@ -127,10 +131,13 @@ router.get("/recommended", async (req, res) => {
         title,
         time,
         time_commitment,
+        latitude,
+        longitude,
         CASE
-          WHEN (city,state) IN ${locationQueryString} THEN 4
+          WHEN ST_Distance(
+           ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000 < '${req.query.distance}' THEN 4
           ELSE 0
-        END AS location_score,
+        END AS distance_score,
         CASE
           WHEN (time >= '${req.query.start_time}' AND time < '${req.query.end_time}') THEN 2
           WHEN (time < '${req.query.start_time}' AND '${req.query.start_time}' - time <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM ('${req.query.start_time}' - time)) / 60::integer) / CAST(60 as float)))
@@ -158,11 +165,12 @@ router.get("/recommended", async (req, res) => {
       admin,
       date,
       title,
-      (location_score + starttime_score + commitment_score + date_score) AS total_score
+      (distance_score + starttime_score + commitment_score + date_score) AS total_score
     FROM EventScores
     ORDER BY total_score DESC
     LIMIT ${recommendationLimit};
     `;
+
     const events = await sequelize.query(query, {
       type: Sequelize.QueryTypes.SELECT,
       model: EventDetail,
