@@ -133,8 +133,8 @@ router.get("/recommended", async (req, res) => {
         END AS location_score,
         CASE
           WHEN (time >= '${req.query.start_time}' AND time < '${req.query.end_time}') THEN 2
-          WHEN (time < '${req.query.start_time}' AND '${req.query.start_time}' - time <= interval '1 hour') THEN 1
-          WHEN (time >= '${req.query.end_time}' AND time - '${req.query.end_time}' <= interval '1 hour') THEN 1
+          WHEN (time < '${req.query.start_time}' AND '${req.query.start_time}' - time <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM ('${req.query.start_time}' - time)) / 60::integer) / CAST(60 as float)))
+          WHEN (time >= '${req.query.end_time}' AND time - '${req.query.end_time}' <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM (time - '${req.query.end_time}')) / 60::integer) / CAST(60 as float)))
           ELSE 0
         END AS starttime_score,
         CASE
