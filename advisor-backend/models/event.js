@@ -35,7 +35,7 @@ export const EventDetail = sequelize.define("EventDetail", {
     allowNull: true,
   },
   time_commitment: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
 });
