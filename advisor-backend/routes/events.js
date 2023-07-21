@@ -147,6 +147,7 @@ router.get("/recommended", async (req, res) => {
           ELSE 0
         END AS date_score
       FROM "public"."EventDetails"
+      WHERE date > CURRENT_DATE
     )
     
     SELECT
