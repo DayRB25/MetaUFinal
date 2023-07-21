@@ -38,4 +38,12 @@ export const EventDetail = sequelize.define("EventDetail", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  latitude: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  longitude: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
 });
