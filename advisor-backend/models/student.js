@@ -38,4 +38,12 @@ export const Student = sequelize.define("Student", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  latitude: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  longitude: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
 });
