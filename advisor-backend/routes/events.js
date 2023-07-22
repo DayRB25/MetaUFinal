@@ -139,6 +139,12 @@ router.get("/recommended", async (req, res) => {
           ELSE 0
         END AS distance_score,
         CASE
+          WHEN ST_Distance(
+           ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000 < '${req.query.distance}' THEN (1 - (CAST((ST_Distance(
+            ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000) AS float) / CAST(${req.query.distance} AS float)))
+          ELSE 0
+        END AS bonus_proximity_score,
+        CASE
           WHEN (time >= '${req.query.start_time}' AND time < '${req.query.end_time}') THEN 2
           WHEN (time < '${req.query.start_time}' AND '${req.query.start_time}' - time <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM ('${req.query.start_time}' - time)) / 60::integer) / CAST(60 as float)))
           WHEN (time >= '${req.query.end_time}' AND time - '${req.query.end_time}' <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM (time - '${req.query.end_time}')) / 60::integer) / CAST(60 as float)))
@@ -165,7 +171,8 @@ router.get("/recommended", async (req, res) => {
       admin,
       date,
       title,
-      (distance_score + starttime_score + commitment_score + date_score) AS total_score
+      bonus_proximity_score,
+      (distance_score + starttime_score + commitment_score + date_score + bonus_proximity_score) AS total_score
     FROM EventScores
     ORDER BY total_score DESC
     LIMIT ${recommendationLimit};
