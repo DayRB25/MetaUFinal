@@ -19,6 +19,10 @@ const pointValue = 1;
 const propertyMatchWeight = 2;
 const distanceMatchWeight = 2;
 
+// matching point criteria
+const highMatch = 9;
+const mediumMatch = 5;
+
 const router = express.Router();
 
 const parseAndCreateLocationQueryString = (query) => {
@@ -300,7 +304,21 @@ router.get("/recommended/:studentId", async (req, res) => {
       mapToModel: true,
     });
 
-    return res.json({ events });
+    const eventsWithMatchTags = events.map((event) => {
+      const eventData = event.dataValues;
+      if (eventData.total_score >= highMatch) {
+        return { ...eventData, match: "high" };
+      } else if (
+        eventData.total_score >= mediumMatch &&
+        eventData.total_score < highMatch
+      ) {
+        return { ...eventData, match: "medium" };
+      } else {
+        return { ...eventData, match: "low" };
+      }
+    });
+
+    return res.json({ events: eventsWithMatchTags });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
