@@ -279,13 +279,13 @@ router.get("/recommended/:studentId", async (req, res) => {
       avg_admin_turnout_pcg,
       CASE
           WHEN (avg_admin_turnout_pcg IS NOT NULL and avg_admin_turnout_pcg > (SELECT avg_turnout_pcg FROM AverageTurnoutPercentage)) THEN (1 - (CAST(((SELECT max_avg_turnout_pcg FROM MaxAverageTurnout) - avg_admin_turnout_pcg) AS float) / CAST(((SELECT max_avg_turnout_pcg FROM MaxAverageTurnout) - (SELECT avg_turnout_pcg FROM AverageTurnoutPercentage)) AS float)))
-          WHEN (avg_admin_turnout_pcg IS NOT NULL and avg_admin_turnout_pcg > (SELECT avg_turnout_pcg FROM AverageTurnoutPercentage)) THEN (-1 + (CAST((avg_admin_turnout_pcg - (SELECT min_avg_turnout_pcg FROM MinAverageTurnout)) AS float) / CAST(((SELECT avg_turnout_pcg FROM AverageTurnoutPercentage) - (SELECT min_avg_turnout_pcg FROM MinAverageTurnout)) AS float)))
+          WHEN (avg_admin_turnout_pcg IS NOT NULL and avg_admin_turnout_pcg < (SELECT avg_turnout_pcg FROM AverageTurnoutPercentage)) THEN (-1 + (CAST((avg_admin_turnout_pcg - (SELECT min_avg_turnout_pcg FROM MinAverageTurnout)) AS float) / CAST(((SELECT avg_turnout_pcg FROM AverageTurnoutPercentage) - (SELECT min_avg_turnout_pcg FROM MinAverageTurnout)) AS float)))
           ELSE 0
         END AS admin_turnout_bonus,
       (distance_score + starttime_score + commitment_score + date_score + bonus_proximity_score + (
         CASE
           WHEN (avg_admin_turnout_pcg IS NOT NULL and avg_admin_turnout_pcg > (SELECT avg_turnout_pcg FROM AverageTurnoutPercentage)) THEN (1 - (CAST(((SELECT max_avg_turnout_pcg FROM MaxAverageTurnout) - avg_admin_turnout_pcg) AS float) / CAST(((SELECT max_avg_turnout_pcg FROM MaxAverageTurnout) - (SELECT avg_turnout_pcg FROM AverageTurnoutPercentage)) AS float)))
-          WHEN (avg_admin_turnout_pcg IS NOT NULL and avg_admin_turnout_pcg > (SELECT avg_turnout_pcg FROM AverageTurnoutPercentage)) THEN (-1 + (CAST((avg_admin_turnout_pcg - (SELECT min_avg_turnout_pcg FROM MinAverageTurnout)) AS float) / CAST(((SELECT avg_turnout_pcg FROM AverageTurnoutPercentage) - (SELECT min_avg_turnout_pcg FROM MinAverageTurnout)) AS float)))
+          WHEN (avg_admin_turnout_pcg IS NOT NULL and avg_admin_turnout_pcg < (SELECT avg_turnout_pcg FROM AverageTurnoutPercentage)) THEN (-1 + (CAST((avg_admin_turnout_pcg - (SELECT min_avg_turnout_pcg FROM MinAverageTurnout)) AS float) / CAST(((SELECT avg_turnout_pcg FROM AverageTurnoutPercentage) - (SELECT min_avg_turnout_pcg FROM MinAverageTurnout)) AS float)))
           ELSE 0
         END
       )) AS total_score
