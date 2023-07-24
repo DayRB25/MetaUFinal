@@ -12,9 +12,9 @@ export default function VolunteerExplore() {
 
   const fetchEventsByPage = async (page) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/events/${page}`, {
-        params: { page },
-      });
+      const res = await axios.get(
+        `http://localhost:5000/api/events/page/${page}`
+      );
       const fetchedEvents = res.data.events;
       setEvents(fetchedEvents);
     } catch (error) {
