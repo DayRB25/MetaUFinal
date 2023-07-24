@@ -110,8 +110,8 @@ router.get("/page/:page", async (req, res) => {
   }
 });
 
-router.get("/recommended", async (req, res) => {
-  const studentId = req.body.studentId;
+router.get("/recommended/:studentId", async (req, res) => {
+  const studentId = req.params.studentId;
 
   try {
     // fetch student coords
