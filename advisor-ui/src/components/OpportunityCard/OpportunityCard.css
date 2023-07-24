@@ -4,6 +4,7 @@
   cursor: pointer;
   height: 240px;
   padding: 10px;
+  position: relative;
   width: fit-content;
 }
 

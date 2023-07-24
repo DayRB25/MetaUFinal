@@ -1,0 +1,29 @@
+.recommend {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.recommend > .header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.recommend > .content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.recommend > .content > .grid {
+  display: grid;
+  gap: 20px;
+  grid-auto-rows: 255px;
+  grid-template-columns: 215px 215px 215px 215px;
+}
