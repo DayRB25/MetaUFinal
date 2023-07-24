@@ -9,6 +9,16 @@ const pageLimit = 8;
 // number of elements to be recommended
 const recommendationLimit = 8;
 
+// number of points available
+const maxPoints = 12;
+
+// general point
+const pointValue = 1;
+
+// weight definition
+const propertyMatchWeight = 2;
+const distanceMatchWeight = 2;
+
 const router = express.Router();
 
 const parseAndCreateLocationQueryString = (query) => {
@@ -136,28 +146,54 @@ router.get("/recommended/:studentId", async (req, res) => {
         longitude,
         CASE
           WHEN ST_Distance(
-           ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000 < '${req.query.distance}' THEN 4
+           ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000 < '${
+      req.query.distance
+    }' THEN ${propertyMatchWeight * distanceMatchWeight * pointValue}
           ELSE 0
         END AS distance_score,
         CASE
           WHEN ST_Distance(
-           ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000 < '${req.query.distance}' THEN (1 - (CAST((ST_Distance(
-            ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000) AS float) / CAST(${req.query.distance} AS float)))
+           ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000 < '${
+      req.query.distance
+    }' THEN (1 - (CAST((ST_Distance(
+            ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography, ST_SetSRID(ST_MakePoint(${studentLongitude}, ${studentLatitude}), 4326)::geography) / 1000) AS float) / CAST(${
+      req.query.distance
+    } AS float)))
           ELSE 0
         END AS bonus_proximity_score,
         CASE
-          WHEN (time >= '${req.query.start_time}' AND time < '${req.query.end_time}') THEN 2
-          WHEN (time < '${req.query.start_time}' AND '${req.query.start_time}' - time <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM ('${req.query.start_time}' - time)) / 60::integer) / CAST(60 as float)))
-          WHEN (time >= '${req.query.end_time}' AND time - '${req.query.end_time}' <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM (time - '${req.query.end_time}')) / 60::integer) / CAST(60 as float)))
+          WHEN (time >= '${req.query.start_time}' AND time < '${
+      req.query.end_time
+    }') THEN ${propertyMatchWeight * pointValue}
+          WHEN (time < '${req.query.start_time}' AND '${
+      req.query.start_time
+    }' - time <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM ('${
+      req.query.start_time
+    }' - time)) / 60::integer) / CAST(60 as float)))
+          WHEN (time >= '${req.query.end_time}' AND time - '${
+      req.query.end_time
+    }' <= interval '1 hour') THEN (1-((EXTRACT(EPOCH FROM (time - '${
+      req.query.end_time
+    }')) / 60::integer) / CAST(60 as float)))
           ELSE 0
         END AS starttime_score,
         CASE
-          WHEN time_commitment <= '${req.query.time_commitment}' THEN 2
-          WHEN (time_commitment > '${req.query.time_commitment}' AND time_commitment - '${req.query.time_commitment}' <= 60) THEN (1 - (CAST((time_commitment - '${req.query.time_commitment}') AS float) / CAST(60 AS float)))
+          WHEN time_commitment <= '${req.query.time_commitment}' THEN ${
+      propertyMatchWeight * pointValue
+    }
+          WHEN (time_commitment > '${
+            req.query.time_commitment
+          }' AND time_commitment - '${
+      req.query.time_commitment
+    }' <= 60) THEN (1 - (CAST((time_commitment - '${
+      req.query.time_commitment
+    }') AS float) / CAST(60 AS float)))
           ELSE 0
         END AS commitment_score,
         CASE
-          WHEN date >= '${req.query.start_date}' and date < '${req.query.end_date}' THEN 2
+          WHEN date >= '${req.query.start_date}' and date < '${
+      req.query.end_date
+    }' THEN ${propertyMatchWeight * pointValue}
           ELSE 0
         END AS date_score
       FROM "public"."EventDetails"
@@ -254,6 +290,7 @@ router.get("/recommended/:studentId", async (req, res) => {
     ON e."AdminId" = a."AdminId"
     ORDER BY total_score DESC
     LIMIT ${recommendationLimit};
+
 
     `;
 
