@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Pagination from "@mui/material/Pagination";
+import Recommend from "../../components/Recommend/Recommend";
 
 export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
@@ -50,6 +51,7 @@ export default function VolunteerExplore() {
             View Your Volunteer History
           </Link>
         </div>
+        <Recommend />
         <Explore events={events} />
         {pageCount !== null && (
           <div className="pagination">
