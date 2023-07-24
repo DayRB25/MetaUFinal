@@ -3,6 +3,7 @@ import "./PreferenceModal.css";
 import Slider from "@mui/material/Slider";
 import { Button } from "@mui/material";
 import { distanceMarks } from "./distanceMarks";
+import { commitmentMarks } from "./commitmentMarks";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -37,6 +38,16 @@ export default function PreferenceModal() {
               <TimePicker label="Start of Window" />
               <TimePicker label="End of Window" />
             </div>
+          </div>
+          <div className="time-commitment">
+            <p>Time Commitment: (minutes)</p>
+            <Slider
+              step={30}
+              min={30}
+              max={300}
+              marks={commitmentMarks}
+              valueLabelDisplay="auto"
+            />
           </div>
           <Button variant="outlined">Submit</Button>
         </div>
