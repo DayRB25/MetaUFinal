@@ -16,6 +16,7 @@ export default function PreferenceModal({
   handleEndTimeChange,
   handleTimeCommitmentChange,
   handleDistanceChange,
+  handleSubmitPreferences,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -70,7 +71,9 @@ export default function PreferenceModal({
               onChange={(event, value) => handleTimeCommitmentChange(value)}
             />
           </div>
-          <Button variant="outlined">Submit</Button>
+          <Button variant="outlined" onClick={handleSubmitPreferences}>
+            Submit
+          </Button>
         </div>
       </div>
     </LocalizationProvider>

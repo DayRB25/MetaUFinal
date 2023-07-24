@@ -12,6 +12,7 @@ export default function Recommend({
   handleEndTimeChange,
   handleTimeCommitmentChange,
   handleDistanceChange,
+  handleSubmitPreferences,
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -36,6 +37,7 @@ export default function Recommend({
             handleEndTimeChange={handleEndTimeChange}
             handleDistanceChange={handleDistanceChange}
             handleTimeCommitmentChange={handleTimeCommitmentChange}
+            handleSubmitPreferences={handleSubmitPreferences}
           />
         }
       />
