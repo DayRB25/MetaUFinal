@@ -113,6 +113,7 @@ export default function OpportunityModal({ eventItem }) {
               {openHoursInput ? "submit" : "attended event"}
             </Button>
           )}
+          {!eventOccurred && <Button variant="outlined">Signup</Button>}
         </div>
       </div>
     </div>
