@@ -20,3 +20,10 @@
   justify-content: center;
   width: 100%;
 }
+
+.recommend > .content > .grid {
+  display: grid;
+  gap: 20px;
+  grid-auto-rows: 255px;
+  grid-template-columns: 215px 215px 215px 215px;
+}

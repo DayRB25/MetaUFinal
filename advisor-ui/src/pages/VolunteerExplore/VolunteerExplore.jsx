@@ -148,6 +148,7 @@ export default function VolunteerExplore() {
           handleDistanceChange={handleDistanceChange}
           handleTimeCommitmentChange={handleTimeCommitmentChange}
           handleSubmitPreferences={handleSubmitPreferences}
+          events={recommendedEvents}
         />
         <Explore events={events} />
         {pageCount !== null && (
