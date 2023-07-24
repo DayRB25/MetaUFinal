@@ -46,4 +46,8 @@ export const EventDetail = sequelize.define("EventDetail", {
     type: DataTypes.FLOAT,
     allowNull: true,
   },
+  AdminId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 });
