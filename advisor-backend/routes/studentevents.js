@@ -2,6 +2,7 @@ import express from "express";
 import { Student } from "../models/index.js";
 import { EventDetail } from "../models/index.js";
 import { StudentEvent } from "../models/index.js";
+import { StudentSignup } from "../models/index.js";
 
 const router = express.Router();
 
@@ -24,6 +25,16 @@ router.post("/create", async (req, res) => {
     });
     if (!eventDetail) {
       return res.status(400).json({ error: "Event does not exist" });
+    }
+
+    const existingSignup = await StudentSignup.findOne({
+      where: { StudentId, EventDetailId },
+    });
+
+    if (!existingSignup) {
+      return res
+        .status(400)
+        .json({ error: "You did not sign up for this event." });
     }
 
     // create student event
