@@ -6,6 +6,7 @@ import { distanceMarks } from "./distanceMarks";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
 export default function PreferenceModal() {
   return (
@@ -28,6 +29,13 @@ export default function PreferenceModal() {
             <div className="date-pickers">
               <DatePicker label="Start Of Window" />
               <DatePicker label="End Of Window" />
+            </div>
+          </div>
+          <div className="time-range">
+            <p>Time Range:</p>
+            <div className="time-pickers">
+              <TimePicker label="Start of Window" />
+              <TimePicker label="End of Window" />
             </div>
           </div>
           <Button variant="outlined">Submit</Button>
