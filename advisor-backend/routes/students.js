@@ -2,6 +2,8 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { Student } from "../models/student.js";
 import { Op } from "sequelize";
+import { abbreviationLookup } from "../abbreviationLookup.js";
+import axios from "axios";
 
 const router = express.Router();
 
@@ -65,6 +67,19 @@ router.post("/create", async (req, res) => {
     // Encrypt the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // get lat and long from address
+    const stateAbbreviation = abbreviationLookup[state];
+    const locationInfo = await axios.get(
+      `https://dev.virtualearth.net/REST/v1/Locations/US/${stateAbbreviation}/${city}/${encodeURIComponent(
+        address
+      )}?key=${process.env.LOC_KEY}`
+    );
+    const locationGeoPoints =
+      locationInfo.data.resourceSets[0].resources[0].geocodePoints[1]
+        .coordinates;
+    const latitude = locationGeoPoints[0];
+    const longitude = locationGeoPoints[1];
+
     // Create a new student
     const newStudent = await Student.create({
       username,
@@ -76,6 +91,8 @@ router.post("/create", async (req, res) => {
       city,
       state,
       address,
+      latitude,
+      longitude,
     });
 
     // Set the student in the session
