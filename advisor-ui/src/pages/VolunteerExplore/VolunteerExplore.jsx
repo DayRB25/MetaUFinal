@@ -16,6 +16,8 @@ export default function VolunteerExplore() {
   const [endDate, setEndDate] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const [distance, setDistance] = useState(10);
+  const [timeCommitment, setTimeCommitment] = useState(30);
 
   const formatDate = (date) => {
     // Format the date to YYYY-MM-DD
@@ -45,6 +47,14 @@ export default function VolunteerExplore() {
   const handleEndTimeChange = (time) => {
     const formattedTime = formatTime(time);
     setEndTime(formattedTime);
+  };
+
+  const handleDistanceChange = (distance) => {
+    setDistance(distance);
+  };
+
+  const handleTimeCommitmentChange = (timeCommitment) => {
+    setTimeCommitment(timeCommitment);
   };
 
   const fetchEventsByPage = async (page) => {
@@ -92,6 +102,8 @@ export default function VolunteerExplore() {
           handleStartDateChange={handleStartDateChange}
           handleStartTimeChange={handleStartTimeChange}
           handleEndTimeChange={handleEndTimeChange}
+          handleDistanceChange={handleDistanceChange}
+          handleTimeCommitmentChange={handleTimeCommitmentChange}
         />
         <Explore events={events} />
         {pageCount !== null && (

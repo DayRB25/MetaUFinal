@@ -14,6 +14,8 @@ export default function PreferenceModal({
   handleStartDateChange,
   handleStartTimeChange,
   handleEndTimeChange,
+  handleTimeCommitmentChange,
+  handleDistanceChange,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -28,6 +30,7 @@ export default function PreferenceModal({
               max={100}
               marks={distanceMarks}
               valueLabelDisplay="auto"
+              onChange={(event, value) => handleDistanceChange(value)}
             />
           </div>
           <div className="date-range">
@@ -64,6 +67,7 @@ export default function PreferenceModal({
               max={300}
               marks={commitmentMarks}
               valueLabelDisplay="auto"
+              onChange={(event, value) => handleTimeCommitmentChange(value)}
             />
           </div>
           <Button variant="outlined">Submit</Button>
