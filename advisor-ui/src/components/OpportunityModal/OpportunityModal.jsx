@@ -17,6 +17,29 @@ export default function OpportunityModal({ eventItem }) {
   const [eventOccurred, setEventOccurred] = useState(false);
   const { user } = useContext(UserContext);
 
+  const createStudentSignup = async () => {
+    const body = {
+      studentId: user.id,
+      eventDetailId: eventItem.id,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/student-signup/create",
+        body
+      );
+      alert("You signed up successfully!");
+    } catch (error) {
+      // handle student already signedup
+      const statusCodeLength = 3;
+      // network status code is the last 3 chars in error message, extract
+      if (error.message.slice(-statusCodeLength) === "403") {
+        alert("You are already signed up for this event.");
+      } else {
+        alert("Could not add event. Try later.");
+      }
+    }
+  };
+
   const addStudentEventToDB = async () => {
     const body = {
       studentId: user.id,
@@ -113,7 +136,11 @@ export default function OpportunityModal({ eventItem }) {
               {openHoursInput ? "submit" : "attended event"}
             </Button>
           )}
-          {!eventOccurred && <Button variant="outlined">Signup</Button>}
+          {!eventOccurred && (
+            <Button variant="outlined" onClick={createStudentSignup}>
+              Signup
+            </Button>
+          )}
         </div>
       </div>
     </div>
