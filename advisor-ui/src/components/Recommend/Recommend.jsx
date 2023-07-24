@@ -5,7 +5,10 @@ import { IconButton } from "@mui/material";
 import Modal from "../Modal/Modal";
 import PreferenceModal from "../PreferenceModal/PreferenceModal";
 
-export default function Recommend() {
+export default function Recommend({
+  handleEndDateChange,
+  handleStartDateChange,
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -21,7 +24,12 @@ export default function Recommend() {
       <Modal
         isOpen={isOpen}
         handleCloseModal={handleCloseModal}
-        content={<PreferenceModal />}
+        content={
+          <PreferenceModal
+            handleEndDateChange={handleEndDateChange}
+            handleStartDateChange={handleStartDateChange}
+          />
+        }
       />
       <div className="header">
         <h3>Recommended For You:</h3>

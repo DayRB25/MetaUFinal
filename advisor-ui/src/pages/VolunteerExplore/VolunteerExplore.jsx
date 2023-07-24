@@ -6,10 +6,29 @@ import axios from "axios";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Pagination from "@mui/material/Pagination";
 import Recommend from "../../components/Recommend/Recommend";
+import dayjs from "dayjs";
 
 export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
   const [pageCount, setPageCount] = useState(null);
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const formatDate = (date) => {
+    // Format the date to YYYY-MM-DD
+    return dayjs(date).format("YYYY-MM-DD");
+  };
+
+  const handleStartDateChange = (date) => {
+    const formattedDate = formatDate(date);
+    setStartDate(formattedDate);
+  };
+
+  const handleEndDateChange = (date) => {
+    const formattedDate = formatDate(date);
+    setEndDate(formattedDate);
+  };
 
   const fetchEventsByPage = async (page) => {
     try {
@@ -51,7 +70,10 @@ export default function VolunteerExplore() {
             View Your Volunteer History
           </Link>
         </div>
-        <Recommend />
+        <Recommend
+          handleEndDateChange={handleEndDateChange}
+          handleStartDateChange={handleStartDateChange}
+        />
         <Explore events={events} />
         {pageCount !== null && (
           <div className="pagination">

@@ -9,7 +9,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
-export default function PreferenceModal() {
+export default function PreferenceModal({
+  handleEndDateChange,
+  handleStartDateChange,
+}) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="preference-modal">
@@ -28,8 +31,14 @@ export default function PreferenceModal() {
           <div className="date-range">
             <p>Date Range:</p>
             <div className="date-pickers">
-              <DatePicker label="Start Of Window" />
-              <DatePicker label="End Of Window" />
+              <DatePicker
+                label="Start Of Window"
+                onChange={(value) => handleStartDateChange(value)}
+              />
+              <DatePicker
+                label="End Of Window"
+                onChange={(value) => handleEndDateChange(value)}
+              />
             </div>
           </div>
           <div className="time-range">
