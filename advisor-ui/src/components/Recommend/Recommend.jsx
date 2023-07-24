@@ -8,6 +8,8 @@ import PreferenceModal from "../PreferenceModal/PreferenceModal";
 export default function Recommend({
   handleEndDateChange,
   handleStartDateChange,
+  handleStartTimeChange,
+  handleEndTimeChange,
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,6 +30,8 @@ export default function Recommend({
           <PreferenceModal
             handleEndDateChange={handleEndDateChange}
             handleStartDateChange={handleStartDateChange}
+            handleStartTimeChange={handleStartTimeChange}
+            handleEndTimeChange={handleEndTimeChange}
           />
         }
       />

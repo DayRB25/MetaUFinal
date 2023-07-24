@@ -12,6 +12,8 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 export default function PreferenceModal({
   handleEndDateChange,
   handleStartDateChange,
+  handleStartTimeChange,
+  handleEndTimeChange,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -44,8 +46,14 @@ export default function PreferenceModal({
           <div className="time-range">
             <p>Time Range:</p>
             <div className="time-pickers">
-              <TimePicker label="Start of Window" />
-              <TimePicker label="End of Window" />
+              <TimePicker
+                label="Start of Window"
+                onChange={(value) => handleStartTimeChange(value)}
+              />
+              <TimePicker
+                label="End of Window"
+                onChange={(value) => handleEndTimeChange(value)}
+              />
             </div>
           </div>
           <div className="time-commitment">

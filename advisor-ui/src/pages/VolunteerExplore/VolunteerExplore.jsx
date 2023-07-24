@@ -14,10 +14,17 @@ export default function VolunteerExplore() {
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
 
   const formatDate = (date) => {
     // Format the date to YYYY-MM-DD
     return dayjs(date).format("YYYY-MM-DD");
+  };
+
+  const formatTime = (time) => {
+    // Format the time to HH:MM:SS
+    return dayjs(time).format("HH:mm:ss");
   };
 
   const handleStartDateChange = (date) => {
@@ -28,6 +35,16 @@ export default function VolunteerExplore() {
   const handleEndDateChange = (date) => {
     const formattedDate = formatDate(date);
     setEndDate(formattedDate);
+  };
+
+  const handleStartTimeChange = (time) => {
+    const formattedTime = formatTime(time);
+    setStartTime(formattedTime);
+  };
+
+  const handleEndTimeChange = (time) => {
+    const formattedTime = formatTime(time);
+    setEndTime(formattedTime);
   };
 
   const fetchEventsByPage = async (page) => {
@@ -73,6 +90,8 @@ export default function VolunteerExplore() {
         <Recommend
           handleEndDateChange={handleEndDateChange}
           handleStartDateChange={handleStartDateChange}
+          handleStartTimeChange={handleStartTimeChange}
+          handleEndTimeChange={handleEndTimeChange}
         />
         <Explore events={events} />
         {pageCount !== null && (
