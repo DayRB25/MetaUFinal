@@ -11,11 +11,11 @@ import axios from "axios";
 
 export default function OpportunityModal({ eventItem }) {
   // YYYY-MM-DD = 10 chars
-  const standardDateLength = 10;
   const [hours, setHours] = useState("");
   const [openHoursInput, setOpenHoursInput] = useState(false);
   const [eventOccurred, setEventOccurred] = useState(false);
   const { user } = useContext(UserContext);
+  const [imgData, setImgData] = useState(null);
 
   const createStudentSignup = async () => {
     const body = {
@@ -95,14 +95,27 @@ export default function OpportunityModal({ eventItem }) {
     }
   };
 
+  const fetchMap = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/maps/${eventItem.latitude}/${eventItem.longitude}`
+      );
+      setImgData(res.data.response);
+    } catch (error) {
+      alert("Something went wrong.");
+    }
+  };
+
   useEffect(() => {
     compareDates();
+    fetchMap();
   }, []);
 
   return (
     <div className="opp-modal">
       <div className="content">
         <h3>{eventItem.title}</h3>
+        {imgData !== null && <img id="map" src={imgData} />}
         <div className="location">
           <LocationOnIcon />
           <p>{`${eventItem.city}, ${eventItem.state}`}</p>
