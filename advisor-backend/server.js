@@ -9,6 +9,7 @@ import studentRoute from "./routes/students.js";
 import eventRoute from "./routes/events.js";
 import studentEventRoute from "./routes/studentevents.js";
 import studentSignupRoute from "./routes/studentsignups.js";
+import mapsRoute from "./routes/maps.js";
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -47,6 +48,7 @@ app.use("/api/student", studentRoute);
 app.use("/api/events", eventRoute);
 app.use("/api/student-event", studentEventRoute);
 app.use("/api/student-signup", studentSignupRoute);
+app.use("/api/maps", mapsRoute);
 
 sequelize
   .sync({ alter: true })
