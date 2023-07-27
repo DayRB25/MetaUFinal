@@ -6,6 +6,12 @@
   gap: 10px;
 }
 
+.opp-modal .content #map {
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 400px;
+}
+
 .location,
 .admin,
 .date,
