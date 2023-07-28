@@ -16,6 +16,7 @@ TakenClass.belongsTo(Class);
 
 Class.belongsTo(School);
 RequiredClass.belongsTo(School);
+RequiredClass.belongsTo(Class);
 
 Student.belongsTo(School);
 
