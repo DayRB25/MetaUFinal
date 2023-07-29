@@ -52,6 +52,20 @@ export default function ScheduleTool() {
     }
   };
 
+  const isolateCourseConstraints = () => {
+    const preferredCourses = constraints.filter(
+      (constraint) => constraint.type === "Class"
+    );
+    return preferredCourses.map((course) => course.value);
+  };
+
+  const isolateGradYearConstraint = () => {
+    const gradYearConstraint = constraints.filter(
+      (constraint) => constraint.type === "Graduation"
+    );
+    return gradYearConstraint.map((constraint) => constraint.value);
+  };
+
   const generateNewSchedule = () => {
     setSchedule(years);
   };
