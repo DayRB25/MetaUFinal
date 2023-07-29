@@ -146,6 +146,15 @@ const fetchCourseDate = async (courseId) => {
   }
 };
 
+const fetchCourseDataByName = async (name) => {
+  try {
+    const res = await Class.findOne({ where: { name } });
+    return res.dataValues.id;
+  } catch (error) {
+    return null;
+  }
+};
+
 const generateSchedule = async (
   topologicalSort,
   reversedFinalAdjList,
@@ -203,7 +212,16 @@ const generateSchedule = async (
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
   const StudentId = req.body.StudentId;
-  const preferredCourses = req.body.preferredCourses;
+
+  const preferredCoursesByName = req.body.preferredCourses;
+  // transform preferredCourses to be an array of course id's
+  const preferredCourses = [];
+  for (let i = 0; i < preferredCoursesByName.length; i++) {
+    const preferredCourse = preferredCoursesByName[i];
+    const courseId = await fetchCourseDataByName(preferredCourse);
+    preferredCourses.push(courseId);
+  }
+
   let gradYear = null;
   if (req.body.gradYear) {
     gradYear = req.body.gradYear;
