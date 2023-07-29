@@ -1,19 +1,20 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
+import axios from "axios";
+import { UserContext } from "../../UserContext.js";
 import "./ScheduleTool.css";
 import Constraints from "../../components/Constraints/Constraints";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
-import { years } from "../../../sampleYearData";
 
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [displayYear, setDisplayYear] = useState(false);
   const [year, setYear] = useState(null);
+  const { user } = useContext(UserContext);
 
   const handleDisplayYear = (number) => {
     const yearIdx = schedule.findIndex((year) => year.number === number);
@@ -66,8 +67,29 @@ export default function ScheduleTool() {
     return gradYearConstraint.map((constraint) => constraint.value);
   };
 
-  const generateNewSchedule = () => {
-    setSchedule(years);
+  const generateNewSchedule = async () => {
+    const preferredCourses = isolateCourseConstraints();
+    // return is an array
+    const gradYear = isolateGradYearConstraint()[0];
+    const body = {
+      SchoolId: user.SchoolId,
+      StudentId: user.id,
+      preferredCourses,
+      gradYear,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/schedule/create",
+        body
+      );
+      if (res.data.schedule === undefined) {
+        alert("Schedule not possible. Enter new constraints.");
+        return;
+      }
+      setSchedule(res.data.schedule);
+    } catch (error) {
+      alert("Something went wrong");
+    }
   };
 
   return (
