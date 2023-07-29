@@ -112,6 +112,7 @@ const dfsToCount = (node, graph, visited) => {
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
   const StudentId = req.body.StudentId;
+  const preferredCourses = req.body.preferredCourses;
   let gradYear = null;
   if (req.body.gradYear) {
     gradYear = req.body.gradYear;
@@ -326,6 +327,7 @@ router.post("/create", async (req, res) => {
         reversedAdjList[neighbor].push(node);
       }
     }
+    const saveReverseAdjList = JSON.parse(JSON.stringify(reversedAdjList));
     // determine pre-req path for all nodes in in reversedAdjList
     let preReqPaths = {};
     determinePrereqPaths(preReqPaths, reversedAdjList);
@@ -387,6 +389,77 @@ router.post("/create", async (req, res) => {
     }
     //////////////////////////////////////////////////////
     // adding required number of electives
+    //////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////
+    // use additional space for preferred classes
+    //////////////////////////////////////////////////////
+    reversedAdjList = saveReverseAdjList;
+    preReqPaths = {};
+    for (const course of preferredCourses) {
+      if (newSchedule.has(course)) {
+        continue;
+      }
+      preReqPaths[course] = {};
+      // run a dfs to determine the number of nodes in the subgraph rooted at course
+      const { classes, count } = countNodes(course, reversedAdjList);
+      preReqPaths[course].count = count;
+      preReqPaths[course].classes = classes;
+    }
+
+    tooLongSet = new Set();
+    deleteLengthyPrereqPaths(preReqPaths, tooLongSet);
+
+    if (Object.getOwnPropertyNames(preReqPaths).length !== 0) {
+      // Convert the object to an array of key-value pairs (tuples)
+      sortedPreReqPaths = Object.entries(preReqPaths);
+
+      // Sort the array based on the values (second element of each tuple)
+      sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+
+      const addedPerferredCourses = new Set();
+      while (sortedPreReqPaths.length !== 0 && remainingClasses !== 0) {
+        const quickestPreferredCourse = sortedPreReqPaths[0][1];
+
+        if (quickestPreferredCourse.count <= remainingClasses) {
+          // add the associated classes to the overall taking set-- will need to store the visited set-- and decrement remaining courses
+          addedPerferredCourses.add(parseInt(sortedPreReqPaths[0][0]));
+          reversedAdjList[sortedPreReqPaths[0][0]] = [];
+          for (const node in reversedAdjList) {
+            reversedAdjList[node] = reversedAdjList[node].filter(
+              (classItem) => classItem !== sortedPreReqPaths[0][0]
+            );
+          }
+          // also need to remove dataArray[0][0] from adjList before recalculating preReqPaths
+          remainingClasses -= quickestPreferredCourse.count;
+          quickestPreferredCourse.classes.forEach((classItem) =>
+            newSchedule.add(classItem)
+          );
+        }
+
+        preReqPaths = {};
+        for (const course of preferredCourses) {
+          if (
+            addedPerferredCourses.has(course) ||
+            newSchedule.has(course) ||
+            tooLongSet.has(course)
+          ) {
+            continue;
+          }
+          preReqPaths[course] = {};
+          const { classes, count } = countNodes(course, reversedAdjList);
+          preReqPaths[course].count = count;
+          preReqPaths[course].classes = classes;
+        }
+        sortedPreReqPaths = Object.entries(preReqPaths);
+        if (sortedPreReqPaths.length === 0 || remainingClasses === 0) {
+          break;
+        }
+        sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+      }
+    }
+    //////////////////////////////////////////////////////
+    // use additional space for preferred classes
     //////////////////////////////////////////////////////
 
     const finalScheduleAdjList = {};
