@@ -137,7 +137,7 @@ const generateTopologicalSort = (
   }
 };
 
-const fetchCourseDate = async (courseId) => {
+const fetchCourseData = async (courseId) => {
   try {
     const res = await Class.findOne({ where: { id: courseId } });
     return res.dataValues;
@@ -201,7 +201,7 @@ const generateSchedule = async (
       potentialYear += 1;
     }
     courseYearMap[course] = potentialYear;
-    const courseInfo = await fetchCourseDate(course);
+    const courseInfo = await fetchCourseData(course);
     years[potentialYear].semesters[0].classes.push(courseInfo);
     years[potentialYear].semesters[1].classes.push(courseInfo);
   }
