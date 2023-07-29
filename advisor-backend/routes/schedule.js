@@ -4,6 +4,7 @@ import { Prerequisite } from "../models/index.js";
 import { RequiredClass } from "../models/index.js";
 import { TakenClass } from "../models/index.js";
 import { Student } from "../models/index.js";
+import { Queue } from "../utils/Queue.js";
 
 const router = express.Router();
 
@@ -46,7 +47,7 @@ const countNodes = (sourceNode, graph) => {
 
 const deleteLengthyPrereqPaths = (preReqPaths, tooLongSet, yearsLeft) => {
   for (const course in preReqPaths) {
-    if (preReqPaths[course].count > yearsLeft - 1) {
+    if (preReqPaths[course].count > yearsLeft - 2) {
       tooLongSet.add(parseInt(course));
       delete preReqPaths[course];
     }
@@ -106,6 +107,96 @@ const dfsToCount = (node, graph, visited) => {
   for (const neighbor of graph[node]) {
     dfsToCount(neighbor, graph, visited);
   }
+};
+
+const findAllPrerequisites = (course, graph, prereqs) => {
+  for (const prereq of graph[course]) {
+    if (!prereqs.has(prereq)) {
+      prereqs.add(prereq);
+      findAllPrerequisites(prereq, graph, prereqs);
+    }
+  }
+};
+
+const generateTopologicalSort = (
+  topologicalSort,
+  zeroQueue,
+  adjList,
+  inDegreeObject
+) => {
+  while (!zeroQueue.isEmpty()) {
+    const currentClass = zeroQueue.dequeue();
+
+    topologicalSort.push(currentClass);
+    for (const neighbor of adjList[currentClass]) {
+      inDegreeObject[neighbor] -= 1;
+      if (inDegreeObject[neighbor] === 0) {
+        zeroQueue.enqueue(neighbor);
+      }
+    }
+  }
+};
+
+const fetchCourseDate = async (courseId) => {
+  try {
+    const res = await Class.findOne({ where: { id: courseId } });
+    return res.dataValues;
+  } catch (error) {
+    return null;
+  }
+};
+
+const generateSchedule = async (
+  topologicalSort,
+  reversedFinalAdjList,
+  yearsLeft,
+  startYear
+) => {
+  const maxClassesPerYear = 6;
+  const years = [];
+  for (let i = 0; i < yearsLeft; i++) {
+    years.push({
+      number: startYear + i,
+      semesters: [
+        { number: 1, classes: [] },
+        { number: 2, classes: [] },
+      ],
+    });
+  }
+  const courseYearMap = {};
+  for (const course of topologicalSort) {
+    courseYearMap[course] = -1;
+  }
+
+  for (const course of topologicalSort) {
+    // for each course in the topo sort
+    // find all pre-reqs
+    const prereqs = new Set();
+    findAllPrerequisites(course, reversedFinalAdjList, prereqs);
+    let potentialYear = 0;
+    for (const prereq of prereqs) {
+      // get the current year of all prereq, this course needs to be greater than the greatest year
+      const prereqYear = courseYearMap[prereq];
+      potentialYear = Math.max(potentialYear, prereqYear + 1);
+    }
+    if (potentialYear >= yearsLeft) {
+      return null;
+    } else if (
+      years[potentialYear].semesters[0].classes.length == maxClassesPerYear &&
+      potentialYear === yearsLeft
+    ) {
+      return null;
+    } else if (
+      years[potentialYear].semesters[0].classes.length == maxClassesPerYear
+    ) {
+      potentialYear += 1;
+    }
+    courseYearMap[course] = potentialYear;
+    const courseInfo = await fetchCourseDate(course);
+    years[potentialYear].semesters[0].classes.push(courseInfo);
+    years[potentialYear].semesters[1].classes.push(courseInfo);
+  }
+  return years;
 };
 
 // Route for student schedule creation
@@ -462,14 +553,87 @@ router.post("/create", async (req, res) => {
     // use additional space for preferred classes
     //////////////////////////////////////////////////////
 
+    //////////////////////////////////////////////////////
+    // add schedule elements to final adj list
+    //////////////////////////////////////////////////////
     const finalScheduleAdjList = {};
     for (const course of newSchedule) {
       finalScheduleAdjList[course] = originalAdjList[course].filter((neigbor) =>
         newSchedule.has(neigbor)
       );
     }
+    //////////////////////////////////////////////////////
+    // add schedule elements to final adj list
+    //////////////////////////////////////////////////////
 
-    res.json({ finalScheduleAdjList });
+    //////////////////////////////////////////////////////
+    // calculate in degrees
+    //////////////////////////////////////////////////////
+    disjointComponents = [];
+    determineDisjointComponents(disjointComponents, finalScheduleAdjList);
+
+    inDegreeObject = {};
+
+    for (const classItem in finalScheduleAdjList) {
+      const intId = parseInt(classItem);
+      inDegreeObject[intId] = 0;
+    }
+
+    for (let i = 0; i < disjointComponents.length; i++) {
+      const component = disjointComponents[i];
+      // recreate adjList for this component
+      const componentAdjList = {};
+      for (let j = 0; j < component.length; j++) {
+        const classId = component[j];
+        componentAdjList[classId] = finalScheduleAdjList[classId];
+      }
+      // calculate in degrees
+      for (const classId in componentAdjList) {
+        for (const postreqId of componentAdjList[classId]) {
+          inDegreeObject[postreqId] += 1;
+        }
+      }
+    }
+    //////////////////////////////////////////////////////
+    // calculate in degrees
+    //////////////////////////////////////////////////////
+
+    const zeroQueue = new Queue();
+    for (const classId in inDegreeObject) {
+      if (inDegreeObject[classId] === 0) {
+        zeroQueue.enqueue(parseInt(classId));
+      }
+    }
+
+    // generate toposort
+    const topologicalSort = [];
+    generateTopologicalSort(
+      topologicalSort,
+      zeroQueue,
+      finalScheduleAdjList,
+      inDegreeObject
+    );
+
+    // from the toposort, create the year object
+    const reversedFinalAdjList = {};
+    for (const node in finalScheduleAdjList) {
+      reversedFinalAdjList[node] = [];
+    }
+
+    for (const node in finalScheduleAdjList) {
+      for (const neighbor of finalScheduleAdjList[node]) {
+        reversedFinalAdjList[neighbor].push(node);
+      }
+    }
+
+    const schedule = await generateSchedule(
+      topologicalSort,
+      reversedFinalAdjList,
+      yearsLeft,
+      student.year
+    );
+
+    res.json({ schedule });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
