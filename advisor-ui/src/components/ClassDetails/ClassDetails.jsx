@@ -4,12 +4,10 @@ import "./ClassDetails.css";
 export default function ClassDetails({ classItem, displayYear }) {
   return (
     <div className="class-details">
-      <p>{classItem.title}</p>
+      <p>{classItem.name}</p>
       {displayYear && (
         <div className="details">
           <p>{`Units: ${classItem.units}`}</p>
-          <p>{`Time: ${classItem.time}`}</p>
-          <p>{`Days: ${classItem.days}`}</p>
         </div>
       )}
     </div>
