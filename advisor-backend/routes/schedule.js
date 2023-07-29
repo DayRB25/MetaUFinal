@@ -3,8 +3,12 @@ import { Class } from "../models/index.js";
 import { Prerequisite } from "../models/index.js";
 import { RequiredClass } from "../models/index.js";
 import { TakenClass } from "../models/index.js";
+import { Student } from "../models/index.js";
 
 const router = express.Router();
+
+const numberOfElectives = 6;
+const classesPerYear = 6;
 
 const calculateInDegrees = (
   inDegreeObject,
@@ -34,6 +38,21 @@ const calculateInDegrees = (
   }
 };
 
+const countNodes = (sourceNode, graph) => {
+  const visited = new Set();
+  dfsToCount(sourceNode, graph, visited);
+  return { classes: visited, count: visited.size };
+};
+
+const deleteLengthyPrereqPaths = (preReqPaths, tooLongSet, yearsLeft) => {
+  for (const course in preReqPaths) {
+    if (preReqPaths[course].count > yearsLeft - 1) {
+      tooLongSet.add(parseInt(course));
+      delete preReqPaths[course];
+    }
+  }
+};
+
 const determineDisjointComponents = (disjointComponents, adjList) => {
   let visited = new Set();
   for (const classItem in adjList) {
@@ -43,6 +62,17 @@ const determineDisjointComponents = (disjointComponents, adjList) => {
       dfs(intId, adjList, visited, component);
       disjointComponents.push(component);
     }
+  }
+};
+
+const determinePrereqPaths = (preReqPaths, adjList) => {
+  for (const course in adjList) {
+    const courseInt = parseInt(course);
+    preReqPaths[courseInt] = {};
+    // run a dfs to determine the number of nodes in the subgraph rooted at course
+    const { classes, count } = countNodes(courseInt, adjList);
+    preReqPaths[courseInt].count = count;
+    preReqPaths[courseInt].classes = classes;
   }
 };
 
@@ -69,10 +99,23 @@ const dfsPrune = (node, graph, taken) => {
   }
 };
 
+const dfsToCount = (node, graph, visited) => {
+  if (!visited.has(node)) {
+    visited.add(parseInt(node));
+  }
+  for (const neighbor of graph[node]) {
+    dfsToCount(neighbor, graph, visited);
+  }
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
   const StudentId = req.body.StudentId;
+  let gradYear = null;
+  if (req.body.gradYear) {
+    gradYear = req.body.gradYear;
+  }
   const newSchedule = new Set();
   try {
     const schoolClasses = await Class.findAll({ where: { SchoolId } });
@@ -103,7 +146,10 @@ router.post("/create", async (req, res) => {
         adjList[schoolClass.id].push(dependentClass.PostreqId);
       }
     }
+
+    // save for later
     const originalAdjList = JSON.parse(JSON.stringify(adjList));
+    const electiveAdditionAdjList = JSON.parse(JSON.stringify(adjList));
 
     //////////////////////////////////////////////////////
     // calculate indegrees
@@ -189,6 +235,8 @@ router.post("/create", async (req, res) => {
       (requiredClass) => requiredClass.dataValues.ClassId
     );
 
+    const requiredClassesSet = new Set(requiredClassesData);
+
     const remainingClassArray = requiredClassesData.filter(
       (requiredClass) => !takenClassSet.has(requiredClass)
     );
@@ -220,6 +268,126 @@ router.post("/create", async (req, res) => {
     for (const key in adjList) {
       newSchedule.add(parseInt(key));
     }
+
+    //////////////////////////////////////////////////////
+    // determine how many more classes can fit in the schedule
+    //////////////////////////////////////////////////////
+    const numberOfClasses = Object.getOwnPropertyNames(adjList).length;
+    const student = await Student.findOne({ where: { id: StudentId } });
+    let yearsLeft;
+
+    // if goal grad date is present, then use it to determine number of years remaining
+    // otherwise base it off of a standard four year cycle
+    if (gradYear != null) {
+      yearsLeft = gradYear - new Date().getFullYear();
+    } else {
+      yearsLeft = 4 - student.year;
+    }
+    if (numberOfClasses >= classesPerYear * yearsLeft) {
+      // not possible to graduate in the current time frame
+      return res.json({
+        message: "Not possible to graduate with current time frame",
+      });
+    }
+
+    // otherwise there is some space left, calculate the number of remaining classes
+    let remainingClasses = classesPerYear * yearsLeft - numberOfClasses;
+    //////////////////////////////////////////////////////
+    // determine how many more classes can fit in the schedule
+    //////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////
+    // adding required number of electives
+    //////////////////////////////////////////////////////
+    const numberOfElectivesTaken = takenClassesData.filter(
+      (takenClass) => !requiredClassesSet.has(takenClass)
+    ); // everything in taken that is not required
+    let numberOfRemainingElectives = numberOfElectives - numberOfElectivesTaken;
+
+    // need overall adjacency matrix again, remove all taken courses (including those in adjList), should be left with only the non-required courses
+    for (const element in electiveAdditionAdjList) {
+      // delete it, non-required
+      if (
+        remainingClassSet.has(parseInt(element)) ||
+        taken.has(parseInt(element))
+      ) {
+        delete electiveAdditionAdjList[element];
+      }
+    }
+
+    // reverse edges so that I can start at a preferred course, and traverse from post-req to pre-req to determine the longest path to complete each course
+    let reversedAdjList = {};
+    for (const node in electiveAdditionAdjList) {
+      reversedAdjList[node] = [];
+    }
+
+    for (const node in electiveAdditionAdjList) {
+      for (const neighbor of electiveAdditionAdjList[node]) {
+        reversedAdjList[neighbor].push(node);
+      }
+    }
+    // determine pre-req path for all nodes in in reversedAdjList
+    let preReqPaths = {};
+    determinePrereqPaths(preReqPaths, reversedAdjList);
+    let tooLongSet = new Set();
+    deleteLengthyPrereqPaths(preReqPaths, tooLongSet, yearsLeft);
+
+    // sort to find the smallest prereqpath courses
+    let sortedPreReqPaths = Object.entries(preReqPaths);
+    sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+
+    // then add until remaining number of electives is 0
+    const addedElectiveCourses = new Set();
+    const electivesTaken = [];
+    while (sortedPreReqPaths.length !== 0 && remainingClasses !== 0) {
+      const quickestElectiveCourse = sortedPreReqPaths[0][1];
+      if (quickestElectiveCourse.count <= numberOfRemainingElectives) {
+        // add the associated classes to the overall taking set-- will need to store the visited set-- and decrement remaining courses
+        addedElectiveCourses.add(parseInt(sortedPreReqPaths[0][0]));
+        reversedAdjList[sortedPreReqPaths[0][0]] = [];
+        for (const node in reversedAdjList) {
+          reversedAdjList[node] = reversedAdjList[node].filter(
+            (classItem) => classItem !== sortedPreReqPaths[0][0]
+          );
+        }
+        // also need to remove dataArray[0][0] from adjList before recalculating preReqPaths
+        remainingClasses -= quickestElectiveCourse.count;
+        numberOfRemainingElectives -= quickestElectiveCourse.count;
+        quickestElectiveCourse.classes.forEach((classItem) =>
+          newSchedule.add(classItem)
+        );
+        quickestElectiveCourse.classes.forEach((classItem) =>
+          electivesTaken.push(classItem)
+        );
+        if (numberOfRemainingElectives === 0) {
+          break;
+        }
+      }
+
+      preReqPaths = {};
+      for (const course in reversedAdjList) {
+        const intCourse = parseInt(course);
+        if (addedElectiveCourses.has(intCourse) || tooLongSet.has(intCourse)) {
+          continue;
+        }
+        preReqPaths[intCourse] = {};
+        // run a dfs to determine the number of nodes in the subgraph rooted at course
+        const { classes, count } = countNodes(intCourse, reversedAdjList);
+        preReqPaths[intCourse].count = count;
+        preReqPaths[intCourse].classes = classes;
+      }
+      sortedPreReqPaths = Object.entries(preReqPaths);
+      sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+    }
+    if (electivesTaken.length < 6) {
+      // schedule not valid
+      return res.json({
+        message: "Invalid schedule. Please enter a later goal graduation date",
+      });
+    }
+    //////////////////////////////////////////////////////
+    // adding required number of electives
+    //////////////////////////////////////////////////////
 
     const finalScheduleAdjList = {};
     for (const course of newSchedule) {
