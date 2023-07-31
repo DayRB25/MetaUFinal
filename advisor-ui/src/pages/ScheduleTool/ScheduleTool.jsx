@@ -8,6 +8,8 @@ import { UserContext } from "../../UserContext.js";
 import "./ScheduleTool.css";
 import Constraints from "../../components/Constraints/Constraints";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
+import Modal from "../../components/Modal/Modal";
+import SwapModal from "../../components/SwapModal/SwapModal.jsx";
 
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
@@ -15,6 +17,16 @@ export default function ScheduleTool() {
   const [displayYear, setDisplayYear] = useState(false);
   const [year, setYear] = useState(null);
   const { user } = useContext(UserContext);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpenModal = (e) => {
+    e.stopPropagation();
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
 
   const handleDisplayYear = (number) => {
     const yearIdx = schedule.findIndex((year) => year.number === number);
@@ -110,6 +122,12 @@ export default function ScheduleTool() {
           year={year}
           displayYear={displayYear}
           handleCloseYear={handleCloseYear}
+          handleOpenModal={handleOpenModal}
+        />
+        <Modal
+          isOpen={isOpen}
+          handleCloseModal={handleCloseModal}
+          content={<SwapModal />}
         />
       </div>
     </div>
