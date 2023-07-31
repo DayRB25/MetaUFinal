@@ -82,7 +82,7 @@ export default function ScheduleTool() {
         "http://localhost:5000/api/schedule/create",
         body
       );
-      if (res.data.schedule === undefined) {
+      if (res.data.schedule === undefined || res.data.schedule === null) {
         alert("Schedule not possible. Enter new constraints.");
         return;
       }
