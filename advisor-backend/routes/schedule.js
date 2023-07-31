@@ -97,6 +97,20 @@ const countNodes = (sourceNode, graph) => {
   return { classes: visited, count: visited.size };
 };
 
+const deepCopyWithSets = (obj) => {
+  const copiedObject = {};
+  for (const key in obj) {
+    if (typeof obj[key] === "object" && obj[key] instanceof Set) {
+      copiedObject[key] = new Set(obj[key]);
+    } else if (typeof obj[key] === "object") {
+      copiedObject[key] = deepCopyWithSets(obj[key]);
+    } else {
+      copiedObject[key] = obj[key];
+    }
+  }
+  return copiedObject;
+};
+
 const deleteLengthyPrereqPaths = (preReqPaths, tooLongSet, yearsLeft) => {
   for (const course in preReqPaths) {
     if (preReqPaths[course].count > yearsLeft - 2) {
@@ -850,6 +864,145 @@ router.post("/nonfull", (req, res) => {
       // invalid move
       return res.status(200).json({ message: "Invalid" });
     }
+  }
+});
+
+router.post("/full-year-options", (req, res) => {
+  // schedule array (array of year objects)
+  const schedule = req.body.schedule;
+  // original adjList for the schedule, need this to verify validity of schedule
+  const scheduleAdjList = req.body.scheduleAdjList;
+  // course I want to shift
+  const courseToChange = req.body.courseToChange;
+  // year I want to shift it to
+  const desiredYear = req.body.desiredYear;
+
+  // reverse scheduleAdjList
+  const reverseScheduleAdjList = reverseAdjList(scheduleAdjList);
+
+  // create array of year sets
+  const scheduleObject = {};
+  createScheduleObject(schedule, scheduleObject);
+  const courseYear = findCourseYear(scheduleObject, courseToChange);
+
+  // array for storing all of the valid swap options
+  const validMoves = [];
+
+  // determine set of courses from desired year
+  let courseSet = scheduleObject[desiredYear];
+  if (courseYear < desiredYear) {
+    // forward swap for courseToChange
+    // loop through each course in the set
+    courseSet.forEach((course) => {
+      // make copy of schedule object to swap items
+      const copyForSwap = deepCopyWithSets(scheduleObject);
+
+      // now remove course from desiredYear set
+      copyForSwap[desiredYear].delete(course);
+      // now remove courseToMove from courseYear set
+      copyForSwap[courseYear].delete(courseToChange.id);
+
+      // add course to courseYear and courseToMove to desiredYear
+      copyForSwap[desiredYear].add(courseToChange.id);
+      copyForSwap[courseYear].add(course);
+
+      // find postReqs ////
+      const postReqsSet = new Set();
+      findAllPostrequisites(courseToChange.id, scheduleAdjList, postReqsSet);
+
+      // now to check through the relevant years in scheduleObject for any of the postReqs
+      const validForwardMove = checkDesiredYearAndBefore(
+        scheduleObject,
+        desiredYear,
+        postReqsSet
+      );
+
+      // find preReqs ////
+      const preReqsSet = new Set();
+      findAllPrerequisites(course, reverseScheduleAdjList, preReqsSet);
+
+      // now to check through the relevant years in scheduleObject for any of the postReqs //
+      const validBackMove = checkDesiredYearAndAfter(
+        scheduleObject,
+        courseYear,
+        preReqsSet
+      );
+
+      // if both flags still true, add it's name to array of valid options
+      if (validForwardMove && validBackMove) {
+        const yearIdx = schedule.findIndex(
+          (year) => year.number === desiredYear
+        );
+        const courseDetailsIdx = schedule[
+          yearIdx
+        ].semesters[0].classes.findIndex(
+          (classItem) => classItem.id === course
+        );
+        const courseDetails =
+          schedule[yearIdx].semesters[0].classes[courseDetailsIdx];
+        validMoves.push(courseDetails.name);
+      }
+    });
+    return res.json({ validMoves });
+  } else {
+    // backward swap for courseToChange
+    courseSet.forEach((course) => {
+      // make copy of schedule object to swap items
+      const copyForSwap = deepCopyWithSets(scheduleObject);
+
+      // now remove course from desiredYear set
+      copyForSwap[desiredYear].delete(course);
+      // now remove courseToMove from courseYear set
+      copyForSwap[courseYear].delete(courseToChange.id);
+
+      // add course to courseYear and courseToMove to desiredYear
+      copyForSwap[desiredYear].add(courseToChange.id);
+      copyForSwap[courseYear].add(course);
+
+      // then do forward check for course
+      // find postReqs ////
+      const postReqsSet = new Set();
+      findAllPostrequisites(course, scheduleAdjList, postReqsSet);
+
+      // now to check through the relevant years in scheduleObject for any of the postReqs //
+      const validForwardMove = checkDesiredYearAndBefore(
+        scheduleObject,
+        courseYear,
+        postReqsSet
+      );
+
+      // then do backward check for courseToMove
+      // find preReqs ////
+      const preReqsSet = new Set();
+      findAllPrerequisites(
+        courseToChange.id,
+        reverseScheduleAdjList,
+        preReqsSet
+      );
+
+      // now to check through the relevant years in scheduleObject for any of the postReqs //
+      const validBackMove = checkDesiredYearAndAfter(
+        scheduleObject,
+        desiredYear,
+        preReqsSet
+      );
+
+      // if both flags true, swap is valid add it's name to array of valid options
+      if (validBackMove && validForwardMove) {
+        const yearIdx = schedule.findIndex(
+          (year) => year.number === desiredYear
+        );
+        const courseDetailsIdx = schedule[
+          yearIdx
+        ].semesters[0].classes.findIndex(
+          (classItem) => classItem.id === course
+        );
+        const courseDetails =
+          schedule[yearIdx].semesters[0].classes[courseDetailsIdx];
+        validMoves.push(courseDetails.name);
+      }
+    });
+    return res.json({ validMoves });
   }
 });
 
