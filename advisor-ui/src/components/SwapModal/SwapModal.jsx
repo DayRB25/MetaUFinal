@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Button } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { Select } from "@mui/material";
@@ -7,6 +7,11 @@ import { MenuItem } from "@mui/material";
 import "./SwapModal.css";
 
 export default function SwapModal({ courseName, years }) {
+  const [year, setYear] = useState(-1);
+  const handleChangeYear = (event) => {
+    setYear(parseInt(event.target.value));
+  };
+
   const yearOptions = years.map((year, idx) => (
     <MenuItem key={idx} value={year}>
       {year}
@@ -22,8 +27,9 @@ export default function SwapModal({ courseName, years }) {
           <Select
             labelId="select-label"
             id="simple-select"
-            value=""
+            value={year !== -1 ? year : ""}
             label="Year"
+            onChange={handleChangeYear}
           >
             {yearOptions}
           </Select>
