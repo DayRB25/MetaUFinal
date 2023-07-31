@@ -10,6 +10,7 @@ export default function SwapModal({
   courseName,
   years,
   handleSubmitSwapRequest,
+  options,
 }) {
   const [year, setYear] = useState(-1);
   const handleChangeYear = (event) => {
@@ -21,23 +22,48 @@ export default function SwapModal({
       {year}
     </MenuItem>
   ));
+
+  let optionsDisplay = [];
+  if (options !== null) {
+    optionsDisplay = options.map((courseOption, idx) => (
+      <MenuItem key={idx} value={courseOption}>
+        {courseOption}
+      </MenuItem>
+    ));
+  }
+
   return (
     <div className="swap-modal">
       <div className="content">
         <h4>Year Swap:</h4>
         <p>{`What year do you want to move ${courseName} to?`}</p>
-        <FormControl sx={{ minWidth: 120 }} size="small">
-          <InputLabel id="select-label">Year</InputLabel>
-          <Select
-            labelId="select-label"
-            id="simple-select"
-            value={year !== -1 ? year : ""}
-            label="Year"
-            onChange={handleChangeYear}
-          >
-            {yearOptions}
-          </Select>
-        </FormControl>
+        {options === null && (
+          <FormControl sx={{ minWidth: 120 }} size="small">
+            <InputLabel id="select-label">Year</InputLabel>
+            <Select
+              labelId="select-label"
+              id="simple-select"
+              value={year !== -1 ? year : ""}
+              label="Year"
+              onChange={handleChangeYear}
+            >
+              {yearOptions}
+            </Select>
+          </FormControl>
+        )}
+        {options !== null && (
+          <FormControl sx={{ minWidth: 120 }} size="small">
+            <InputLabel id="select-label">Course</InputLabel>
+            <Select
+              labelId="select-label"
+              id="simple-select"
+              value=""
+              label="Course"
+            >
+              {optionsDisplay}
+            </Select>
+          </FormControl>
+        )}
         <Button
           variant="outlined"
           onClick={() => handleSubmitSwapRequest(year)}

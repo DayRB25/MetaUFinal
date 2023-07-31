@@ -29,6 +29,7 @@ export default function ScheduleTool() {
   };
 
   const handleCloseModal = () => {
+    setOptions(null);
     setIsOpen(false);
   };
 
@@ -213,6 +214,7 @@ export default function ScheduleTool() {
               courseName={courseToChange.name}
               years={extractYearsWithoutCourseYear(courseToChange)}
               handleSubmitSwapRequest={handleSubmitSwapRequest}
+              options={options}
             />
           }
         />
