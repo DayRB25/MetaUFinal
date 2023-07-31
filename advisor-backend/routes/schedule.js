@@ -777,7 +777,7 @@ router.post("/create", async (req, res) => {
       student.year
     );
 
-    res.json({ schedule });
+    res.json({ schedule, finalScheduleAdjList });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
