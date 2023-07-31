@@ -3,9 +3,15 @@ import { Button } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import "./SwapModal.css";
 
-export default function SwapModal({ courseName }) {
+export default function SwapModal({ courseName, years }) {
+  const yearOptions = years.map((year, idx) => (
+    <MenuItem key={idx} value={year}>
+      {year}
+    </MenuItem>
+  ));
   return (
     <div className="swap-modal">
       <div className="content">
@@ -18,7 +24,9 @@ export default function SwapModal({ courseName }) {
             id="simple-select"
             value=""
             label="Year"
-          ></Select>
+          >
+            {yearOptions}
+          </Select>
         </FormControl>
         <Button variant="outlined">Submit</Button>
       </div>

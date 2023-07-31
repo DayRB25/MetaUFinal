@@ -106,6 +106,26 @@ export default function ScheduleTool() {
     }
   };
 
+  const getYearNumberFromCourse = (course) => {
+    for (let i = 0; i < schedule.length; i++) {
+      const year = schedule[i];
+      const classes = year.semesters[0].classes;
+      for (let j = 0; j < classes.length; j++) {
+        if (classes[j].id === course.id) {
+          return schedule[i].number;
+        }
+      }
+    }
+    return -1;
+  };
+
+  const extractYearsWithoutCourseYear = (course) => {
+    const years = schedule
+      .filter((year) => year.number != getYearNumberFromCourse(course))
+      .map((year) => year.number);
+    return years;
+  };
+
   return (
     <div className="schedule-tool">
       <div className="content">
@@ -129,7 +149,12 @@ export default function ScheduleTool() {
         <Modal
           isOpen={isOpen}
           handleCloseModal={handleCloseModal}
-          content={<SwapModal courseName={courseToChange.name} />}
+          content={
+            <SwapModal
+              courseName={courseToChange.name}
+              years={extractYearsWithoutCourseYear(courseToChange)}
+            />
+          }
         />
       </div>
     </div>
