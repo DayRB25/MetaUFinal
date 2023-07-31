@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
+import "./SwapModal.css";
 
 export default function SwapModal({ courseName }) {
   return (
