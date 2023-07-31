@@ -412,7 +412,8 @@ router.post("/create", async (req, res) => {
     const numberOfElectivesTaken = takenClassesData.filter(
       (takenClass) => !requiredClassesSet.has(takenClass)
     ); // everything in taken that is not required
-    let numberOfRemainingElectives = numberOfElectives - numberOfElectivesTaken;
+    let numberOfRemainingElectives =
+      numberOfElectives - numberOfElectivesTaken.length;
 
     // need overall adjacency matrix again, remove all taken courses (including those in adjList), should be left with only the non-required courses
     for (const element in electiveAdditionAdjList) {
@@ -490,7 +491,7 @@ router.post("/create", async (req, res) => {
       sortedPreReqPaths = Object.entries(preReqPaths);
       sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
     }
-    if (electivesTaken.length < 6) {
+    if (numberOfRemainingElectives > 0) {
       // schedule not valid
       return res.json({
         message: "Invalid schedule. Please enter a later goal graduation date",
