@@ -7,7 +7,10 @@ export default function ClassDetails({
   handleOpenModal = () => {},
 }) {
   return (
-    <div className="class-details" onClick={(event) => handleOpenModal(event)}>
+    <div
+      className="class-details"
+      onClick={(event) => handleOpenModal(event, classItem)}
+    >
       <p>{classItem.name}</p>
       {displayYear && (
         <div className="details">

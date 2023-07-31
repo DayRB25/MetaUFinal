@@ -18,10 +18,12 @@ export default function ScheduleTool() {
   const [year, setYear] = useState(null);
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [courseToChange, setCourseToChange] = useState({});
 
-  const handleOpenModal = (e) => {
+  const handleOpenModal = (e, course) => {
     e.stopPropagation();
     setIsOpen(true);
+    setCourseToChange(course);
   };
 
   const handleCloseModal = () => {
@@ -127,7 +129,7 @@ export default function ScheduleTool() {
         <Modal
           isOpen={isOpen}
           handleCloseModal={handleCloseModal}
-          content={<SwapModal />}
+          content={<SwapModal courseName={courseToChange.name} />}
         />
       </div>
     </div>
