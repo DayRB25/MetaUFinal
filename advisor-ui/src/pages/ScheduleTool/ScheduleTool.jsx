@@ -20,6 +20,7 @@ export default function ScheduleTool() {
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
   const [courseToChange, setCourseToChange] = useState({});
+  const [options, setOptions] = useState(null);
 
   const handleOpenModal = (e, course) => {
     e.stopPropagation();
@@ -151,12 +152,36 @@ export default function ScheduleTool() {
     }
   };
 
+  const submitFullYearRequest = async (desiredYear) => {
+    const body = {
+      schedule,
+      scheduleAdjList,
+      courseToChange,
+      desiredYear,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/schedule/full-year-options",
+        body
+      );
+      if (res.data.validMoves.length !== 0) {
+        setOptions(res.data.validMoves);
+      } else {
+        alert("Can not move. Try a different course or year.");
+      }
+    } catch (error) {
+      alert("Something went wrong.");
+    }
+  };
+
   const handleSubmitSwapRequest = (desiredYear) => {
     // check if the year is full
     const yearIdx = schedule.findIndex((year) => year.number === desiredYear);
     if (schedule[yearIdx].semesters[0].classes.length !== 6) {
       // not full
       submitNonFullYearRequest(desiredYear);
+    } else {
+      submitFullYearRequest(desiredYear);
     }
   };
 
