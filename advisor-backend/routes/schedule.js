@@ -1006,4 +1006,22 @@ router.post("/full-year-options", (req, res) => {
   }
 });
 
+router.post("/swap", (req, res) => {
+  const courses = req.body.courses;
+  const schedule = req.body.schedule;
+
+  const scheduleObject = {};
+  createScheduleObject(schedule, scheduleObject);
+
+  const courseOne = courses[0];
+  const courseTwo = courses[1];
+
+  const courseYearOne = findCourseYear(scheduleObject, courseOne);
+  const courseYearTwo = findCourseYear(scheduleObject, courseTwo);
+
+  moveCourseToDifferentYear(schedule, courseYearTwo, courseYearOne, courseOne);
+  moveCourseToDifferentYear(schedule, courseYearOne, courseYearTwo, courseTwo);
+  return res.status(200).json({ schedule });
+});
+
 export default router;
