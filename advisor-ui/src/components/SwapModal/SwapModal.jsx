@@ -6,7 +6,11 @@ import { InputLabel } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import "./SwapModal.css";
 
-export default function SwapModal({ courseName, years }) {
+export default function SwapModal({
+  courseName,
+  years,
+  handleSubmitSwapRequest,
+}) {
   const [year, setYear] = useState(-1);
   const handleChangeYear = (event) => {
     setYear(parseInt(event.target.value));
@@ -34,7 +38,12 @@ export default function SwapModal({ courseName, years }) {
             {yearOptions}
           </Select>
         </FormControl>
-        <Button variant="outlined">Submit</Button>
+        <Button
+          variant="outlined"
+          onClick={() => handleSubmitSwapRequest(year)}
+        >
+          Submit
+        </Button>
       </div>
     </div>
   );

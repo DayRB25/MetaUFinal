@@ -14,6 +14,7 @@ import SwapModal from "../../components/SwapModal/SwapModal.jsx";
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
   const [schedule, setSchedule] = useState([]);
+  const [scheduleAdjList, setScheduleAdjList] = useState([]);
   const [displayYear, setDisplayYear] = useState(false);
   const [year, setYear] = useState(null);
   const { user } = useContext(UserContext);
@@ -101,6 +102,7 @@ export default function ScheduleTool() {
         return;
       }
       setSchedule(res.data.schedule);
+      setScheduleAdjList(res.data.finalScheduleAdjList);
     } catch (error) {
       alert("Something went wrong");
     }
@@ -124,6 +126,38 @@ export default function ScheduleTool() {
       .filter((year) => year.number != getYearNumberFromCourse(course))
       .map((year) => year.number);
     return years;
+  };
+
+  const submitNonFullYearRequest = async (desiredYear) => {
+    const body = {
+      schedule,
+      scheduleAdjList,
+      courseToChange,
+      desiredYear,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/schedule/nonfull",
+        body
+      );
+      if (res.data.message === "Success") {
+        setSchedule(res.data.schedule);
+        handleCloseModal();
+      } else {
+        alert("Can not move. Try a different course or year.");
+      }
+    } catch (error) {
+      alert("Something went wrong.");
+    }
+  };
+
+  const handleSubmitSwapRequest = (desiredYear) => {
+    // check if the year is full
+    const yearIdx = schedule.findIndex((year) => year.number === desiredYear);
+    if (schedule[yearIdx].semesters[0].classes.length !== 6) {
+      // not full
+      submitNonFullYearRequest(desiredYear);
+    }
   };
 
   return (
@@ -153,6 +187,7 @@ export default function ScheduleTool() {
             <SwapModal
               courseName={courseToChange.name}
               years={extractYearsWithoutCourseYear(courseToChange)}
+              handleSubmitSwapRequest={handleSubmitSwapRequest}
             />
           }
         />
