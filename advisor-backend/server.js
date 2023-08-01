@@ -16,9 +16,11 @@ import {
   Class,
   RequiredClass,
   School,
+  Admin,
 } from "./models/index.js";
 import mapsRoute from "./routes/maps.js";
 import progressRoute from "./routes/progress.js";
+import adminRoute from "./routes/admin.js";
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -60,6 +62,7 @@ app.use("/api/student-signup", studentSignupRoute);
 app.use("/api/schedule", courseScheduleRoute);
 app.use("/api/maps", mapsRoute);
 app.use("/api/progress", progressRoute);
+app.use("/api/admin", adminRoute);
 
 sequelize
   .sync({ alter: true })

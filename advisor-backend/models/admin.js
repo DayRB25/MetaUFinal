@@ -1,24 +1,24 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database.js";
 
-export const EventDetail = sequelize.define("EventDetail", {
-  title: {
+export const Admin = sequelize.define("Admin", {
+  firstname: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  date: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  description: {
+  lastname: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  admin_firstname: {
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  admin_lastname: {
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  password: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -33,25 +33,5 @@ export const EventDetail = sequelize.define("EventDetail", {
   address: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  time: {
-    type: DataTypes.TIME,
-    allowNull: true,
-  },
-  time_commitment: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  latitude: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
-  longitude: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
-  AdminId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
   },
 });
