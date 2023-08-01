@@ -262,12 +262,14 @@ export default function ScheduleTool() {
   return (
     <div className="schedule-tool">
       <div className="content">
-        <div className="back-btn">
+        <div className="nav-links">
           <Link to="/student/landing">
             <ArrowBackIcon className="back" />
           </Link>
+          <Link to="/student/saved-schedules">
+            <p>View Saved Schedules</p>
+          </Link>
         </div>
-        <Link to="/student/saved-schedules">View Saved Schedules</Link>
         <Constraints constraints={constraints} addConstraint={addConstraint} />
         <Button variant="outlined" onClick={generateNewSchedule}>
           Generate New Schedule:

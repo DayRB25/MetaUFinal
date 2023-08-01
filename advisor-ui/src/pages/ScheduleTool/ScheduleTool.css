@@ -12,9 +12,9 @@
   margin-top: 30px;
 }
 
-.schedule-tool > .content > .back-btn {
-  align-items: flex-start;
+.schedule-tool > .content > .nav-links {
+  align-items: center;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
 }
