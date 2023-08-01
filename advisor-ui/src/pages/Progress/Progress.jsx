@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../UserContext";
 import ClassProgressCard from "../../components/ClassProgressCard/ClassProgressCard";
+import "./Progress.css";
 
 export default function Progress() {
   const [takenCount, setTakenCount] = useState(-1);
@@ -34,7 +35,9 @@ export default function Progress() {
 
   return (
     <div className="progress">
-      <div className="content">{requiredClassesDisplay}</div>
+      <div className="content">
+        <div className="grid">{requiredClassesDisplay}</div>
+      </div>
     </div>
   );
 }

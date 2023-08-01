@@ -1,0 +1,20 @@
+.progress {
+  height: 100vh;
+  width: 100vw;
+}
+
+.progress > .content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 0 auto;
+  margin-top: 30px;
+  max-width: 1200px;
+}
+
+.progress > .content > .grid {
+  display: grid;
+  grid-template-columns: 300px 300px 300px;
+  grid-gap: 30px;
+}
