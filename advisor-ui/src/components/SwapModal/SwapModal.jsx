@@ -13,8 +13,14 @@ export default function SwapModal({
   options,
 }) {
   const [year, setYear] = useState(-1);
+  const [course, setCourse] = useState("");
+
   const handleChangeYear = (event) => {
     setYear(parseInt(event.target.value));
+  };
+
+  const handleChangeCourse = (event) => {
+    setCourse(event.target.value);
   };
 
   const yearOptions = years.map((year, idx) => (
@@ -57,8 +63,9 @@ export default function SwapModal({
             <Select
               labelId="select-label"
               id="simple-select"
-              value=""
+              value={course}
               label="Course"
+              onChange={handleChangeCourse}
             >
               {optionsDisplay}
             </Select>
