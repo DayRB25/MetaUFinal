@@ -18,6 +18,7 @@ import {
   School,
 } from "./models/index.js";
 import mapsRoute from "./routes/maps.js";
+import progressRoute from "./routes/progress.js";
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -58,6 +59,7 @@ app.use("/api/student-event", studentEventRoute);
 app.use("/api/student-signup", studentSignupRoute);
 app.use("/api/schedule", courseScheduleRoute);
 app.use("/api/maps", mapsRoute);
+app.use("/api/progress", progressRoute);
 
 sequelize
   .sync({ alter: true })
