@@ -4,6 +4,7 @@ import { UserContext } from "../../UserContext";
 import ClassProgressCard from "../../components/ClassProgressCard/ClassProgressCard";
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import GraduationProgressSpinner from "../../components/GraduationSpinner/GraduationSpinner";
 import "./Progress.css";
 
 export default function Progress() {
@@ -44,6 +45,13 @@ export default function Progress() {
           </Link>
         </div>
         <div className="header">
+          <GraduationProgressSpinner
+            value={
+              takenCount !== -1 && requiredCount !== -1
+                ? Math.round((takenCount / requiredCount) * 100)
+                : 0
+            }
+          />
           <div className="text">
             {takenCount !== -1 && requiredCount !== -1 && (
               <h1>{`You are ${Math.round(
