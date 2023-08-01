@@ -1,0 +1,46 @@
+.saved-schedules {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.saved-schedules > .content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.saved-schedules > .content > .back-btn {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.saved-schedules > .content > .header {
+  align-items: flex-start;
+  display: flex;
+  width: 100%;
+}
+
+.saved-schedules > .content > .schedule-details h3 {
+  display: none;
+}
+
+.saved-schedules
+  > .content
+  > .schedule-details
+  > .content
+  > .display-years
+  > .year-details {
+  cursor: default;
+}
+
+.saved-schedules > .pagination {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
