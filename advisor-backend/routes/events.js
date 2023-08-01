@@ -141,7 +141,8 @@ router.get("/recommended/:studentId", async (req, res) => {
       city,
         state,
         description,
-        admin,
+        admin_firstname,
+        admin_lastname,
         date,
         title,
         time,
@@ -266,10 +267,12 @@ router.get("/recommended/:studentId", async (req, res) => {
   
     SELECT
     id,
+    e."AdminId" as AdminId,
     city,
       state,
       description,
-      admin,
+      admin_firstname,
+      admin_lastname,
       date,
       title,
       latitude,
