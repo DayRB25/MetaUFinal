@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
@@ -12,6 +12,7 @@ export default function SwapModal({
   handleSubmitSwapRequest,
   options,
   submitCourseSwapRequest,
+  swapOperationIsLoading,
 }) {
   const [year, setYear] = useState(-1);
   const [course, setCourse] = useState("");
@@ -49,46 +50,49 @@ export default function SwapModal({
 
   return (
     <div className="swap-modal">
-      <div className="content">
-        <h4>Year Swap:</h4>
-        {options === null && (
-          <p>{`What year do you want to move ${courseName} to?`}</p>
-        )}
-        {options !== null && (
-          <p>{`In year ${year}, what course do you wish to swap ${courseName} with?`}</p>
-        )}
-        {options === null && (
-          <FormControl sx={{ minWidth: 120 }} size="small">
-            <InputLabel id="select-label">Year</InputLabel>
-            <Select
-              labelId="select-label"
-              id="simple-select"
-              value={year !== -1 ? year : ""}
-              label="Year"
-              onChange={handleChangeYear}
-            >
-              {yearOptions}
-            </Select>
-          </FormControl>
-        )}
-        {options !== null && (
-          <FormControl sx={{ minWidth: 120 }} size="small">
-            <InputLabel id="select-label">Course</InputLabel>
-            <Select
-              labelId="select-label"
-              id="simple-select"
-              value={course}
-              label="Course"
-              onChange={handleChangeCourse}
-            >
-              {optionsDisplay}
-            </Select>
-          </FormControl>
-        )}
-        <Button variant="outlined" onClick={handleSubmit}>
-          Submit
-        </Button>
-      </div>
+      {!swapOperationIsLoading && (
+        <div className="content">
+          <h4>Year Swap:</h4>
+          {options === null && (
+            <p>{`What year do you want to move ${courseName} to?`}</p>
+          )}
+          {options !== null && (
+            <p>{`In year ${year}, what course do you wish to swap ${courseName} with?`}</p>
+          )}
+          {options === null && (
+            <FormControl sx={{ minWidth: 120 }} size="small">
+              <InputLabel id="select-label">Year</InputLabel>
+              <Select
+                labelId="select-label"
+                id="simple-select"
+                value={year !== -1 ? year : ""}
+                label="Year"
+                onChange={handleChangeYear}
+              >
+                {yearOptions}
+              </Select>
+            </FormControl>
+          )}
+          {options !== null && (
+            <FormControl sx={{ minWidth: 120 }} size="small">
+              <InputLabel id="select-label">Course</InputLabel>
+              <Select
+                labelId="select-label"
+                id="simple-select"
+                value={course}
+                label="Course"
+                onChange={handleChangeCourse}
+              >
+                {optionsDisplay}
+              </Select>
+            </FormControl>
+          )}
+          <Button variant="outlined" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </div>
+      )}
+      {swapOperationIsLoading && <CircularProgress />}
     </div>
   );
 }

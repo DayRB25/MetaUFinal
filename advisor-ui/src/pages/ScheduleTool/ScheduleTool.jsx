@@ -23,6 +23,7 @@ export default function ScheduleTool() {
   const [courseToChange, setCourseToChange] = useState({});
   const [options, setOptions] = useState(null);
   const [scheduleIsLoading, setScheduleIsLoading] = useState(false);
+  const [swapOperationIsLoading, setSwapOperationIsLoading] = useState(false);
 
   const handleOpenModal = (e, course) => {
     e.stopPropagation();
@@ -143,6 +144,7 @@ export default function ScheduleTool() {
       desiredYear,
     };
     try {
+      setSwapOperationIsLoading(true);
       const res = await axios.post(
         "http://localhost:5000/api/schedule/nonfull",
         body
@@ -156,6 +158,7 @@ export default function ScheduleTool() {
     } catch (error) {
       alert("Something went wrong.");
     }
+    setSwapOperationIsLoading(false);
   };
 
   const submitFullYearRequest = async (desiredYear) => {
@@ -166,6 +169,7 @@ export default function ScheduleTool() {
       desiredYear,
     };
     try {
+      setSwapOperationIsLoading(true);
       const res = await axios.post(
         "http://localhost:5000/api/schedule/full-year-options",
         body
@@ -178,6 +182,7 @@ export default function ScheduleTool() {
     } catch (error) {
       alert("Something went wrong.");
     }
+    setSwapOperationIsLoading(false);
   };
 
   const handleSubmitSwapRequest = (desiredYear) => {
@@ -213,6 +218,7 @@ export default function ScheduleTool() {
       courses,
     };
     try {
+      setSwapOperationIsLoading(true);
       const res = await axios.post(
         "http://localhost:5000/api/schedule/swap",
         body
@@ -223,6 +229,7 @@ export default function ScheduleTool() {
     } catch (error) {
       alert("Something went wrong.");
     }
+    setSwapOperationIsLoading(false);
   };
 
   const createSaveScheduleRecord = async () => {
@@ -289,6 +296,7 @@ export default function ScheduleTool() {
               handleSubmitSwapRequest={handleSubmitSwapRequest}
               options={options}
               submitCourseSwapRequest={submitCourseSwapRequest}
+              swapOperationIsLoading={swapOperationIsLoading}
             />
           }
         />
