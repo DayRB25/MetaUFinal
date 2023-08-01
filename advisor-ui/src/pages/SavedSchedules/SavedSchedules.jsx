@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { UserContext } from "../../UserContext";
 import axios from "axios";
+import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
 
 export default function SavedSchedules() {
   const [schedules, setSchedules] = useState([]);
@@ -33,6 +34,10 @@ export default function SavedSchedules() {
     }
   };
 
+  const scheduleDisplay = schedules.map((schedule, idx) => (
+    <ScheduleDetails className="overview" key={idx} years={schedule} />
+  ));
+
   useEffect(() => {
     fetchPageCount();
     fetchSchedulesByPage(1);
@@ -49,9 +54,15 @@ export default function SavedSchedules() {
         <div className="header">
           <h3>Saved Schedules:</h3>
         </div>
-        <div className="pagination">
-          <Pagination count={2} />
-        </div>
+        {scheduleDisplay}
+        {pageCount !== null && (
+          <div className="pagination">
+            <Pagination
+              count={pageCount}
+              onChange={(event, page) => fetchSchedulesByPage(page)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
