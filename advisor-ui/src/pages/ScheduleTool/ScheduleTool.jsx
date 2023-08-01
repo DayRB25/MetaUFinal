@@ -10,6 +10,7 @@ import Constraints from "../../components/Constraints/Constraints";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
 import Modal from "../../components/Modal/Modal";
 import SwapModal from "../../components/SwapModal/SwapModal.jsx";
+import { CircularProgress } from "@mui/material";
 
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
@@ -21,6 +22,7 @@ export default function ScheduleTool() {
   const [isOpen, setIsOpen] = useState(false);
   const [courseToChange, setCourseToChange] = useState({});
   const [options, setOptions] = useState(null);
+  const [scheduleIsLoading, setScheduleIsLoading] = useState(false);
 
   const handleOpenModal = (e, course) => {
     e.stopPropagation();
@@ -95,10 +97,12 @@ export default function ScheduleTool() {
       gradYear,
     };
     try {
+      setScheduleIsLoading(true);
       const res = await axios.post(
         "http://localhost:5000/api/schedule/create",
         body
       );
+      setScheduleIsLoading(false);
       if (res.data.schedule === undefined || res.data.schedule === null) {
         alert("Schedule not possible. Enter new constraints.");
         return;
@@ -108,6 +112,7 @@ export default function ScheduleTool() {
     } catch (error) {
       alert("Something went wrong");
     }
+    setScheduleIsLoading(false);
   };
 
   const getYearNumberFromCourse = (course) => {
@@ -226,6 +231,7 @@ export default function ScheduleTool() {
       schedule,
     };
     try {
+      setScheduleIsLoading(true);
       const res = await axios.post(
         "http://localhost:5000/api/save-schedule/create",
         body
@@ -234,6 +240,7 @@ export default function ScheduleTool() {
     } catch (error) {
       alert("Something went wrong.");
     }
+    setScheduleIsLoading(false);
   };
 
   const handleSaveSchedule = () => {
@@ -261,14 +268,17 @@ export default function ScheduleTool() {
         <Button variant="outlined" onClick={handleSaveSchedule}>
           save
         </Button>
-        <ScheduleDetails
-          years={schedule}
-          handleDisplayYear={handleDisplayYear}
-          year={year}
-          displayYear={displayYear}
-          handleCloseYear={handleCloseYear}
-          handleOpenModal={handleOpenModal}
-        />
+        {!scheduleIsLoading && (
+          <ScheduleDetails
+            years={schedule}
+            handleDisplayYear={handleDisplayYear}
+            year={year}
+            displayYear={displayYear}
+            handleCloseYear={handleCloseYear}
+            handleOpenModal={handleOpenModal}
+          />
+        )}
+        {scheduleIsLoading && <CircularProgress />}
         <Modal
           isOpen={isOpen}
           handleCloseModal={handleCloseModal}
