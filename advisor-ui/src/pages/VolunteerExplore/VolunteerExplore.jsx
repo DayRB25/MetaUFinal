@@ -23,6 +23,7 @@ export default function VolunteerExplore() {
   const [timeCommitment, setTimeCommitment] = useState(30);
 
   const [exploreIsLoading, setExploreIsLoading] = useState(false);
+  const [recommendedIsLoading, setRecommendIsLoading] = useState(false);
 
   const formatDate = (date) => {
     // Format the date to YYYY-MM-DD
@@ -91,6 +92,7 @@ export default function VolunteerExplore() {
     timeCommitment
   ) => {
     try {
+      setRecommendIsLoading(true);
       const res = await axios.get(
         `http://localhost:5000/api/events/recommended/${user.id}?distance=${distance}&start_date=${startDate}&end_date=${endDate}&start_time=${startTime}&end_time=${endTime}&time_commitment=${timeCommitment}`,
         { params: { studentId: user.id } }
@@ -100,6 +102,7 @@ export default function VolunteerExplore() {
     } catch (err) {
       alert("Something went wrong. Try again later.");
     }
+    setRecommendIsLoading(false);
   };
 
   const fetchEventsByPage = async (page) => {
@@ -153,15 +156,18 @@ export default function VolunteerExplore() {
           handleTimeCommitmentChange={handleTimeCommitmentChange}
           handleSubmitPreferences={handleSubmitPreferences}
           events={recommendedEvents}
+          recommendedIsLoading={recommendedIsLoading}
         />
 
         <Explore events={events} exploreIsLoading={exploreIsLoading} />
-        <div className="pagination">
-          <Pagination
-            count={pageCount}
-            onChange={(event, page) => fetchEventsByPage(page)}
-          />
-        </div>
+        {pageCount !== null && (
+          <div className="pagination">
+            <Pagination
+              count={pageCount}
+              onChange={(event, page) => fetchEventsByPage(page)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
