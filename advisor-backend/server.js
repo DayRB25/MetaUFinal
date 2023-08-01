@@ -25,6 +25,7 @@ import {
 import mapsRoute from "./routes/maps.js";
 import progressRoute from "./routes/progress.js";
 import adminRoute from "./routes/admin.js";
+import saveScheduleRoute from "./routes/save-schedule.js";
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -67,6 +68,7 @@ app.use("/api/schedule", courseScheduleRoute);
 app.use("/api/maps", mapsRoute);
 app.use("/api/progress", progressRoute);
 app.use("/api/admin", adminRoute);
+app.use("/api/save-schedule", saveScheduleRoute);
 
 sequelize
   .sync({ alter: true })
