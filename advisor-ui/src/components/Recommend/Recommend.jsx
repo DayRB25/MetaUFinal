@@ -17,6 +17,7 @@ export default function Recommend({
   handleSubmitPreferences,
   events,
   recommendedIsLoading,
+  preferencesSubmitted,
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -56,7 +57,7 @@ export default function Recommend({
         </IconButton>
       </div>
       <div className="content">
-        {events.length === 0 && (
+        {!preferencesSubmitted && (
           <div id="complete-preferences">
             <h5>
               Please complete the preference form

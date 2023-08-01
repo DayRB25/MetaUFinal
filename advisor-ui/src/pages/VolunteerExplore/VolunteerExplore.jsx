@@ -25,6 +25,8 @@ export default function VolunteerExplore() {
   const [exploreIsLoading, setExploreIsLoading] = useState(false);
   const [recommendedIsLoading, setRecommendIsLoading] = useState(false);
 
+  const [preferencesSubmitted, setPreferencesSubmitted] = useState(false);
+
   const formatDate = (date) => {
     // Format the date to YYYY-MM-DD
     return dayjs(date).format("YYYY-MM-DD");
@@ -72,6 +74,7 @@ export default function VolunteerExplore() {
     ) {
       alert("Fill in all preferences!");
     } else {
+      setPreferencesSubmitted(true);
       await fetchRecommendedEvents(
         startTime,
         endTime,
@@ -157,6 +160,7 @@ export default function VolunteerExplore() {
           handleSubmitPreferences={handleSubmitPreferences}
           events={recommendedEvents}
           recommendedIsLoading={recommendedIsLoading}
+          preferencesSubmitted={preferencesSubmitted}
         />
 
         <Explore events={events} exploreIsLoading={exploreIsLoading} />
