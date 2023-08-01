@@ -16,6 +16,7 @@ import {
   Class,
   RequiredClass,
   School,
+  Admin,
 } from "./models/index.js";
 import mapsRoute from "./routes/maps.js";
 import progressRoute from "./routes/progress.js";

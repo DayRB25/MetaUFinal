@@ -7,6 +7,7 @@ import { Class } from "./class.js";
 import { RequiredClass } from "./requiredclass.js";
 import { Prerequisite } from "./prerequisite.js";
 import { TakenClass } from "./takenclass.js";
+import { Admin } from "./admin.js";
 
 Prerequisite.belongsTo(Class, { foreignKey: "PostreqId" });
 Prerequisite.belongsTo(Class, { foreignKey: "PrereqId" });
@@ -26,6 +27,8 @@ StudentEvent.belongsTo(EventDetail);
 StudentSignup.belongsTo(Student);
 StudentSignup.belongsTo(EventDetail);
 
+EventDetail.belongsTo(Admin);
+
 export {
   Student,
   EventDetail,
@@ -36,4 +39,5 @@ export {
   Class,
   RequiredClass,
   School,
+  Admin,
 };
