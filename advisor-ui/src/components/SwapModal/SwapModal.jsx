@@ -51,7 +51,12 @@ export default function SwapModal({
     <div className="swap-modal">
       <div className="content">
         <h4>Year Swap:</h4>
-        <p>{`What year do you want to move ${courseName} to?`}</p>
+        {options === null && (
+          <p>{`What year do you to move ${courseName} to?`}</p>
+        )}
+        {options !== null && (
+          <p>{`In year ${year}, what course do you wish to swap ${courseName} with?`}</p>
+        )}
         {options === null && (
           <FormControl sx={{ minWidth: 120 }} size="small">
             <InputLabel id="select-label">Year</InputLabel>
