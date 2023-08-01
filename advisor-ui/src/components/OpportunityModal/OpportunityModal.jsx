@@ -16,6 +16,9 @@ export default function OpportunityModal({ eventItem }) {
   const [eventOccurred, setEventOccurred] = useState(false);
   const { user } = useContext(UserContext);
   const [imgData, setImgData] = useState(null);
+  const [adminInfo, setAdminInfo] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
   const createStudentSignup = async () => {
     const body = {
@@ -78,6 +81,17 @@ export default function OpportunityModal({ eventItem }) {
     }
   };
 
+  const handlePopoverOpen = (event) => {
+    if (adminInfo === null) {
+      fetchAdminInfo();
+    }
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
   const createDateFromTimeStamp = (timestamp) => {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -106,6 +120,19 @@ export default function OpportunityModal({ eventItem }) {
     }
   };
 
+  const fetchAdminInfo = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/admin/${
+          eventItem.AdminId ?? eventItem.adminid
+        }`
+      );
+      setAdminInfo(res.data.admin);
+    } catch (error) {
+      alert("Something went wrong!");
+    }
+  };
+
   useEffect(() => {
     compareDates();
     fetchMap();
@@ -124,7 +151,11 @@ export default function OpportunityModal({ eventItem }) {
           <CalendarMonthIcon />
           <p>{createDateFromTimeStamp(eventItem.date)}</p>
         </div>
-        <div className="admin">
+        <div
+          className="admin"
+          onMouseEnter={handlePopoverOpen}
+          onMouseLeave={handlePopoverClose}
+        >
           <SupervisorAccountIcon />
           <p>{`${eventItem.admin_firstname} ${eventItem.admin_lastname}`}</p>
         </div>
