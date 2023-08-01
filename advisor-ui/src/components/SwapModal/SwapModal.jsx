@@ -52,7 +52,7 @@ export default function SwapModal({
       <div className="content">
         <h4>Year Swap:</h4>
         {options === null && (
-          <p>{`What year do you to move ${courseName} to?`}</p>
+          <p>{`What year do you want to move ${courseName} to?`}</p>
         )}
         {options !== null && (
           <p>{`In year ${year}, what course do you wish to swap ${courseName} with?`}</p>
