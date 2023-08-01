@@ -54,7 +54,10 @@ router.post("/", async (req, res) => {
     );
 
     const numberElectives = electivesTaken.length;
-    takenClassesCount += numberElectives;
+    takenClassesCount += Math.min(
+      numberElectivesForGraduation,
+      numberElectives
+    );
     const electivesToAdd = Math.min(
       numberElectivesForGraduation,
       numberElectives
