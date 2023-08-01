@@ -14,7 +14,11 @@ export const EventDetail = sequelize.define("EventDetail", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  admin: {
+  admin_firstname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  admin_lastname: {
     type: DataTypes.STRING,
     allowNull: false,
   },
