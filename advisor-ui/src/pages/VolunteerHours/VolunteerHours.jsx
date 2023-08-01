@@ -10,6 +10,7 @@ import { UserContext } from "../../UserContext.js";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CircularProgress from "@mui/material/CircularProgress";
 import { Link } from "react-router-dom";
 import "./VolunteerHours.css";
 
@@ -17,8 +18,11 @@ export default function VolunteerHours() {
   const [studentEvents, setStudentEvents] = useState([]);
   const { user } = useContext(UserContext);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const fetchStudentEvents = async () => {
     try {
+      setIsLoading(true);
       const res = await axios.get(
         `http://localhost:5000/api/student-event/${user.id}`,
         { params: { studentId: user.id } }
@@ -28,6 +32,7 @@ export default function VolunteerHours() {
     } catch (error) {
       alert("Something went wrong!");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -43,13 +48,16 @@ export default function VolunteerHours() {
 
   const deleteStudentEventFromDB = async (id) => {
     try {
+      setIsLoading(true);
       const res = axios.delete(
         `http://localhost:5000/api/student-event/${id}`,
         { params: { studentEventId: id } }
       );
+      setIsLoading(false);
       return true;
     } catch (error) {
       alert("Unable to delete. Try again later.");
+      setIsLoading(false);
       return false;
     }
   };
@@ -100,21 +108,24 @@ export default function VolunteerHours() {
         </Link>
         <div className="table">
           <h3>Your Volunteer History:</h3>
-          <TableContainer>
-            <Table sx={{ minWidth: 650 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Title</TableCell>
-                  <TableCell align="right">Date</TableCell>
-                  <TableCell align="right">Location</TableCell>
-                  <TableCell align="right">Admin</TableCell>
-                  <TableCell align="right">Hours</TableCell>
-                  <TableCell align="right">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>{studentEventRows}</TableBody>
-            </Table>
-          </TableContainer>
+          {!isLoading && (
+            <TableContainer>
+              <Table sx={{ minWidth: 650 }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Title</TableCell>
+                    <TableCell align="right">Date</TableCell>
+                    <TableCell align="right">Location</TableCell>
+                    <TableCell align="right">Admin</TableCell>
+                    <TableCell align="right">Hours</TableCell>
+                    <TableCell align="right">Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>{studentEventRows}</TableBody>
+              </Table>
+            </TableContainer>
+          )}
+          {isLoading && <CircularProgress />}
         </div>
       </div>
     </div>
