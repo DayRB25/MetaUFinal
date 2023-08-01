@@ -1,0 +1,10 @@
+.persona {
+  display: flex;
+  gap: 5px;
+}
+
+.persona .text {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+}
