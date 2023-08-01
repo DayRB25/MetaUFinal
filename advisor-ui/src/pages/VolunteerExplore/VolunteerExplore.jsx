@@ -22,6 +22,8 @@ export default function VolunteerExplore() {
   const [distance, setDistance] = useState(10);
   const [timeCommitment, setTimeCommitment] = useState(30);
 
+  const [exploreIsLoading, setExploreIsLoading] = useState(false);
+
   const formatDate = (date) => {
     // Format the date to YYYY-MM-DD
     return dayjs(date).format("YYYY-MM-DD");
@@ -102,6 +104,7 @@ export default function VolunteerExplore() {
 
   const fetchEventsByPage = async (page) => {
     try {
+      setExploreIsLoading(true);
       const res = await axios.get(
         `http://localhost:5000/api/events/page/${page}`
       );
@@ -110,6 +113,7 @@ export default function VolunteerExplore() {
     } catch (error) {
       alert("Something went wrong. Try again later.");
     }
+    setExploreIsLoading(false);
   };
 
   const fetchPageCount = async () => {
@@ -150,15 +154,14 @@ export default function VolunteerExplore() {
           handleSubmitPreferences={handleSubmitPreferences}
           events={recommendedEvents}
         />
-        <Explore events={events} />
-        {pageCount !== null && (
-          <div className="pagination">
-            <Pagination
-              count={pageCount}
-              onChange={(event, page) => fetchEventsByPage(page)}
-            />
-          </div>
-        )}
+
+        <Explore events={events} exploreIsLoading={exploreIsLoading} />
+        <div className="pagination">
+          <Pagination
+            count={pageCount}
+            onChange={(event, page) => fetchEventsByPage(page)}
+          />
+        </div>
       </div>
     </div>
   );
