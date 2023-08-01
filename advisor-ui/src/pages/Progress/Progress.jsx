@@ -2,6 +2,8 @@ import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../UserContext";
 import ClassProgressCard from "../../components/ClassProgressCard/ClassProgressCard";
+import { Link } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import "./Progress.css";
 
 export default function Progress() {
@@ -36,6 +38,11 @@ export default function Progress() {
   return (
     <div className="progress">
       <div className="content">
+        <div className="back-container">
+          <Link to="/student/landing">
+            <ArrowBackIcon className="back" />
+          </Link>
+        </div>
         <div className="header">
           <div className="text">
             {takenCount !== -1 && requiredCount !== -1 && (
