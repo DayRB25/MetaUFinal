@@ -266,8 +266,8 @@ export default function ScheduleTool() {
           <Link to="/student/landing">
             <ArrowBackIcon className="back" />
           </Link>
-          <Link to="/student/saved-schedules">
-            <p>View Saved Schedules</p>
+          <Link to="/student/saved-schedules" className="nav-text">
+            View Saved Schedules
           </Link>
         </div>
         <Constraints constraints={constraints} addConstraint={addConstraint} />
