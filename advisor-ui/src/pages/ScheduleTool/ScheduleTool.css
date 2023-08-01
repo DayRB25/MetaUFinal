@@ -18,3 +18,8 @@
   justify-content: space-between;
   width: 100%;
 }
+
+.schedule-tool .content .btn-container {
+  display: flex;
+  gap: 1em;
+}

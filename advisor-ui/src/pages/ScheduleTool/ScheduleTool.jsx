@@ -271,12 +271,14 @@ export default function ScheduleTool() {
           </Link>
         </div>
         <Constraints constraints={constraints} addConstraint={addConstraint} />
-        <Button variant="outlined" onClick={generateNewSchedule}>
-          Generate New Schedule:
-        </Button>
-        <Button variant="outlined" onClick={handleSaveSchedule}>
-          save
-        </Button>
+        <div className="btn-container">
+          <Button variant="outlined" onClick={generateNewSchedule}>
+            Generate Schedule
+          </Button>
+          <Button variant="outlined" onClick={handleSaveSchedule}>
+            Save Schedule
+          </Button>
+        </div>
         {!scheduleIsLoading && (
           <ScheduleDetails
             years={schedule}
