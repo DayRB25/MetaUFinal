@@ -48,6 +48,23 @@ router.post("/", async (req, res) => {
       }
     });
 
+    // identifying the number of electives student has taken (non-required courses)
+    const electivesTaken = takenClassesData.filter(
+      (takenClass) => !requiredClassesSet.has(takenClass.ClassId)
+    );
+
+    const numberElectives = electivesTaken.length;
+    takenClassesCount += numberElectives;
+    const electivesToAdd = Math.min(
+      numberElectivesForGraduation,
+      numberElectives
+    );
+    // add all up to 6
+    for (let i = 0; i < electivesToAdd; i++) {
+      const elective = electivesTaken[i];
+      currentAcademicProgress.push({ ...elective, taken: "true" });
+    }
+
     res.json({
       takenClassesCount,
       requiredClassesCount:
