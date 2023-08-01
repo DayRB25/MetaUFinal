@@ -13,6 +13,15 @@
   max-width: 1200px;
 }
 
+.progress > .content > .header {
+  display: flex;
+  justify-content: center;
+}
+
+.progress > .content > .back-container {
+  width: 100%;
+}
+
 .progress > .content > .grid {
   display: grid;
   grid-template-columns: 300px 300px 300px;
