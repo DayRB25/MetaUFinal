@@ -7,6 +7,7 @@ import axios from "axios";
 
 export default function SavedSchedules() {
   const [schedules, setSchedules] = useState([]);
+  const [pageCount, setPageCount] = useState(null);
   const { user } = useContext(UserContext);
 
   const fetchSchedulesByPage = async (page) => {
@@ -20,7 +21,20 @@ export default function SavedSchedules() {
     }
   };
 
+  const fetchPageCount = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/save-schedule/${user.id}/page-count`
+      );
+      const pageCount = res.data.pageCount;
+      setPageCount(pageCount);
+    } catch (error) {
+      alert("Something went wrong. Try again later.");
+    }
+  };
+
   useEffect(() => {
+    fetchPageCount();
     fetchSchedulesByPage(1);
   }, []);
 
