@@ -8,6 +8,9 @@ import InputForm from "../InputForm/InputForm";
 import { Button } from "@mui/material";
 import { UserContext } from "../../UserContext.js";
 import axios from "axios";
+import Popover from "../Popover/Popover";
+import Persona from "../Persona/Persona";
+import { CircularProgress } from "@mui/material";
 
 export default function OpportunityModal({ eventItem }) {
   // YYYY-MM-DD = 10 chars
@@ -159,6 +162,18 @@ export default function OpportunityModal({ eventItem }) {
           <SupervisorAccountIcon />
           <p>{`${eventItem.admin_firstname} ${eventItem.admin_lastname}`}</p>
         </div>
+        <Popover
+          open={open}
+          handlePopoverClose={handlePopoverClose}
+          content={
+            adminInfo !== null ? (
+              <Persona userInfo={adminInfo} />
+            ) : (
+              <CircularProgress />
+            )
+          }
+          anchorEl={anchorEl}
+        />
         <div className="description">
           <div className="icon-title">
             <InfoIcon />
