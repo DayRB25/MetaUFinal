@@ -28,6 +28,11 @@ export default function StudentLanding() {
             Volunteer Tool
           </Button>
         </Link>
+        <Link to="/student/progress">
+          <Button variant="outlined" style={{ width: "220px" }}>
+            Progress Tool
+          </Button>
+        </Link>
         <Button
           onClick={handleLogout}
           variant="outlined"

@@ -1,0 +1,17 @@
+.class-progress-card {
+  align-items: center;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+  width: 300px;
+}
+
+.class-progress-card .content {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
