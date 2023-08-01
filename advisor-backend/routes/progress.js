@@ -65,6 +65,20 @@ router.post("/", async (req, res) => {
       currentAcademicProgress.push({ ...elective, taken: "true" });
     }
 
+    if (numberElectives < numberElectivesForGraduation) {
+      for (
+        let i = numberElectives + 1;
+        i <= numberElectivesForGraduation;
+        i++
+      ) {
+        const dummyElective = {
+          Class: { name: `Elective ${i}` },
+          taken: "false",
+        };
+        currentAcademicProgress.push(dummyElective);
+      }
+    }
+
     res.json({
       takenClassesCount,
       requiredClassesCount:
