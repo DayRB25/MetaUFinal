@@ -5,6 +5,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { UserContext } from "../../UserContext";
 import axios from "axios";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
+import "./SavedSchedules.css";
 
 export default function SavedSchedules() {
   const [schedules, setSchedules] = useState([]);
