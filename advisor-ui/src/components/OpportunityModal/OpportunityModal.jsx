@@ -24,6 +24,7 @@ export default function OpportunityModal({ eventItem }) {
   const open = Boolean(anchorEl);
 
   const [mapIsLoading, setMapIsLoading] = useState(false);
+  const [adminInfoIsLoading, setAdminInfoIsLoading] = useState(false);
 
   const createStudentSignup = async () => {
     const body = {
@@ -129,6 +130,7 @@ export default function OpportunityModal({ eventItem }) {
 
   const fetchAdminInfo = async () => {
     try {
+      setAdminInfoIsLoading(true);
       const res = await axios.get(
         `http://localhost:5000/api/admin/${
           eventItem.AdminId ?? eventItem.adminid
@@ -138,6 +140,7 @@ export default function OpportunityModal({ eventItem }) {
     } catch (error) {
       alert("Something went wrong!");
     }
+    setAdminInfoIsLoading(false);
   };
 
   useEffect(() => {
@@ -171,7 +174,7 @@ export default function OpportunityModal({ eventItem }) {
             open={open}
             handlePopoverClose={handlePopoverClose}
             content={
-              adminInfo !== null ? (
+              !adminInfoIsLoading ? (
                 <Persona userInfo={adminInfo} />
               ) : (
                 <CircularProgress />
