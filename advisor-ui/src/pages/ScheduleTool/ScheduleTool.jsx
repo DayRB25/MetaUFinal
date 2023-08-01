@@ -253,6 +253,7 @@ export default function ScheduleTool() {
             <ArrowBackIcon className="back" />
           </Link>
         </div>
+        <Link to="/student/saved-schedules">View Saved Schedules</Link>
         <Constraints constraints={constraints} addConstraint={addConstraint} />
         <Button variant="outlined" onClick={generateNewSchedule}>
           Generate New Schedule:
