@@ -89,7 +89,7 @@ export default function VolunteerHours() {
           {createDateFromTimeStamp(eventDetails.date)}
         </TableCell>
         <TableCell align="right">{`${eventDetails.city}, ${eventDetails.state}`}</TableCell>
-        <TableCell align="right">{eventDetails.admin}</TableCell>
+        <TableCell align="right">{`${eventDetails.admin_firstname} ${eventDetails.admin_lastname}`}</TableCell>
         <TableCell align="right">{hours}</TableCell>
         <TableCell align="right">
           <IconButton onClick={() => handleDeleteStudentEvent(studentEvent.id)}>
