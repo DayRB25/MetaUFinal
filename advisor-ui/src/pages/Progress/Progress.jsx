@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../UserContext";
+import ClassProgressCard from "../../components/ClassProgressCard/ClassProgressCard";
 
 export default function Progress() {
   const [takenCount, setTakenCount] = useState(-1);
@@ -26,9 +27,14 @@ export default function Progress() {
   useEffect(() => {
     fetchCompletionInfo();
   }, []);
+
+  const requiredClassesDisplay = courseProgressList.map((classInfo, idx) => (
+    <ClassProgressCard key={idx} classInfo={classInfo} />
+  ));
+
   return (
     <div className="progress">
-      <div className="content">Progress</div>
+      <div className="content">{requiredClassesDisplay}</div>
     </div>
   );
 }
