@@ -220,6 +220,31 @@ export default function ScheduleTool() {
     }
   };
 
+  const createSaveScheduleRecord = async () => {
+    const body = {
+      StudentId: user.id,
+      schedule,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/save-schedule/create",
+        body
+      );
+      alert("Save successful!");
+    } catch (error) {
+      alert("Something went wrong.");
+    }
+  };
+
+  const handleSaveSchedule = () => {
+    if (schedule.length !== 0) {
+      createSaveScheduleRecord();
+    } else {
+      alert("Generate a schedule first.");
+      return;
+    }
+  };
+
   return (
     <div className="schedule-tool">
       <div className="content">
@@ -231,6 +256,9 @@ export default function ScheduleTool() {
         <Constraints constraints={constraints} addConstraint={addConstraint} />
         <Button variant="outlined" onClick={generateNewSchedule}>
           Generate New Schedule:
+        </Button>
+        <Button variant="outlined" onClick={handleSaveSchedule}>
+          save
         </Button>
         <ScheduleDetails
           years={schedule}
