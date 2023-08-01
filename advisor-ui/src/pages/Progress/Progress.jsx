@@ -36,6 +36,20 @@ export default function Progress() {
   return (
     <div className="progress">
       <div className="content">
+        <div className="header">
+          <div className="text">
+            {takenCount !== -1 && requiredCount !== -1 && (
+              <h1>{`You are ${Math.round(
+                (takenCount / requiredCount) * 100
+              )}% complete!`}</h1>
+            )}
+            {takenCount !== -1 && requiredCount !== -1 && (
+              <h3>{`You have ${
+                requiredCount - takenCount
+              } classes left until graduation!`}</h3>
+            )}
+          </div>
+        </div>
         <div className="grid">{requiredClassesDisplay}</div>
       </div>
     </div>
