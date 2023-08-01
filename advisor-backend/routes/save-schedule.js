@@ -4,6 +4,8 @@ import { Year } from "../models/index.js";
 import { Semester } from "../models/index.js";
 import { SemesterClass } from "../models/index.js";
 
+const pageLimit = 1;
+
 const router = express.Router();
 
 // create schedule -
@@ -43,6 +45,22 @@ router.post("/create", async (req, res) => {
     res.status(200).json({ message: "Save successful" });
   } catch (error) {
     res.status(500).json({ error: "Save unsuccessful. Internal server error" });
+  }
+});
+
+// fetch page count
+router.get("/:studentId/page-count", async (req, res) => {
+  const StudentId = req.params.studentId;
+  try {
+    const count = await Schedule.count({
+      where: {
+        StudentId,
+      },
+    });
+    const pageCount = Math.ceil(count / pageLimit);
+    res.status(200).json({ pageCount });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
   }
 });
 
