@@ -8,13 +8,30 @@ import { UserContext } from "../../UserContext.js";
 import "./ScheduleTool.css";
 import Constraints from "../../components/Constraints/Constraints";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
+import Modal from "../../components/Modal/Modal";
+import SwapModal from "../../components/SwapModal/SwapModal.jsx";
 
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
   const [schedule, setSchedule] = useState([]);
+  const [scheduleAdjList, setScheduleAdjList] = useState([]);
   const [displayYear, setDisplayYear] = useState(false);
   const [year, setYear] = useState(null);
   const { user } = useContext(UserContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const [courseToChange, setCourseToChange] = useState({});
+  const [options, setOptions] = useState(null);
+
+  const handleOpenModal = (e, course) => {
+    e.stopPropagation();
+    setIsOpen(true);
+    setCourseToChange(course);
+  };
+
+  const handleCloseModal = () => {
+    setOptions(null);
+    setIsOpen(false);
+  };
 
   const handleDisplayYear = (number) => {
     const yearIdx = schedule.findIndex((year) => year.number === number);
@@ -87,8 +104,119 @@ export default function ScheduleTool() {
         return;
       }
       setSchedule(res.data.schedule);
+      setScheduleAdjList(res.data.finalScheduleAdjList);
     } catch (error) {
       alert("Something went wrong");
+    }
+  };
+
+  const getYearNumberFromCourse = (course) => {
+    for (let i = 0; i < schedule.length; i++) {
+      const year = schedule[i];
+      const classes = year.semesters[0].classes;
+      for (let j = 0; j < classes.length; j++) {
+        if (classes[j].id === course.id) {
+          return schedule[i].number;
+        }
+      }
+    }
+    return -1;
+  };
+
+  const extractYearsWithoutCourseYear = (course) => {
+    const years = schedule
+      .filter((year) => year.number != getYearNumberFromCourse(course))
+      .map((year) => year.number);
+    return years;
+  };
+
+  const submitNonFullYearRequest = async (desiredYear) => {
+    const body = {
+      schedule,
+      scheduleAdjList,
+      courseToChange,
+      desiredYear,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/schedule/nonfull",
+        body
+      );
+      if (res.data.message === "Success") {
+        setSchedule(res.data.schedule);
+        handleCloseModal();
+      } else {
+        alert("Can not move. Try a different course or year.");
+      }
+    } catch (error) {
+      alert("Something went wrong.");
+    }
+  };
+
+  const submitFullYearRequest = async (desiredYear) => {
+    const body = {
+      schedule,
+      scheduleAdjList,
+      courseToChange,
+      desiredYear,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/schedule/full-year-options",
+        body
+      );
+      if (res.data.validMoves.length !== 0) {
+        setOptions(res.data.validMoves);
+      } else {
+        alert("Can not move. Try a different course or year.");
+      }
+    } catch (error) {
+      alert("Something went wrong.");
+    }
+  };
+
+  const handleSubmitSwapRequest = (desiredYear) => {
+    // check if the year is full
+    const yearIdx = schedule.findIndex((year) => year.number === desiredYear);
+    if (schedule[yearIdx].semesters[0].classes.length !== 6) {
+      // not full
+      submitNonFullYearRequest(desiredYear);
+    } else {
+      submitFullYearRequest(desiredYear);
+    }
+  };
+
+  const getYearIdxFromYearNumber = (yearNumber) => {
+    return schedule.findIndex((year) => year.number === yearNumber);
+  };
+
+  const getCourseFromName = (courseName, desiredYear) => {
+    const yearIdx = getYearIdxFromYearNumber(desiredYear);
+    const courseIdx = schedule[yearIdx].semesters[0].classes.findIndex(
+      (course) => course.name === courseName
+    );
+    return schedule[yearIdx].semesters[0].classes[courseIdx];
+  };
+
+  const submitCourseSwapRequest = async (course, desiredYear) => {
+    const courses = [];
+    const courseToSwap = getCourseFromName(course, desiredYear);
+    courses.push(courseToChange);
+    courses.push(courseToSwap);
+    const body = {
+      schedule,
+      courses,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/schedule/swap",
+        body
+      );
+      setSchedule(res.data.schedule);
+      handleCloseModal();
+      setOptions(null);
+    } catch (error) {
+      alert("Something went wrong.");
     }
   };
 
@@ -110,6 +238,20 @@ export default function ScheduleTool() {
           year={year}
           displayYear={displayYear}
           handleCloseYear={handleCloseYear}
+          handleOpenModal={handleOpenModal}
+        />
+        <Modal
+          isOpen={isOpen}
+          handleCloseModal={handleCloseModal}
+          content={
+            <SwapModal
+              courseName={courseToChange.name}
+              years={extractYearsWithoutCourseYear(courseToChange)}
+              handleSubmitSwapRequest={handleSubmitSwapRequest}
+              options={options}
+              submitCourseSwapRequest={submitCourseSwapRequest}
+            />
+          }
         />
       </div>
     </div>

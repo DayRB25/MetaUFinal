@@ -6,12 +6,14 @@ export default function YearDetails({
   year,
   handleDisplayYear = () => {},
   displayYear = false,
+  handleOpenModal,
 }) {
   const semesterItems = year.semesters.map((semester, index) => (
     <SemesterDetails
       key={index}
       semester={semester}
       displayYear={displayYear}
+      handleOpenModal={handleOpenModal}
     />
   ));
   return (

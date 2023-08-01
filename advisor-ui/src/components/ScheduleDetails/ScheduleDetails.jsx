@@ -8,12 +8,14 @@ export default function ScheduleDetails({
   year,
   displayYear,
   handleCloseYear,
+  handleOpenModal,
 }) {
   const yearItems = years.map((year, index) => (
     <YearDetails
       key={index}
       year={year}
       handleDisplayYear={handleDisplayYear}
+      handleOpenModal={handleOpenModal}
     />
   ));
   return (
