@@ -11,6 +11,7 @@ export default function SwapModal({
   years,
   handleSubmitSwapRequest,
   options,
+  submitCourseSwapRequest,
 }) {
   const [year, setYear] = useState(-1);
   const [course, setCourse] = useState("");
@@ -21,6 +22,14 @@ export default function SwapModal({
 
   const handleChangeCourse = (event) => {
     setCourse(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (options !== null) {
+      submitCourseSwapRequest(course, year);
+    } else {
+      handleSubmitSwapRequest(year);
+    }
   };
 
   const yearOptions = years.map((year, idx) => (
@@ -71,10 +80,7 @@ export default function SwapModal({
             </Select>
           </FormControl>
         )}
-        <Button
-          variant="outlined"
-          onClick={() => handleSubmitSwapRequest(year)}
-        >
+        <Button variant="outlined" onClick={handleSubmit}>
           Submit
         </Button>
       </div>

@@ -186,6 +186,40 @@ export default function ScheduleTool() {
     }
   };
 
+  const getYearIdxFromYearNumber = (yearNumber) => {
+    return schedule.findIndex((year) => year.number === yearNumber);
+  };
+
+  const getCourseFromName = (courseName, desiredYear) => {
+    const yearIdx = getYearIdxFromYearNumber(desiredYear);
+    const courseIdx = schedule[yearIdx].semesters[0].classes.findIndex(
+      (course) => course.name === courseName
+    );
+    return schedule[yearIdx].semesters[0].classes[courseIdx];
+  };
+
+  const submitCourseSwapRequest = async (course, desiredYear) => {
+    const courses = [];
+    const courseToSwap = getCourseFromName(course, desiredYear);
+    courses.push(courseToChange);
+    courses.push(courseToSwap);
+    const body = {
+      schedule,
+      courses,
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/schedule/swap",
+        body
+      );
+      setSchedule(res.data.schedule);
+      handleCloseModal();
+      setOptions(null);
+    } catch (error) {
+      alert("Something went wrong.");
+    }
+  };
+
   return (
     <div className="schedule-tool">
       <div className="content">
@@ -215,6 +249,7 @@ export default function ScheduleTool() {
               years={extractYearsWithoutCourseYear(courseToChange)}
               handleSubmitSwapRequest={handleSubmitSwapRequest}
               options={options}
+              submitCourseSwapRequest={submitCourseSwapRequest}
             />
           }
         />
