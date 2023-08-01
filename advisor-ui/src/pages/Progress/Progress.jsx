@@ -5,12 +5,14 @@ import ClassProgressCard from "../../components/ClassProgressCard/ClassProgressC
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import GraduationProgressSpinner from "../../components/GraduationSpinner/GraduationSpinner";
+import { CircularProgress } from "@mui/material";
 import "./Progress.css";
 
 export default function Progress() {
   const [takenCount, setTakenCount] = useState(-1);
   const [requiredCount, setRequiredCount] = useState(-1);
   const [courseProgressList, setCourseProgressList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useContext(UserContext);
 
   const fetchCompletionInfo = async () => {
@@ -19,6 +21,7 @@ export default function Progress() {
       StudentId: user.id,
     };
     try {
+      setIsLoading(true);
       const res = await axios.post("http://localhost:5000/api/progress/", body);
       setTakenCount(res.data.takenClassesCount);
       setRequiredCount(res.data.requiredClassesCount);
@@ -26,6 +29,7 @@ export default function Progress() {
     } catch (error) {
       alert("Something went wrong");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -44,28 +48,31 @@ export default function Progress() {
             <ArrowBackIcon className="back" />
           </Link>
         </div>
-        <div className="header">
-          <GraduationProgressSpinner
-            value={
-              takenCount !== -1 && requiredCount !== -1
-                ? Math.round((takenCount / requiredCount) * 100)
-                : 0
-            }
-          />
-          <div className="text">
-            {takenCount !== -1 && requiredCount !== -1 && (
-              <h1>{`You are ${Math.round(
-                (takenCount / requiredCount) * 100
-              )}% complete!`}</h1>
-            )}
-            {takenCount !== -1 && requiredCount !== -1 && (
-              <h3>{`You have ${
-                requiredCount - takenCount
-              } classes left until graduation!`}</h3>
-            )}
+        {!isLoading && (
+          <div className="header">
+            <GraduationProgressSpinner
+              value={
+                takenCount !== -1 && requiredCount !== -1
+                  ? Math.round((takenCount / requiredCount) * 100)
+                  : 0
+              }
+            />
+            <div className="text">
+              {takenCount !== -1 && requiredCount !== -1 && (
+                <h1>{`You are ${Math.round(
+                  (takenCount / requiredCount) * 100
+                )}% complete!`}</h1>
+              )}
+              {takenCount !== -1 && requiredCount !== -1 && (
+                <h3>{`You have ${
+                  requiredCount - takenCount
+                } classes left until graduation!`}</h3>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="grid">{requiredClassesDisplay}</div>
+        )}
+        {!isLoading && <div className="grid">{requiredClassesDisplay}</div>}
+        {isLoading && <CircularProgress />}
       </div>
     </div>
   );

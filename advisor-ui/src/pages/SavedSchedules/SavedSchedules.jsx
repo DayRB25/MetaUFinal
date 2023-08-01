@@ -5,15 +5,18 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { UserContext } from "../../UserContext";
 import axios from "axios";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
+import { CircularProgress } from "@mui/material";
 import "./SavedSchedules.css";
 
 export default function SavedSchedules() {
   const [schedules, setSchedules] = useState([]);
   const [pageCount, setPageCount] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useContext(UserContext);
 
   const fetchSchedulesByPage = async (page) => {
     try {
+      setIsLoading(true);
       const res = await axios.get(
         `http://localhost:5000/api/save-schedule/${user.id}/${page}`
       );
@@ -21,6 +24,7 @@ export default function SavedSchedules() {
     } catch (error) {
       alert("Something went wrong here.");
     }
+    setIsLoading(false);
   };
 
   const fetchPageCount = async () => {
@@ -55,7 +59,8 @@ export default function SavedSchedules() {
         <div className="header">
           <h3>Saved Schedules:</h3>
         </div>
-        {scheduleDisplay}
+        {!isLoading && scheduleDisplay}
+        {isLoading && <CircularProgress />}
         {pageCount !== null && (
           <div className="pagination">
             <Pagination

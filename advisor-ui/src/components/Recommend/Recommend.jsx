@@ -5,6 +5,7 @@ import { IconButton } from "@mui/material";
 import Modal from "../Modal/Modal";
 import PreferenceModal from "../PreferenceModal/PreferenceModal";
 import OpportunityCard from "../OpportunityCard/OpportunityCard";
+import { CircularProgress } from "@mui/material";
 
 export default function Recommend({
   handleEndDateChange,
@@ -15,6 +16,8 @@ export default function Recommend({
   handleDistanceChange,
   handleSubmitPreferences,
   events,
+  recommendedIsLoading,
+  preferencesSubmitted,
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -54,7 +57,7 @@ export default function Recommend({
         </IconButton>
       </div>
       <div className="content">
-        {events.length === 0 && (
+        {!preferencesSubmitted && (
           <div id="complete-preferences">
             <h5>
               Please complete the preference form
@@ -68,7 +71,10 @@ export default function Recommend({
             </h5>
           </div>
         )}
-        {events.length !== 0 && <div className="grid">{recommendedItems}</div>}
+        {!recommendedIsLoading && (
+          <div className="grid">{recommendedItems}</div>
+        )}
+        {recommendedIsLoading && <CircularProgress />}
       </div>
     </div>
   );
