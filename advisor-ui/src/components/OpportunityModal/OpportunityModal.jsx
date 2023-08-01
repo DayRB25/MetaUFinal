@@ -126,7 +126,7 @@ export default function OpportunityModal({ eventItem }) {
         </div>
         <div className="admin">
           <SupervisorAccountIcon />
-          <p>{eventItem.admin}</p>
+          <p>{`${eventItem.admin_firstname} ${eventItem.admin_lastname}`}</p>
         </div>
         <div className="description">
           <div className="icon-title">
