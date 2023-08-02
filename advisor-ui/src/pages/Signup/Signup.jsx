@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
 import InputForm from "../../components/InputForm/InputForm";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../../UserContext.js";
 import { Button } from "@mui/material";
+import apiBase from "../../utils/apiBase";
 import "./Signup.css";
 
 export default function Signup() {
@@ -188,10 +188,7 @@ export default function Signup() {
       address: address,
     };
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/student/create",
-        body
-      );
+      const res = await apiBase.post("/student/create", body);
       const newStudent = res.data.user;
       updateUser(newStudent);
       // navigate to landing page
