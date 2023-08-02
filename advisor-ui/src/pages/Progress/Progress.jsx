@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../UserContext";
 import ClassProgressCard from "../../components/ClassProgressCard/ClassProgressCard";
@@ -6,6 +5,7 @@ import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import GraduationProgressSpinner from "../../components/GraduationSpinner/GraduationSpinner";
 import { CircularProgress } from "@mui/material";
+import apiBase from "../../utils/apiBase";
 import "./Progress.css";
 
 export default function Progress() {
@@ -22,7 +22,7 @@ export default function Progress() {
     };
     try {
       setIsLoading(true);
-      const res = await axios.post("http://localhost:5000/api/progress/", body);
+      const res = await apiBase.post("/progress/", body);
       setTakenCount(res.data.takenClassesCount);
       setRequiredCount(res.data.requiredClassesCount);
       setCourseProgressList(res.data.currentAcademicProgress);
