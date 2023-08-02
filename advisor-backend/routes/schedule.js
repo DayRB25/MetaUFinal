@@ -147,22 +147,29 @@ const dfsToCount = (node, graph, visited) => {
   }
 };
 
-const findAllPrerequisites = (course, graph, prereqs) => {
-  for (const prereq of graph[course]) {
-    if (!prereqs.has(prereq)) {
-      prereqs.add(parseInt(prereq));
-      findAllPrerequisites(prereq, graph, prereqs);
+const findAllCoursesInSubGraphRootedAtCourse = (
+  course,
+  graph,
+  dependentCourses
+) => {
+  for (const dependentCourse of graph[course]) {
+    if (!dependentCourses.has(dependentCourse)) {
+      dependentCourses.add(parseInt(dependentCourse));
+      findAllCoursesInSubGraphRootedAtCourse(
+        dependentCourse,
+        graph,
+        dependentCourses
+      );
     }
   }
 };
 
-const findAllPostrequisites = (node, adjList, postReqSet) => {
-  for (const postreq of adjList[node]) {
-    if (!postReqSet.has(postreq)) {
-      postReqSet.add(postreq);
-      findAllPostrequisites(postreq, adjList, postReqSet);
-    }
-  }
+const findAllPrerequisites = (course, graph, prereqs) => {
+  findAllCoursesInSubGraphRootedAtCourse(course, graph, prereqs);
+};
+
+const findAllPostrequisites = (course, graph, postreqs) => {
+  findAllCoursesInSubGraphRootedAtCourse(course, graph, postreqs);
 };
 
 const findCourseYear = (scheduleObject, course) => {
