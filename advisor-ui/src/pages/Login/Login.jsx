@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import { UserContext } from "../../UserContext.js";
 import { Button } from "@mui/material";
+import apiBase from "../../utils/apiBase.js";
 
 import "./Login.css";
 import InputForm from "../../components/InputForm/InputForm";
@@ -28,10 +28,7 @@ export default function Login() {
     } else {
       try {
         const body = { username, password };
-        const res = await axios.post(
-          "http://localhost:5000/api/student/login",
-          body
-        );
+        const res = await apiBase.post("/student/login", body);
         const newStudent = res.data.student;
         updateUser(newStudent);
         navigate("/student/landing");
