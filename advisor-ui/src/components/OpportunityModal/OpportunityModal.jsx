@@ -7,13 +7,13 @@ import InfoIcon from "@mui/icons-material/Info";
 import InputForm from "../InputForm/InputForm";
 import { Button } from "@mui/material";
 import { UserContext } from "../../UserContext.js";
-import axios from "axios";
 import Popover from "../Popover/Popover";
 import Persona from "../Persona/Persona";
 import { CircularProgress } from "@mui/material";
 import { createDateFromTimeStamp } from "../../utils/dateTimeUtils";
 import { createStudentSignup } from "../../utils/studentSignupUtils";
 import { createStudentEvent } from "../../utils/studentEventUtils";
+import apiBase from "../../utils/apiBase";
 
 export default function OpportunityModal({ eventItem }) {
   const [hours, setHours] = useState("");
@@ -69,8 +69,8 @@ export default function OpportunityModal({ eventItem }) {
   const fetchMap = async () => {
     try {
       setMapIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/maps/${eventItem.latitude}/${eventItem.longitude}`
+      const res = await apiBase.get(
+        `/maps/${eventItem.latitude}/${eventItem.longitude}`
       );
       setImgData(res.data.response);
     } catch (error) {
@@ -82,10 +82,8 @@ export default function OpportunityModal({ eventItem }) {
   const fetchAdminInfo = async () => {
     try {
       setAdminInfoIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/admin/${
-          eventItem.AdminId ?? eventItem.adminid
-        }`
+      const res = await apiBase.get(
+        `/admin/${eventItem.AdminId ?? eventItem.adminid}`
       );
       setAdminInfo(res.data.admin);
     } catch (error) {
