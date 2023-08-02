@@ -901,16 +901,9 @@ router.post("/full-year-options", (req, res) => {
 
       // if both flags still true, add it's name to array of valid options
       if (validForwardMove && validBackMove) {
-        const yearIdx = schedule.findIndex(
-          (year) => year.number === desiredYear
-        );
-        const courseDetailsIdx = schedule[
-          yearIdx
-        ].semesters[0].classes.findIndex(
-          (classItem) => classItem.id === course
-        );
-        const courseDetails =
-          schedule[yearIdx].semesters[0].classes[courseDetailsIdx];
+        const yearIdx = findYearIdx(desiredYear, schedule);
+        const courseIdx = findCourseIdx(course, schedule, yearIdx);
+        const courseDetails = findCourseDetails(courseIdx, schedule, yearIdx);
         validMoves.push(courseDetails.name);
       }
     });
@@ -950,22 +943,32 @@ router.post("/full-year-options", (req, res) => {
 
       // if both flags true, swap is valid add it's name to array of valid options
       if (validBackMove && validForwardMove) {
-        const yearIdx = schedule.findIndex(
-          (year) => year.number === desiredYear
-        );
-        const courseDetailsIdx = schedule[
-          yearIdx
-        ].semesters[0].classes.findIndex(
-          (classItem) => classItem.id === course
-        );
-        const courseDetails =
-          schedule[yearIdx].semesters[0].classes[courseDetailsIdx];
+        const yearIdx = findYearIdx(desiredYear, schedule);
+        const courseIdx = findCourseIdx(course, schedule, yearIdx);
+        const courseDetails = findCourseDetails(courseIdx, schedule, yearIdx);
         validMoves.push(courseDetails.name);
       }
     });
     return res.json({ validMoves });
   }
 });
+
+const findYearIdx = (number, schedule) => {
+  const yearIdx = schedule.findIndex((year) => year.number === number);
+  return yearIdx;
+};
+
+const findCourseIdx = (courseId, schedule, yearIdx) => {
+  const courseIdx = schedule[yearIdx].semesters[0].classes.findIndex(
+    (classItem) => classItem.id === courseId
+  );
+  return courseIdx;
+};
+
+const findCourseDetails = (courseIdx, schedule, yearIdx) => {
+  const courseInfo = schedule[yearIdx].semesters[0].classes[courseIdx];
+  return courseInfo;
+};
 
 router.post("/swap", (req, res) => {
   const courses = req.body.courses;
