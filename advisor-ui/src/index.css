@@ -35,3 +35,12 @@ h5 {
 .close:hover {
   color: lightgray;
 }
+
+.nav-text {
+  color: black;
+  text-decoration: none;
+}
+
+.nav-text:hover {
+  color: lightgray;
+}
