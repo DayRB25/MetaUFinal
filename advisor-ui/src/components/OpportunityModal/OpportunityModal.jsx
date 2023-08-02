@@ -11,6 +11,7 @@ import axios from "axios";
 import Popover from "../Popover/Popover";
 import Persona from "../Persona/Persona";
 import { CircularProgress } from "@mui/material";
+import { createDateFromTimeStamp } from "../../utils/dateTimeUtils";
 
 export default function OpportunityModal({ eventItem }) {
   const [hours, setHours] = useState("");
@@ -91,14 +92,6 @@ export default function OpportunityModal({ eventItem }) {
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
-  };
-
-  const createDateFromTimeStamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year}-${month}-${day}`;
   };
 
   const compareDates = () => {

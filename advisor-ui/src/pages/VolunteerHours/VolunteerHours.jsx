@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Link } from "react-router-dom";
+import { createDateFromTimeStamp } from "../../utils/dateTimeUtils.js";
 import "./VolunteerHours.css";
 
 export default function VolunteerHours() {
@@ -69,14 +70,6 @@ export default function VolunteerHours() {
     if (successfulDelete) {
       deleteStudentEventFromState(id);
     }
-  };
-
-  const createDateFromTimeStamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year}-${month}-${day}`;
   };
 
   const studentEventRows = studentEvents.map((studentEvent) => {
