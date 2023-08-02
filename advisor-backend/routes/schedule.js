@@ -39,35 +39,21 @@ const calculateInDegrees = (
   }
 };
 
-const checkDesiredYearAndBefore = (
+const isValidSchedule = (
   scheduleObject,
   desiredYear,
-  postReqsSet
+  dependentCoursesSet,
+  backSwap
 ) => {
   let validMoveFlag = true;
   for (const year in scheduleObject) {
-    // only check desiredYear and before
-    if (parseInt(year) <= desiredYear) {
-      const coursesSet = scheduleObject[year];
-      postReqsSet.forEach((postReq) => {
-        if (coursesSet.has(postReq)) {
-          // invalid schedule
-          validMoveFlag = false;
-        }
-      });
-    }
-  }
-  return validMoveFlag;
-};
-
-const checkDesiredYearAndAfter = (scheduleObject, desiredYear, preReqsSet) => {
-  let validMoveFlag = true;
-  for (const year in scheduleObject) {
     // only check desiredYear and after
-    if (parseInt(year) >= desiredYear) {
+    if (
+      backSwap ? parseInt(year) >= desiredYear : parseInt(year) <= desiredYear
+    ) {
       const coursesSet = scheduleObject[year];
-      preReqsSet.forEach((preReq) => {
-        if (coursesSet.has(preReq)) {
+      dependentCoursesSet.forEach((dependentCourse) => {
+        if (coursesSet.has(dependentCourse)) {
           // invalid schedule
           validMoveFlag = false;
         }
@@ -817,10 +803,11 @@ router.post("/nonfull", (req, res) => {
     findAllPostrequisites(courseToChange.id, scheduleAdjList, postReqsSet);
 
     // now to check through the relevant years in scheduleObject for any of the postReqs //
-    const validForwardMove = checkDesiredYearAndBefore(
+    const validForwardMove = isValidSchedule(
       scheduleObject,
       desiredYear,
-      postReqsSet
+      postReqsSet,
+      false
     );
 
     if (validForwardMove) {
@@ -845,10 +832,11 @@ router.post("/nonfull", (req, res) => {
     findAllPrerequisites(courseToChange.id, reverseScheduleAdjList, preReqsSet);
 
     // now to check through the relevant years in scheduleObject for any of the postReqs //
-    const validBackMove = checkDesiredYearAndAfter(
+    const validBackMove = isValidSchedule(
       scheduleObject,
       desiredYear,
-      preReqsSet
+      preReqsSet,
+      true
     );
 
     if (validBackMove) {
@@ -911,10 +899,11 @@ router.post("/full-year-options", (req, res) => {
       findAllPostrequisites(courseToChange.id, scheduleAdjList, postReqsSet);
 
       // now to check through the relevant years in scheduleObject for any of the postReqs
-      const validForwardMove = checkDesiredYearAndBefore(
+      const validForwardMove = isValidSchedule(
         scheduleObject,
         desiredYear,
-        postReqsSet
+        postReqsSet,
+        false
       );
 
       // find preReqs ////
@@ -922,10 +911,11 @@ router.post("/full-year-options", (req, res) => {
       findAllPrerequisites(course, reverseScheduleAdjList, preReqsSet);
 
       // now to check through the relevant years in scheduleObject for any of the postReqs //
-      const validBackMove = checkDesiredYearAndAfter(
+      const validBackMove = isValidSchedule(
         scheduleObject,
         courseYear,
-        preReqsSet
+        preReqsSet,
+        true
       );
 
       // if both flags still true, add it's name to array of valid options
@@ -965,10 +955,11 @@ router.post("/full-year-options", (req, res) => {
       findAllPostrequisites(course, scheduleAdjList, postReqsSet);
 
       // now to check through the relevant years in scheduleObject for any of the postReqs //
-      const validForwardMove = checkDesiredYearAndBefore(
+      const validForwardMove = isValidSchedule(
         scheduleObject,
         courseYear,
-        postReqsSet
+        postReqsSet,
+        false
       );
 
       // then do backward check for courseToMove
@@ -981,10 +972,11 @@ router.post("/full-year-options", (req, res) => {
       );
 
       // now to check through the relevant years in scheduleObject for any of the postReqs //
-      const validBackMove = checkDesiredYearAndAfter(
+      const validBackMove = isValidSchedule(
         scheduleObject,
         desiredYear,
-        preReqsSet
+        preReqsSet,
+        true
       );
 
       // if both flags true, swap is valid add it's name to array of valid options
