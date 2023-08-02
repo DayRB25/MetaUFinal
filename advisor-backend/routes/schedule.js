@@ -83,20 +83,6 @@ const countNodes = (sourceNode, graph) => {
   return { classes: visited, count: visited.size };
 };
 
-const deepCopyWithSets = (obj) => {
-  const copiedObject = {};
-  for (const key in obj) {
-    if (typeof obj[key] === "object" && obj[key] instanceof Set) {
-      copiedObject[key] = new Set(obj[key]);
-    } else if (typeof obj[key] === "object") {
-      copiedObject[key] = deepCopyWithSets(obj[key]);
-    } else {
-      copiedObject[key] = obj[key];
-    }
-  }
-  return copiedObject;
-};
-
 const deleteLengthyPrereqPaths = (preReqPaths, tooLongSet, yearsLeft) => {
   for (const course in preReqPaths) {
     if (preReqPaths[course].count > yearsLeft - 2) {
@@ -882,18 +868,6 @@ router.post("/full-year-options", (req, res) => {
     // forward swap for courseToChange
     // loop through each course in the set
     courseSet.forEach((course) => {
-      // make copy of schedule object to swap items
-      const copyForSwap = deepCopyWithSets(scheduleObject);
-
-      // now remove course from desiredYear set
-      copyForSwap[desiredYear].delete(course);
-      // now remove courseToMove from courseYear set
-      copyForSwap[courseYear].delete(courseToChange.id);
-
-      // add course to courseYear and courseToMove to desiredYear
-      copyForSwap[desiredYear].add(courseToChange.id);
-      copyForSwap[courseYear].add(course);
-
       // find postReqs ////
       const postReqsSet = new Set();
       findAllPostrequisites(courseToChange.id, scheduleAdjList, postReqsSet);
@@ -937,18 +911,6 @@ router.post("/full-year-options", (req, res) => {
   } else {
     // backward swap for courseToChange
     courseSet.forEach((course) => {
-      // make copy of schedule object to swap items
-      const copyForSwap = deepCopyWithSets(scheduleObject);
-
-      // now remove course from desiredYear set
-      copyForSwap[desiredYear].delete(course);
-      // now remove courseToMove from courseYear set
-      copyForSwap[courseYear].delete(courseToChange.id);
-
-      // add course to courseYear and courseToMove to desiredYear
-      copyForSwap[desiredYear].add(courseToChange.id);
-      copyForSwap[courseYear].add(course);
-
       // then do forward check for course
       // find postReqs ////
       const postReqsSet = new Set();
