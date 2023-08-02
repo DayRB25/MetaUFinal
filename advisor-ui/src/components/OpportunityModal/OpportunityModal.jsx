@@ -12,6 +12,7 @@ import Popover from "../Popover/Popover";
 import Persona from "../Persona/Persona";
 import { CircularProgress } from "@mui/material";
 import { createDateFromTimeStamp } from "../../utils/dateTimeUtils";
+import { createStudentSignup } from "../../utils/studentSignupUtils";
 
 export default function OpportunityModal({ eventItem }) {
   const [hours, setHours] = useState("");
@@ -25,29 +26,6 @@ export default function OpportunityModal({ eventItem }) {
 
   const [mapIsLoading, setMapIsLoading] = useState(false);
   const [adminInfoIsLoading, setAdminInfoIsLoading] = useState(false);
-
-  const createStudentSignup = async () => {
-    const body = {
-      studentId: user.id,
-      eventDetailId: eventItem.id,
-    };
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/student-signup/create",
-        body
-      );
-      alert("You signed up successfully!");
-    } catch (error) {
-      // handle student already signedup
-      const statusCodeLength = 3;
-      // network status code is the last 3 chars in error message, extract
-      if (error.message.slice(-statusCodeLength) === "403") {
-        alert("You are already signed up for this event.");
-      } else {
-        alert("Could not add event. Try later.");
-      }
-    }
-  };
 
   const createStudentEvent = async () => {
     const body = {
@@ -92,6 +70,14 @@ export default function OpportunityModal({ eventItem }) {
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleStudentSignUp = () => {
+    const body = {
+      studentId: user.id,
+      eventDetailId: eventItem.id,
+    };
+    createStudentSignup(body);
   };
 
   const compareDates = () => {
@@ -192,7 +178,7 @@ export default function OpportunityModal({ eventItem }) {
               </Button>
             )}
             {!eventOccurred && (
-              <Button variant="outlined" onClick={createStudentSignup}>
+              <Button variant="outlined" onClick={handleStudentSignUp}>
                 Signup
               </Button>
             )}
