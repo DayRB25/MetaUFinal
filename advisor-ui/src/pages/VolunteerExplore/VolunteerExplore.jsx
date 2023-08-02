@@ -6,8 +6,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Pagination from "@mui/material/Pagination";
 import Recommend from "../../components/Recommend/Recommend";
 import { UserContext } from "../../UserContext.js";
-import dayjs from "dayjs";
 import apiBase from "../../utils/apiBase";
+import { formatTime, formatDate } from "../../utils/dateTimeUtils";
 
 export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
@@ -26,16 +26,6 @@ export default function VolunteerExplore() {
   const [recommendedIsLoading, setRecommendIsLoading] = useState(false);
 
   const [preferencesSubmitted, setPreferencesSubmitted] = useState(false);
-
-  const formatDate = (date) => {
-    // Format the date to YYYY-MM-DD
-    return dayjs(date).format("YYYY-MM-DD");
-  };
-
-  const formatTime = (time) => {
-    // Format the time to HH:MM:SS
-    return dayjs(time).format("HH:mm:ss");
-  };
 
   const handleStartDateChange = (date) => {
     const formattedDate = formatDate(date);
