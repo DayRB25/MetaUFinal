@@ -13,7 +13,6 @@ import Persona from "../Persona/Persona";
 import { CircularProgress } from "@mui/material";
 
 export default function OpportunityModal({ eventItem }) {
-  // YYYY-MM-DD = 10 chars
   const [hours, setHours] = useState("");
   const [openHoursInput, setOpenHoursInput] = useState(false);
   const [eventOccurred, setEventOccurred] = useState(false);
@@ -49,7 +48,7 @@ export default function OpportunityModal({ eventItem }) {
     }
   };
 
-  const addStudentEventToDB = async () => {
+  const createStudentEvent = async () => {
     const body = {
       studentId: user.id,
       eventDetailId: eventItem.id,
@@ -74,7 +73,7 @@ export default function OpportunityModal({ eventItem }) {
   };
 
   const handleSubmit = async () => {
-    await addStudentEventToDB();
+    await createStudentEvent();
     setOpenHoursInput(false);
     setHours("");
   };
