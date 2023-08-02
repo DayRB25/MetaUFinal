@@ -75,46 +75,11 @@ router.get("/page-count", async (req, res) => {
   }
 });
 
-// TO DO IN DIFFERENT COMMIT: ADJUST THIS ROUTE BY REMOVING parseAndCreate methods..., REVERT BACK TO GENERAL PAGINATED QUERIES
+// endpoint for fetching volunteer events by page
 router.get("/page/:page", async (req, res) => {
   const page = req.params.page;
-  let queries = {};
-  if (req.query.location) {
-    queries = {
-      ...queries,
-      ...parseAndCreateLocationQueryString(req.query.location),
-    };
-  }
-
-  if (req.query.time_commitment) {
-    queries = {
-      ...queries,
-      ...parseAndCreateTimeCommitmentQuery(req.query.time_commitment),
-    };
-  }
-
-  if (req.query.start_date && req.query.end_date) {
-    const startDate = new Date(req.query.start_date);
-    const endDate = new Date(req.query.end_date);
-    queries = {
-      ...queries,
-      ...parseAndCreateDateRangeQuery(startDate, endDate),
-    };
-  }
-
-  if (req.query.start_time && req.query.end_time) {
-    const startTime = req.query.start_time;
-    const endTime = req.query.end_time;
-    queries = {
-      ...queries,
-      ...parseAndCreateTimeRangeQuery(startTime, endTime),
-    };
-  }
   try {
     const events = await EventDetail.findAll({
-      where: {
-        ...queries,
-      },
       limit: pageLimit,
       offset: (page - 1) * pageLimit,
     });

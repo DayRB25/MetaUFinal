@@ -5,13 +5,14 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import axios from "axios";
 import { UserContext } from "../../UserContext.js";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Link } from "react-router-dom";
+import { createDateFromTimeStamp } from "../../utils/dateTimeUtils.js";
+import apiBase from "../../utils/apiBase.js";
 import "./VolunteerHours.css";
 
 export default function VolunteerHours() {
@@ -23,10 +24,9 @@ export default function VolunteerHours() {
   const fetchStudentEvents = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/student-event/${user.id}`,
-        { params: { studentId: user.id } }
-      );
+      const res = await apiBase.get(`/student-event/${user.id}`, {
+        params: { studentId: user.id },
+      });
       const fetchedStudentEvents = res.data.studentEvents;
       setStudentEvents(fetchedStudentEvents);
     } catch (error) {
@@ -49,10 +49,9 @@ export default function VolunteerHours() {
   const deleteStudentEventFromDB = async (id) => {
     try {
       setIsLoading(true);
-      const res = axios.delete(
-        `http://localhost:5000/api/student-event/${id}`,
-        { params: { studentEventId: id } }
-      );
+      const res = apiBase.delete(`/student-event/${id}`, {
+        params: { studentEventId: id },
+      });
       setIsLoading(false);
       return true;
     } catch (error) {
@@ -69,14 +68,6 @@ export default function VolunteerHours() {
     if (successfulDelete) {
       deleteStudentEventFromState(id);
     }
-  };
-
-  const createDateFromTimeStamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year}-${month}-${day}`;
   };
 
   const studentEventRows = studentEvents.map((studentEvent) => {

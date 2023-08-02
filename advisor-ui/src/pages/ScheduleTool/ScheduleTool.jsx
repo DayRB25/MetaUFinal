@@ -3,7 +3,6 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import axios from "axios";
 import { UserContext } from "../../UserContext.js";
 import "./ScheduleTool.css";
 import Constraints from "../../components/Constraints/Constraints";
@@ -11,6 +10,7 @@ import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
 import Modal from "../../components/Modal/Modal";
 import SwapModal from "../../components/SwapModal/SwapModal.jsx";
 import { CircularProgress } from "@mui/material";
+import apiBase from "../../utils/apiBase.js";
 
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
@@ -99,10 +99,7 @@ export default function ScheduleTool() {
     };
     try {
       setScheduleIsLoading(true);
-      const res = await axios.post(
-        "http://localhost:5000/api/schedule/create",
-        body
-      );
+      const res = await apiBase.post("/schedule/create", body);
       setScheduleIsLoading(false);
       if (res.data.schedule === undefined || res.data.schedule === null) {
         alert("Schedule not possible. Enter new constraints.");
@@ -145,10 +142,7 @@ export default function ScheduleTool() {
     };
     try {
       setSwapOperationIsLoading(true);
-      const res = await axios.post(
-        "http://localhost:5000/api/schedule/nonfull",
-        body
-      );
+      const res = await apiBase.post("/schedule/nonfull", body);
       if (res.data.message === "Success") {
         setSchedule(res.data.schedule);
         handleCloseModal();
@@ -170,10 +164,7 @@ export default function ScheduleTool() {
     };
     try {
       setSwapOperationIsLoading(true);
-      const res = await axios.post(
-        "http://localhost:5000/api/schedule/full-year-options",
-        body
-      );
+      const res = await apiBase.post("/schedule/full-year-options", body);
       if (res.data.validMoves.length !== 0) {
         setOptions(res.data.validMoves);
       } else {
@@ -219,10 +210,7 @@ export default function ScheduleTool() {
     };
     try {
       setSwapOperationIsLoading(true);
-      const res = await axios.post(
-        "http://localhost:5000/api/schedule/swap",
-        body
-      );
+      const res = await apiBase.post("/schedule/swap", body);
       setSchedule(res.data.schedule);
       handleCloseModal();
       setOptions(null);
@@ -239,10 +227,7 @@ export default function ScheduleTool() {
     };
     try {
       setScheduleIsLoading(true);
-      const res = await axios.post(
-        "http://localhost:5000/api/save-schedule/create",
-        body
-      );
+      const res = await apiBase.post("/save-schedule/create", body);
       alert("Save successful!");
     } catch (error) {
       alert("Something went wrong.");

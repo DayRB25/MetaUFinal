@@ -3,9 +3,9 @@ import { Pagination } from "@mui/material";
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { UserContext } from "../../UserContext";
-import axios from "axios";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
 import { CircularProgress } from "@mui/material";
+import apiBase from "../../utils/apiBase";
 import "./SavedSchedules.css";
 
 export default function SavedSchedules() {
@@ -17,9 +17,7 @@ export default function SavedSchedules() {
   const fetchSchedulesByPage = async (page) => {
     try {
       setIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/save-schedule/${user.id}/${page}`
-      );
+      const res = await apiBase.get(`/save-schedule/${user.id}/${page}`);
       setSchedules(res.data.schedules);
     } catch (error) {
       alert("Something went wrong here.");
@@ -29,9 +27,7 @@ export default function SavedSchedules() {
 
   const fetchPageCount = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/save-schedule/${user.id}/page-count`
-      );
+      const res = await apiBase.get(`/save-schedule/${user.id}/page-count`);
       const pageCount = res.data.pageCount;
       setPageCount(pageCount);
     } catch (error) {

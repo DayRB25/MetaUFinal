@@ -7,13 +7,15 @@ import InfoIcon from "@mui/icons-material/Info";
 import InputForm from "../InputForm/InputForm";
 import { Button } from "@mui/material";
 import { UserContext } from "../../UserContext.js";
-import axios from "axios";
 import Popover from "../Popover/Popover";
 import Persona from "../Persona/Persona";
 import { CircularProgress } from "@mui/material";
+import { createDateFromTimeStamp } from "../../utils/dateTimeUtils";
+import { createStudentSignup } from "../../utils/studentSignupUtils";
+import { createStudentEvent } from "../../utils/studentEventUtils";
+import apiBase from "../../utils/apiBase";
 
 export default function OpportunityModal({ eventItem }) {
-  // YYYY-MM-DD = 10 chars
   const [hours, setHours] = useState("");
   const [openHoursInput, setOpenHoursInput] = useState(false);
   const [eventOccurred, setEventOccurred] = useState(false);
@@ -26,55 +28,12 @@ export default function OpportunityModal({ eventItem }) {
   const [mapIsLoading, setMapIsLoading] = useState(false);
   const [adminInfoIsLoading, setAdminInfoIsLoading] = useState(false);
 
-  const createStudentSignup = async () => {
-    const body = {
-      studentId: user.id,
-      eventDetailId: eventItem.id,
-    };
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/student-signup/create",
-        body
-      );
-      alert("You signed up successfully!");
-    } catch (error) {
-      // handle student already signedup
-      const statusCodeLength = 3;
-      // network status code is the last 3 chars in error message, extract
-      if (error.message.slice(-statusCodeLength) === "403") {
-        alert("You are already signed up for this event.");
-      } else {
-        alert("Could not add event. Try later.");
-      }
-    }
-  };
-
-  const addStudentEventToDB = async () => {
-    const body = {
-      studentId: user.id,
-      eventDetailId: eventItem.id,
-      hours: parseInt(hours),
-    };
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/student-event/create",
-        body
-      );
-    } catch (error) {
-      alert("Could not add event. Try later.");
-    }
-  };
-
-  const handleChangeHours = (e) => {
-    setHours(e.target.value);
-  };
-
   const handleAttended = () => {
     setOpenHoursInput(true);
   };
 
   const handleSubmit = async () => {
-    await addStudentEventToDB();
+    await createStudentEvent(user.id, eventItem.id, hours);
     setOpenHoursInput(false);
     setHours("");
   };
@@ -98,14 +57,6 @@ export default function OpportunityModal({ eventItem }) {
     setAnchorEl(null);
   };
 
-  const createDateFromTimeStamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year}-${month}-${day}`;
-  };
-
   const compareDates = () => {
     const eventDate = new Date(eventItem.date);
     const currentDate = new Date();
@@ -118,8 +69,8 @@ export default function OpportunityModal({ eventItem }) {
   const fetchMap = async () => {
     try {
       setMapIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/maps/${eventItem.latitude}/${eventItem.longitude}`
+      const res = await apiBase.get(
+        `/maps/${eventItem.latitude}/${eventItem.longitude}`
       );
       setImgData(res.data.response);
     } catch (error) {
@@ -131,10 +82,8 @@ export default function OpportunityModal({ eventItem }) {
   const fetchAdminInfo = async () => {
     try {
       setAdminInfoIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/admin/${
-          eventItem.AdminId ?? eventItem.adminid
-        }`
+      const res = await apiBase.get(
+        `/admin/${eventItem.AdminId ?? eventItem.adminid}`
       );
       setAdminInfo(res.data.admin);
     } catch (error) {
@@ -195,7 +144,7 @@ export default function OpportunityModal({ eventItem }) {
                 type="text"
                 placeholder="Enter number of hours"
                 value={hours}
-                handleChange={handleChangeHours}
+                handleChange={(e) => setHours(e.target.value)}
               />
             )}
             {eventOccurred && (
@@ -204,7 +153,10 @@ export default function OpportunityModal({ eventItem }) {
               </Button>
             )}
             {!eventOccurred && (
-              <Button variant="outlined" onClick={createStudentSignup}>
+              <Button
+                variant="outlined"
+                onClick={() => createStudentSignup(user.id, eventItem.id)}
+              >
                 Signup
               </Button>
             )}
