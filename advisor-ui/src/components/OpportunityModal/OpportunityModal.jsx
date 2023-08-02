@@ -13,6 +13,7 @@ import Persona from "../Persona/Persona";
 import { CircularProgress } from "@mui/material";
 import { createDateFromTimeStamp } from "../../utils/dateTimeUtils";
 import { createStudentSignup } from "../../utils/studentSignupUtils";
+import { createStudentEvent } from "../../utils/studentEventUtils";
 
 export default function OpportunityModal({ eventItem }) {
   const [hours, setHours] = useState("");
@@ -27,28 +28,12 @@ export default function OpportunityModal({ eventItem }) {
   const [mapIsLoading, setMapIsLoading] = useState(false);
   const [adminInfoIsLoading, setAdminInfoIsLoading] = useState(false);
 
-  const createStudentEvent = async () => {
-    const body = {
-      studentId: user.id,
-      eventDetailId: eventItem.id,
-      hours: parseInt(hours),
-    };
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/student-event/create",
-        body
-      );
-    } catch (error) {
-      alert("Could not add event. Try later.");
-    }
-  };
-
   const handleAttended = () => {
     setOpenHoursInput(true);
   };
 
   const handleSubmit = async () => {
-    await createStudentEvent();
+    await createStudentEvent(user.id, eventItem.id, hours);
     setOpenHoursInput(false);
     setHours("");
   };
