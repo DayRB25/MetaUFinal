@@ -1,5 +1,10 @@
 import axios from "axios";
-const createStudentSignup = async (body) => {
+
+const createStudentSignup = async (studentId, eventDetailId) => {
+  const body = {
+    studentId,
+    eventDetailId,
+  };
   try {
     const res = await axios.post(
       "http://localhost:5000/api/student-signup/create",

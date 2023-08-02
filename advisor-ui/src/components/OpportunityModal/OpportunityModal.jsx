@@ -57,14 +57,6 @@ export default function OpportunityModal({ eventItem }) {
     setAnchorEl(null);
   };
 
-  const handleStudentSignUp = () => {
-    const body = {
-      studentId: user.id,
-      eventDetailId: eventItem.id,
-    };
-    createStudentSignup(body);
-  };
-
   const compareDates = () => {
     const eventDate = new Date(eventItem.date);
     const currentDate = new Date();
@@ -163,7 +155,10 @@ export default function OpportunityModal({ eventItem }) {
               </Button>
             )}
             {!eventOccurred && (
-              <Button variant="outlined" onClick={handleStudentSignUp}>
+              <Button
+                variant="outlined"
+                onClick={() => createStudentSignup(user.id, eventItem.id)}
+              >
                 Signup
               </Button>
             )}
