@@ -2,12 +2,12 @@ import React, { useEffect, useState, useContext } from "react";
 import "./VolunteerExplore.css";
 import Explore from "../../components/Explore/Explore";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Pagination from "@mui/material/Pagination";
 import Recommend from "../../components/Recommend/Recommend";
 import { UserContext } from "../../UserContext.js";
 import dayjs from "dayjs";
+import apiBase from "../../utils/apiBase";
 
 export default function VolunteerExplore() {
   const [events, setEvents] = useState([]);
@@ -96,8 +96,8 @@ export default function VolunteerExplore() {
   ) => {
     try {
       setRecommendIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/events/recommended/${user.id}?distance=${distance}&start_date=${startDate}&end_date=${endDate}&start_time=${startTime}&end_time=${endTime}&time_commitment=${timeCommitment}`,
+      const res = await apiBase.get(
+        `/events/recommended/${user.id}?distance=${distance}&start_date=${startDate}&end_date=${endDate}&start_time=${startTime}&end_time=${endTime}&time_commitment=${timeCommitment}`,
         { params: { studentId: user.id } }
       );
       const fetchedRecommendedEvents = res.data.events;
@@ -111,9 +111,7 @@ export default function VolunteerExplore() {
   const fetchEventsByPage = async (page) => {
     try {
       setExploreIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/events/page/${page}`
-      );
+      const res = await apiBase.get(`/events/page/${page}`);
       const fetchedEvents = res.data.events;
       setEvents(fetchedEvents);
     } catch (error) {
@@ -124,9 +122,7 @@ export default function VolunteerExplore() {
 
   const fetchPageCount = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/events/page-count"
-      );
+      const res = await apiBase.get("/events/page-count");
       const pageCount = res.data.pageCount;
       setPageCount(pageCount);
     } catch (error) {
