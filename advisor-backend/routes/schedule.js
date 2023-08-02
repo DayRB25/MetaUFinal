@@ -218,6 +218,23 @@ const fetchCourseDataByName = async (name) => {
   }
 };
 
+const findCourseIdx = (courseId, schedule, yearIdx) => {
+  const courseIdx = schedule[yearIdx].semesters[0].classes.findIndex(
+    (classItem) => classItem.id === courseId
+  );
+  return courseIdx;
+};
+
+const findCourseDetails = (courseIdx, schedule, yearIdx) => {
+  const courseInfo = schedule[yearIdx].semesters[0].classes[courseIdx];
+  return courseInfo;
+};
+
+const findYearIdx = (number, schedule) => {
+  const yearIdx = schedule.findIndex((year) => year.number === number);
+  return yearIdx;
+};
+
 const generateSchedule = async (
   topologicalSort,
   reversedFinalAdjList,
@@ -952,23 +969,6 @@ router.post("/full-year-options", (req, res) => {
     return res.json({ validMoves });
   }
 });
-
-const findYearIdx = (number, schedule) => {
-  const yearIdx = schedule.findIndex((year) => year.number === number);
-  return yearIdx;
-};
-
-const findCourseIdx = (courseId, schedule, yearIdx) => {
-  const courseIdx = schedule[yearIdx].semesters[0].classes.findIndex(
-    (classItem) => classItem.id === courseId
-  );
-  return courseIdx;
-};
-
-const findCourseDetails = (courseIdx, schedule, yearIdx) => {
-  const courseInfo = schedule[yearIdx].semesters[0].classes[courseIdx];
-  return courseInfo;
-};
 
 router.post("/swap", (req, res) => {
   const courses = req.body.courses;
