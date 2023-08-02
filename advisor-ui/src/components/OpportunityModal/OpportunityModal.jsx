@@ -64,10 +64,6 @@ export default function OpportunityModal({ eventItem }) {
     }
   };
 
-  const handleChangeHours = (e) => {
-    setHours(e.target.value);
-  };
-
   const handleAttended = () => {
     setOpenHoursInput(true);
   };
@@ -194,7 +190,7 @@ export default function OpportunityModal({ eventItem }) {
                 type="text"
                 placeholder="Enter number of hours"
                 value={hours}
-                handleChange={handleChangeHours}
+                handleChange={(e) => setHours(e.target.value)}
               />
             )}
             {eventOccurred && (
