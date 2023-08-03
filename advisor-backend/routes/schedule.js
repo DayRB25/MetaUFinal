@@ -551,7 +551,8 @@ router.post("/create", async (req, res) => {
       (takenClass) => !requiredClassesSet.has(takenClass)
     ); // everything in taken that is not required
     let numberOfRemainingElectives =
-      numberOfElectives - numberOfElectivesTaken.length;
+      numberOfElectives -
+      Math.min(numberOfElectivesTaken.length, numberOfElectives);
 
     // need overall adjacency matrix again, remove all taken courses (including those in adjList), should be left with only the non-required courses
     for (const element in electiveAdditionAdjList) {
@@ -579,7 +580,11 @@ router.post("/create", async (req, res) => {
 
     // then add until remaining number of electives is 0
     const addedElectiveCourses = new Set();
-    while (sortedPreReqPaths.length !== 0 && remainingClasses !== 0) {
+    while (
+      sortedPreReqPaths.length !== 0 &&
+      remainingClasses !== 0 &&
+      numberOfRemainingElectives > 0
+    ) {
       const quickestElectiveCourse = sortedPreReqPaths[0][1];
       if (quickestElectiveCourse.count <= numberOfRemainingElectives) {
         // add the associated classes to the overall taking set-- will need to store the visited set-- and decrement remaining courses
