@@ -367,6 +367,17 @@ const reverseAdjList = (adjList) => {
   return reversedAdjList;
 };
 
+// transform an array of course names to an array of course IDs
+const transformCourseNameArrayToID = async (courseNames) => {
+  const coursesIDs = [];
+  for (let i = 0; i < courseNames.length; i++) {
+    const courseName = courseNames[i];
+    const courseId = await fetchCourseDataByName(courseName);
+    coursesIDs.push(courseId);
+  }
+  return coursesIDs;
+};
+
 const sortPreReqPaths = (preReqPaths) => {
   // create enumerable key-value type array to sort
   const preReqPathsEnumerable = Object.entries(preReqPaths);
@@ -385,12 +396,9 @@ router.post("/create", async (req, res) => {
 
   const preferredCoursesByName = req.body.preferredCourses;
   // transform preferredCourses to be an array of course id's
-  const preferredCourses = [];
-  for (let i = 0; i < preferredCoursesByName.length; i++) {
-    const preferredCourse = preferredCoursesByName[i];
-    const courseId = await fetchCourseDataByName(preferredCourse);
-    preferredCourses.push(courseId);
-  }
+  const preferredCourses = await transformCourseNameArrayToID(
+    preferredCoursesByName
+  );
 
   let gradYear = null;
   if (req.body.gradYear) {
