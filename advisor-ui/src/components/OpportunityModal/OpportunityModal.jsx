@@ -13,7 +13,8 @@ import { CircularProgress } from "@mui/material";
 import { createDateFromTimeStamp } from "../../utils/dateTimeUtils";
 import { createStudentSignup } from "../../utils/studentSignupUtils";
 import { createStudentEvent } from "../../utils/studentEventUtils";
-import apiBase from "../../utils/apiBase";
+import { fetchMap } from "../../utils/mapUtils";
+import { fetchAdminInfo } from "../../utils/adminInfoUtils";
 
 export default function OpportunityModal({ eventItem }) {
   const [hours, setHours] = useState("");
@@ -48,7 +49,7 @@ export default function OpportunityModal({ eventItem }) {
 
   const handlePopoverOpen = (event) => {
     if (adminInfo === null) {
-      fetchAdminInfo();
+      handleFetchAdminInfo();
     }
     setAnchorEl(event.currentTarget);
   };
@@ -66,35 +67,26 @@ export default function OpportunityModal({ eventItem }) {
     }
   };
 
-  const fetchMap = async () => {
-    try {
-      setMapIsLoading(true);
-      const res = await apiBase.get(
-        `/maps/${eventItem.latitude}/${eventItem.longitude}`
-      );
-      setImgData(res.data.response);
-    } catch (error) {
-      alert("Something went wrong.");
-    }
-    setMapIsLoading(false);
+  const handleFetchMap = async () => {
+    await fetchMap(
+      setMapIsLoading,
+      setImgData,
+      eventItem.latitude,
+      eventItem.longitude
+    );
   };
 
-  const fetchAdminInfo = async () => {
-    try {
-      setAdminInfoIsLoading(true);
-      const res = await apiBase.get(
-        `/admin/${eventItem.AdminId ?? eventItem.adminid}`
-      );
-      setAdminInfo(res.data.admin);
-    } catch (error) {
-      alert("Something went wrong!");
-    }
-    setAdminInfoIsLoading(false);
+  const handleFetchAdminInfo = async () => {
+    await fetchAdminInfo(
+      setAdminInfoIsLoading,
+      setAdminInfo,
+      eventItem.AdminId ?? eventItem.adminid
+    );
   };
 
   useEffect(() => {
     compareDates();
-    fetchMap();
+    handleFetchMap();
   }, []);
 
   return (
