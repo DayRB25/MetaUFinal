@@ -758,16 +758,7 @@ router.post("/create", async (req, res) => {
     );
 
     // from the toposort, create the year object
-    const reversedFinalAdjList = {};
-    for (const node in finalScheduleAdjList) {
-      reversedFinalAdjList[node] = [];
-    }
-
-    for (const node in finalScheduleAdjList) {
-      for (const neighbor of finalScheduleAdjList[node]) {
-        reversedFinalAdjList[neighbor].push(node);
-      }
-    }
+    const reversedFinalAdjList = reverseAdjList(finalScheduleAdjList);
 
     const schedule = await generateSchedule(
       topologicalSort,
