@@ -416,6 +416,57 @@ const getTakenClassesIDs = async (StudentId) => {
   return takenClassesData;
 };
 
+// fetches class data from sequelize and isolates class ids
+const getRequiredClassesIDs = async (SchoolId) => {
+  const requiredClasses = await RequiredClass.findAll({ where: { SchoolId } });
+  const requiredClassesData = isolateClassIDsFromSequelizeData(requiredClasses);
+  return requiredClassesData;
+};
+
+// delete any classes that have been taken or that are not required from adjacency list
+const deleteTakenAndNonRequiredClassesFromAdjList = (
+  adjList,
+  takenClassSet,
+  remainingClassSet
+) => {
+  for (const element in adjList) {
+    // delete it, non-required
+    if (takenClassSet.has(parseInt(element))) {
+      delete adjList[element];
+    }
+  }
+
+  for (const element in adjList) {
+    // delete it, non-required
+    if (!remainingClassSet.has(parseInt(element))) {
+      delete adjList[element];
+    } else {
+      // loop through neighbors to find a non-required element and remove them
+      adjList[element] = adjList[element].filter((neighbor) =>
+        remainingClassSet.has(neighbor)
+      );
+    }
+  }
+};
+
+// call delete function to remove non-required and taken classes from adjList
+// then add the remaining items to the newSchedule
+const addRemainingRequiredCoursesToSchedule = (
+  adjList,
+  takenClassSet,
+  remainingClassSet,
+  newSchedule
+) => {
+  deleteTakenAndNonRequiredClassesFromAdjList(
+    adjList,
+    takenClassSet,
+    remainingClassSet
+  );
+  for (const course in adjList) {
+    newSchedule.add(parseInt(course));
+  }
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
@@ -472,7 +523,7 @@ router.post("/create", async (req, res) => {
     pruneTakenCoursesFromAdjacencyList(zeroList, takenClassSet, adjList);
 
     //////////////////////////////////////////////////////
-    // calculate indegrees
+    // calculate indegrees of adjacency list with taken courss removed
     //////////////////////////////////////////////////////
     inDegreeObject = {};
     calculateInDegrees(
@@ -491,20 +542,13 @@ router.post("/create", async (req, res) => {
         zeroList.push(parseInt(classId));
       }
     }
-    //////////////////////////////////////////////////////
-    // calculate indegrees
-    //////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////
-    // determine set of remaining classes and prune adjancency list to include them only
+    // determine set of remaining classes and delete adjancency list of any
+    // non-required core courses or taken courses (electives),
+    // then add to new schedule
     //////////////////////////////////////////////////////
-    const requiredClasses = await RequiredClass.findAll({
-      where: { SchoolId },
-    });
-    const requiredClassesData = requiredClasses.map(
-      (requiredClass) => requiredClass.dataValues.ClassId
-    );
-
+    const requiredClassesData = await getRequiredClassesIDs(SchoolId);
     const requiredClassesSet = new Set(requiredClassesData);
 
     const remainingClassArray = requiredClassesData.filter(
@@ -512,32 +556,12 @@ router.post("/create", async (req, res) => {
     );
     const remainingClassSet = new Set(remainingClassArray);
 
-    for (const element in adjList) {
-      // delete it, non-required
-      if (takenClassSet.has(parseInt(element))) {
-        delete adjList[element];
-      }
-    }
-
-    for (const element in adjList) {
-      // delete it, non-required
-      if (!remainingClassSet.has(parseInt(element))) {
-        delete adjList[element];
-      } else {
-        // loop through neighbors to find a non-required element and remove them
-        adjList[element] = adjList[element].filter((neighbor) =>
-          remainingClassSet.has(neighbor)
-        );
-      }
-    }
-    //////////////////////////////////////////////////////
-    // determine set of remaining classes and prune adjancency list to include them only
-    //////////////////////////////////////////////////////
-
-    // add these courses directly to the final schedule set //////
-    for (const key in adjList) {
-      newSchedule.add(parseInt(key));
-    }
+    addRemainingRequiredCoursesToSchedule(
+      adjList,
+      takenClassSet,
+      remainingClassSet,
+      newSchedule
+    );
 
     //////////////////////////////////////////////////////
     // determine how many more classes can fit in the schedule
