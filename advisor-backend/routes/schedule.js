@@ -39,6 +39,14 @@ const calculateInDegrees = (
   }
 };
 
+const calculateNumberOfYearsBeforeGrad = (gradYear, studentYear) => {
+  if (gradYear != null) {
+    return gradYear - new Date().getFullYear();
+  } else {
+    return 4 - studentYear;
+  }
+};
+
 const isValidSchedule = (
   scheduleObject,
   desiredYear,
@@ -507,15 +515,11 @@ router.post("/create", async (req, res) => {
     //////////////////////////////////////////////////////
     const numberOfClasses = Object.getOwnPropertyNames(adjList).length;
     const student = await Student.findOne({ where: { id: StudentId } });
-    let yearsLeft;
 
     // if goal grad date is present, then use it to determine number of years remaining
     // otherwise base it off of a standard four year cycle
-    if (gradYear != null) {
-      yearsLeft = gradYear - new Date().getFullYear();
-    } else {
-      yearsLeft = 4 - student.year;
-    }
+    const yearsLeft = calculateNumberOfYearsBeforeGrad(gradYear, student.year);
+
     if (numberOfClasses >= classesPerYear * yearsLeft) {
       // not possible to graduate in the current time frame
       return res.json({
