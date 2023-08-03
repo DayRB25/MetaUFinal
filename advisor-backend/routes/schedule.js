@@ -39,35 +39,29 @@ const calculateInDegrees = (
   }
 };
 
-const checkDesiredYearAndBefore = (
+const calculateNumberOfYearsBeforeGrad = (gradYear, studentYear) => {
+  if (gradYear != null) {
+    return gradYear - new Date().getFullYear();
+  } else {
+    return 4 - studentYear;
+  }
+};
+
+const isValidSchedule = (
   scheduleObject,
   desiredYear,
-  postReqsSet
+  dependentCoursesSet,
+  backSwap
 ) => {
   let validMoveFlag = true;
   for (const year in scheduleObject) {
-    // only check desiredYear and before
-    if (parseInt(year) <= desiredYear) {
-      const coursesSet = scheduleObject[year];
-      postReqsSet.forEach((postReq) => {
-        if (coursesSet.has(postReq)) {
-          // invalid schedule
-          validMoveFlag = false;
-        }
-      });
-    }
-  }
-  return validMoveFlag;
-};
-
-const checkDesiredYearAndAfter = (scheduleObject, desiredYear, preReqsSet) => {
-  let validMoveFlag = true;
-  for (const year in scheduleObject) {
     // only check desiredYear and after
-    if (parseInt(year) >= desiredYear) {
+    if (
+      backSwap ? parseInt(year) >= desiredYear : parseInt(year) <= desiredYear
+    ) {
       const coursesSet = scheduleObject[year];
-      preReqsSet.forEach((preReq) => {
-        if (coursesSet.has(preReq)) {
+      dependentCoursesSet.forEach((dependentCourse) => {
+        if (coursesSet.has(dependentCourse)) {
           // invalid schedule
           validMoveFlag = false;
         }
@@ -95,20 +89,6 @@ const countNodes = (sourceNode, graph) => {
   const visited = new Set();
   dfsToCount(sourceNode, graph, visited);
   return { classes: visited, count: visited.size };
-};
-
-const deepCopyWithSets = (obj) => {
-  const copiedObject = {};
-  for (const key in obj) {
-    if (typeof obj[key] === "object" && obj[key] instanceof Set) {
-      copiedObject[key] = new Set(obj[key]);
-    } else if (typeof obj[key] === "object") {
-      copiedObject[key] = deepCopyWithSets(obj[key]);
-    } else {
-      copiedObject[key] = obj[key];
-    }
-  }
-  return copiedObject;
 };
 
 const deleteLengthyPrereqPaths = (preReqPaths, tooLongSet, yearsLeft) => {
@@ -175,22 +155,29 @@ const dfsToCount = (node, graph, visited) => {
   }
 };
 
-const findAllPrerequisites = (course, graph, prereqs) => {
-  for (const prereq of graph[course]) {
-    if (!prereqs.has(prereq)) {
-      prereqs.add(parseInt(prereq));
-      findAllPrerequisites(prereq, graph, prereqs);
+const findAllCoursesInSubGraphRootedAtCourse = (
+  course,
+  graph,
+  dependentCourses
+) => {
+  for (const dependentCourse of graph[course]) {
+    if (!dependentCourses.has(dependentCourse)) {
+      dependentCourses.add(parseInt(dependentCourse));
+      findAllCoursesInSubGraphRootedAtCourse(
+        dependentCourse,
+        graph,
+        dependentCourses
+      );
     }
   }
 };
 
-const findAllPostrequisites = (node, adjList, postReqSet) => {
-  for (const postreq of adjList[node]) {
-    if (!postReqSet.has(postreq)) {
-      postReqSet.add(postreq);
-      findAllPostrequisites(postreq, adjList, postReqSet);
-    }
-  }
+const findAllPrerequisites = (course, graph, prereqs) => {
+  findAllCoursesInSubGraphRootedAtCourse(course, graph, prereqs);
+};
+
+const findAllPostrequisites = (course, graph, postreqs) => {
+  findAllCoursesInSubGraphRootedAtCourse(course, graph, postreqs);
 };
 
 const findCourseYear = (scheduleObject, course) => {
@@ -237,6 +224,23 @@ const fetchCourseDataByName = async (name) => {
   } catch (error) {
     return null;
   }
+};
+
+const findCourseIdx = (courseId, schedule, yearIdx) => {
+  const courseIdx = schedule[yearIdx].semesters[0].classes.findIndex(
+    (classItem) => classItem.id === courseId
+  );
+  return courseIdx;
+};
+
+const findCourseDetails = (courseIdx, schedule, yearIdx) => {
+  const courseInfo = schedule[yearIdx].semesters[0].classes[courseIdx];
+  return courseInfo;
+};
+
+const findYearIdx = (number, schedule) => {
+  const yearIdx = schedule.findIndex((year) => year.number === number);
+  return yearIdx;
 };
 
 const generateSchedule = async (
@@ -292,6 +296,11 @@ const generateSchedule = async (
   return years;
 };
 
+const isolateDataValsFromSequelizeData = (data) => {
+  const dataValues = data.map((schoolClass) => schoolClass.dataValues);
+  return dataValues;
+};
+
 const moveCourseToDifferentYear = (
   schedule,
   desiredYear,
@@ -333,6 +342,17 @@ const reverseAdjList = (adjList) => {
   return reversedAdjList;
 };
 
+const sortPreReqPaths = (preReqPaths) => {
+  // create enumerable key-value type array to sort
+  const preReqPathsEnumerable = Object.entries(preReqPaths);
+  // since preReqPaths maps a class id to an object containing the count of classes in its prereq path and a set of the classes
+  // sort by the object's count property
+  const sortedPreReqPaths = preReqPathsEnumerable.sort(
+    (a, b) => a[1].count - b[1].count
+  );
+  return sortedPreReqPaths;
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
@@ -355,9 +375,7 @@ router.post("/create", async (req, res) => {
   try {
     const schoolClasses = await Class.findAll({ where: { SchoolId } });
     // isolating relevant data from response
-    const schoolClassesData = schoolClasses.map(
-      (schoolClass) => schoolClass.dataValues
-    );
+    const schoolClassesData = isolateDataValsFromSequelizeData(schoolClasses);
 
     const adjList = {};
     // generating adjacency list
@@ -371,9 +389,8 @@ router.post("/create", async (req, res) => {
       });
 
       // isolating relevant data from response
-      const dependentClassesData = dependentClasses.map(
-        (dependentClass) => dependentClass.dataValues
-      );
+      const dependentClassesData =
+        isolateDataValsFromSequelizeData(dependentClasses);
 
       // add all classes current class is a pre-req for to adj list
       for (let j = 0; j < dependentClassesData.length; j++) {
@@ -509,15 +526,11 @@ router.post("/create", async (req, res) => {
     //////////////////////////////////////////////////////
     const numberOfClasses = Object.getOwnPropertyNames(adjList).length;
     const student = await Student.findOne({ where: { id: StudentId } });
-    let yearsLeft;
 
     // if goal grad date is present, then use it to determine number of years remaining
     // otherwise base it off of a standard four year cycle
-    if (gradYear != null) {
-      yearsLeft = gradYear - new Date().getFullYear();
-    } else {
-      yearsLeft = 4 - student.year;
-    }
+    const yearsLeft = calculateNumberOfYearsBeforeGrad(gradYear, student.year);
+
     if (numberOfClasses >= classesPerYear * yearsLeft) {
       // not possible to graduate in the current time frame
       return res.json({
@@ -552,17 +565,9 @@ router.post("/create", async (req, res) => {
     }
 
     // reverse edges so that I can start at a preferred course, and traverse from post-req to pre-req to determine the longest path to complete each course
-    let reversedAdjList = {};
-    for (const node in electiveAdditionAdjList) {
-      reversedAdjList[node] = [];
-    }
-
-    for (const node in electiveAdditionAdjList) {
-      for (const neighbor of electiveAdditionAdjList[node]) {
-        reversedAdjList[neighbor].push(node);
-      }
-    }
+    let reversedAdjList = reverseAdjList(electiveAdditionAdjList);
     const saveReverseAdjList = JSON.parse(JSON.stringify(reversedAdjList));
+
     // determine pre-req path for all nodes in in reversedAdjList
     let preReqPaths = {};
     determinePrereqPaths(preReqPaths, reversedAdjList);
@@ -570,8 +575,7 @@ router.post("/create", async (req, res) => {
     deleteLengthyPrereqPaths(preReqPaths, tooLongSet, yearsLeft);
 
     // sort to find the smallest prereqpath courses
-    let sortedPreReqPaths = Object.entries(preReqPaths);
-    sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+    let sortedPreReqPaths = sortPreReqPaths(preReqPaths);
 
     // then add until remaining number of electives is 0
     const addedElectiveCourses = new Set();
@@ -613,8 +617,7 @@ router.post("/create", async (req, res) => {
         preReqPaths[intCourse].count = count;
         preReqPaths[intCourse].classes = classes;
       }
-      sortedPreReqPaths = Object.entries(preReqPaths);
-      sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+      sortedPreReqPaths = sortPreReqPaths(preReqPaths);
     }
     if (numberOfRemainingElectives > 0) {
       // schedule not valid
@@ -647,10 +650,7 @@ router.post("/create", async (req, res) => {
 
     if (Object.getOwnPropertyNames(preReqPaths).length !== 0) {
       // Convert the object to an array of key-value pairs (tuples)
-      sortedPreReqPaths = Object.entries(preReqPaths);
-
-      // Sort the array based on the values (second element of each tuple)
-      sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+      sortedPreReqPaths = sortPreReqPaths(preReqPaths);
 
       const addedPerferredCourses = new Set();
       while (sortedPreReqPaths.length !== 0 && remainingClasses !== 0) {
@@ -686,11 +686,10 @@ router.post("/create", async (req, res) => {
           preReqPaths[course].count = count;
           preReqPaths[course].classes = classes;
         }
-        sortedPreReqPaths = Object.entries(preReqPaths);
+        sortedPreReqPaths = sortPreReqPaths(preReqPaths);
         if (sortedPreReqPaths.length === 0 || remainingClasses === 0) {
           break;
         }
-        sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
       }
     }
     //////////////////////////////////////////////////////
@@ -759,16 +758,7 @@ router.post("/create", async (req, res) => {
     );
 
     // from the toposort, create the year object
-    const reversedFinalAdjList = {};
-    for (const node in finalScheduleAdjList) {
-      reversedFinalAdjList[node] = [];
-    }
-
-    for (const node in finalScheduleAdjList) {
-      for (const neighbor of finalScheduleAdjList[node]) {
-        reversedFinalAdjList[neighbor].push(node);
-      }
-    }
+    const reversedFinalAdjList = reverseAdjList(finalScheduleAdjList);
 
     const schedule = await generateSchedule(
       topologicalSort,
@@ -817,10 +807,11 @@ router.post("/nonfull", (req, res) => {
     findAllPostrequisites(courseToChange.id, scheduleAdjList, postReqsSet);
 
     // now to check through the relevant years in scheduleObject for any of the postReqs //
-    const validForwardMove = checkDesiredYearAndBefore(
+    const validForwardMove = isValidSchedule(
       scheduleObject,
       desiredYear,
-      postReqsSet
+      postReqsSet,
+      false
     );
 
     if (validForwardMove) {
@@ -845,10 +836,11 @@ router.post("/nonfull", (req, res) => {
     findAllPrerequisites(courseToChange.id, reverseScheduleAdjList, preReqsSet);
 
     // now to check through the relevant years in scheduleObject for any of the postReqs //
-    const validBackMove = checkDesiredYearAndAfter(
+    const validBackMove = isValidSchedule(
       scheduleObject,
       desiredYear,
-      preReqsSet
+      preReqsSet,
+      true
     );
 
     if (validBackMove) {
@@ -894,27 +886,16 @@ router.post("/full-year-options", (req, res) => {
     // forward swap for courseToChange
     // loop through each course in the set
     courseSet.forEach((course) => {
-      // make copy of schedule object to swap items
-      const copyForSwap = deepCopyWithSets(scheduleObject);
-
-      // now remove course from desiredYear set
-      copyForSwap[desiredYear].delete(course);
-      // now remove courseToMove from courseYear set
-      copyForSwap[courseYear].delete(courseToChange.id);
-
-      // add course to courseYear and courseToMove to desiredYear
-      copyForSwap[desiredYear].add(courseToChange.id);
-      copyForSwap[courseYear].add(course);
-
       // find postReqs ////
       const postReqsSet = new Set();
       findAllPostrequisites(courseToChange.id, scheduleAdjList, postReqsSet);
 
       // now to check through the relevant years in scheduleObject for any of the postReqs
-      const validForwardMove = checkDesiredYearAndBefore(
+      const validForwardMove = isValidSchedule(
         scheduleObject,
         desiredYear,
-        postReqsSet
+        postReqsSet,
+        false
       );
 
       // find preReqs ////
@@ -922,24 +903,18 @@ router.post("/full-year-options", (req, res) => {
       findAllPrerequisites(course, reverseScheduleAdjList, preReqsSet);
 
       // now to check through the relevant years in scheduleObject for any of the postReqs //
-      const validBackMove = checkDesiredYearAndAfter(
+      const validBackMove = isValidSchedule(
         scheduleObject,
         courseYear,
-        preReqsSet
+        preReqsSet,
+        true
       );
 
       // if both flags still true, add it's name to array of valid options
       if (validForwardMove && validBackMove) {
-        const yearIdx = schedule.findIndex(
-          (year) => year.number === desiredYear
-        );
-        const courseDetailsIdx = schedule[
-          yearIdx
-        ].semesters[0].classes.findIndex(
-          (classItem) => classItem.id === course
-        );
-        const courseDetails =
-          schedule[yearIdx].semesters[0].classes[courseDetailsIdx];
+        const yearIdx = findYearIdx(desiredYear, schedule);
+        const courseIdx = findCourseIdx(course, schedule, yearIdx);
+        const courseDetails = findCourseDetails(courseIdx, schedule, yearIdx);
         validMoves.push(courseDetails.name);
       }
     });
@@ -947,28 +922,17 @@ router.post("/full-year-options", (req, res) => {
   } else {
     // backward swap for courseToChange
     courseSet.forEach((course) => {
-      // make copy of schedule object to swap items
-      const copyForSwap = deepCopyWithSets(scheduleObject);
-
-      // now remove course from desiredYear set
-      copyForSwap[desiredYear].delete(course);
-      // now remove courseToMove from courseYear set
-      copyForSwap[courseYear].delete(courseToChange.id);
-
-      // add course to courseYear and courseToMove to desiredYear
-      copyForSwap[desiredYear].add(courseToChange.id);
-      copyForSwap[courseYear].add(course);
-
       // then do forward check for course
       // find postReqs ////
       const postReqsSet = new Set();
       findAllPostrequisites(course, scheduleAdjList, postReqsSet);
 
       // now to check through the relevant years in scheduleObject for any of the postReqs //
-      const validForwardMove = checkDesiredYearAndBefore(
+      const validForwardMove = isValidSchedule(
         scheduleObject,
         courseYear,
-        postReqsSet
+        postReqsSet,
+        false
       );
 
       // then do backward check for courseToMove
@@ -981,24 +945,18 @@ router.post("/full-year-options", (req, res) => {
       );
 
       // now to check through the relevant years in scheduleObject for any of the postReqs //
-      const validBackMove = checkDesiredYearAndAfter(
+      const validBackMove = isValidSchedule(
         scheduleObject,
         desiredYear,
-        preReqsSet
+        preReqsSet,
+        true
       );
 
       // if both flags true, swap is valid add it's name to array of valid options
       if (validBackMove && validForwardMove) {
-        const yearIdx = schedule.findIndex(
-          (year) => year.number === desiredYear
-        );
-        const courseDetailsIdx = schedule[
-          yearIdx
-        ].semesters[0].classes.findIndex(
-          (classItem) => classItem.id === course
-        );
-        const courseDetails =
-          schedule[yearIdx].semesters[0].classes[courseDetailsIdx];
+        const yearIdx = findYearIdx(desiredYear, schedule);
+        const courseIdx = findCourseIdx(course, schedule, yearIdx);
+        const courseDetails = findCourseDetails(courseIdx, schedule, yearIdx);
         validMoves.push(courseDetails.name);
       }
     });
