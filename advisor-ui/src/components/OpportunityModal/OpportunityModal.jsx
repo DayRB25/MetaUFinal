@@ -1,15 +1,20 @@
-import React, { useState, useContext, useEffect } from "react";
+// css imports
 import "./OpportunityModal.css";
+// library imports
+import React, { useState, useContext, useEffect } from "react";
+// component imports
+import InputForm from "../InputForm/InputForm";
+import { UserContext } from "../../UserContext.js";
+import Popover from "../Popover/Popover";
+import Persona from "../Persona/Persona";
+// mui imports
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import InfoIcon from "@mui/icons-material/Info";
-import InputForm from "../InputForm/InputForm";
 import { Button } from "@mui/material";
-import { UserContext } from "../../UserContext.js";
-import Popover from "../Popover/Popover";
-import Persona from "../Persona/Persona";
 import { CircularProgress } from "@mui/material";
+// util imports
 import { createDateFromTimeStamp } from "../../utils/dateTimeUtils";
 import { createStudentSignup } from "../../utils/studentSignupUtils";
 import { createStudentEvent } from "../../utils/studentEventUtils";
