@@ -467,6 +467,16 @@ const addRemainingRequiredCoursesToSchedule = (
   }
 };
 
+const calculateNumberOfRemainingClassesInValidSchedule = (
+  yearsLeft,
+  numberOfPotentialClassesTaken
+) => {
+  const totalClassesLeft = classesPerYear * yearsLeft;
+  const numberOfRemainingClasses =
+    totalClassesLeft - numberOfPotentialClassesTaken;
+  return numberOfRemainingClasses;
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
@@ -569,22 +579,17 @@ router.post("/create", async (req, res) => {
     const numberOfClasses = Object.getOwnPropertyNames(adjList).length;
     const student = await Student.findOne({ where: { id: StudentId } });
 
-    // if goal grad date is present, then use it to determine number of years remaining
-    // otherwise base it off of a standard four year cycle
     const yearsLeft = calculateNumberOfYearsBeforeGrad(gradYear, student.year);
-
-    if (numberOfClasses >= classesPerYear * yearsLeft) {
+    let remainingClasses = calculateNumberOfRemainingClassesInValidSchedule(
+      yearsLeft,
+      numberOfClasses
+    );
+    if (remainingClasses <= 0) {
       // not possible to graduate in the current time frame
       return res.json({
         message: "Not possible to graduate with current time frame",
       });
     }
-
-    // otherwise there is some space left, calculate the number of remaining classes
-    let remainingClasses = classesPerYear * yearsLeft - numberOfClasses;
-    //////////////////////////////////////////////////////
-    // determine how many more classes can fit in the schedule
-    //////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////
     // adding required number of electives
