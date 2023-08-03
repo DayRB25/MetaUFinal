@@ -477,6 +477,18 @@ const calculateNumberOfRemainingClassesInValidSchedule = (
   return numberOfRemainingClasses;
 };
 
+// using the newSchedule set containing all of the courses for the schedule,
+// geenrate the final adjacency list
+const generateFinalAdjList = (newSchedule, originalAdjList) => {
+  const finalScheduleAdjList = {};
+  for (const course of newSchedule) {
+    finalScheduleAdjList[course] = originalAdjList[course].filter((neigbor) =>
+      newSchedule.has(neigbor)
+    );
+  }
+  return finalScheduleAdjList;
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
@@ -747,12 +759,12 @@ router.post("/create", async (req, res) => {
     //////////////////////////////////////////////////////
     // add schedule elements to final adj list
     //////////////////////////////////////////////////////
-    const finalScheduleAdjList = {};
-    for (const course of newSchedule) {
-      finalScheduleAdjList[course] = originalAdjList[course].filter((neigbor) =>
-        newSchedule.has(neigbor)
-      );
-    }
+
+    const finalScheduleAdjList = generateFinalAdjList(
+      newSchedule,
+      originalAdjList
+    );
+
     //////////////////////////////////////////////////////
     // add schedule elements to final adj list
     //////////////////////////////////////////////////////
