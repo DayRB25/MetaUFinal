@@ -288,6 +288,11 @@ const generateSchedule = async (
   return years;
 };
 
+const isolateDataValsFromSequelizeData = (data) => {
+  const dataValues = data.map((schoolClass) => schoolClass.dataValues);
+  return dataValues;
+};
+
 const moveCourseToDifferentYear = (
   schedule,
   desiredYear,
@@ -327,11 +332,6 @@ const reverseAdjList = (adjList) => {
     }
   }
   return reversedAdjList;
-};
-
-const isolateDataValsFromSequelizeData = (data) => {
-  const dataValues = data.map((schoolClass) => schoolClass.dataValues);
-  return dataValues;
 };
 
 // Route for student schedule creation
