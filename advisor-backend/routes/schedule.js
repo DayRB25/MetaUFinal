@@ -243,6 +243,31 @@ const findYearIdx = (number, schedule) => {
   return yearIdx;
 };
 
+const generateAdjList = async (schoolClassesData) => {
+  const adjList = {};
+  // generating adjacency list
+  for (let i = 0; i < schoolClassesData.length; i++) {
+    const schoolClass = schoolClassesData[i];
+    adjList[schoolClass.id] = [];
+
+    // fetching courses for which current course is a pre-req
+    const dependentClasses = await Prerequisite.findAll({
+      where: { PrereqId: schoolClass.id },
+    });
+
+    // isolating relevant data from response
+    const dependentClassesData =
+      isolateDataValsFromSequelizeData(dependentClasses);
+
+    // add all classes current class is a pre-req for to adj list
+    for (let j = 0; j < dependentClassesData.length; j++) {
+      const dependentClass = dependentClasses[j];
+      adjList[schoolClass.id].push(dependentClass.PostreqId);
+    }
+  }
+  return adjList;
+};
+
 const generateSchedule = async (
   topologicalSort,
   reversedFinalAdjList,
@@ -376,29 +401,8 @@ router.post("/create", async (req, res) => {
     const schoolClasses = await Class.findAll({ where: { SchoolId } });
     // isolating relevant data from response
     const schoolClassesData = isolateDataValsFromSequelizeData(schoolClasses);
-
-    const adjList = {};
-    // generating adjacency list
-    for (let i = 0; i < schoolClassesData.length; i++) {
-      const schoolClass = schoolClassesData[i];
-      adjList[schoolClass.id] = [];
-
-      // fetching courses for which current course is a pre-req
-      const dependentClasses = await Prerequisite.findAll({
-        where: { PrereqId: schoolClass.id },
-      });
-
-      // isolating relevant data from response
-      const dependentClassesData =
-        isolateDataValsFromSequelizeData(dependentClasses);
-
-      // add all classes current class is a pre-req for to adj list
-      for (let j = 0; j < dependentClassesData.length; j++) {
-        const dependentClass = dependentClasses[j];
-        adjList[schoolClass.id].push(dependentClass.PostreqId);
-      }
-    }
-
+    // generate adjancency list using school id
+    const adjList = await generateAdjList(schoolClassesData);
     // save for later
     const originalAdjList = JSON.parse(JSON.stringify(adjList));
     const electiveAdditionAdjList = JSON.parse(JSON.stringify(adjList));
