@@ -329,6 +329,11 @@ const reverseAdjList = (adjList) => {
   return reversedAdjList;
 };
 
+const isolateDataValsFromSequelizeData = (data) => {
+  const dataValues = data.map((schoolClass) => schoolClass.dataValues);
+  return dataValues;
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
@@ -351,9 +356,7 @@ router.post("/create", async (req, res) => {
   try {
     const schoolClasses = await Class.findAll({ where: { SchoolId } });
     // isolating relevant data from response
-    const schoolClassesData = schoolClasses.map(
-      (schoolClass) => schoolClass.dataValues
-    );
+    const schoolClassesData = isolateDataValsFromSequelizeData(schoolClasses);
 
     const adjList = {};
     // generating adjacency list
@@ -367,9 +370,8 @@ router.post("/create", async (req, res) => {
       });
 
       // isolating relevant data from response
-      const dependentClassesData = dependentClasses.map(
-        (dependentClass) => dependentClass.dataValues
-      );
+      const dependentClassesData =
+        isolateDataValsFromSequelizeData(dependentClasses);
 
       // add all classes current class is a pre-req for to adj list
       for (let j = 0; j < dependentClassesData.length; j++) {
