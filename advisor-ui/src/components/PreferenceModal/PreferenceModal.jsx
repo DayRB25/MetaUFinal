@@ -1,5 +1,6 @@
-import React from "react";
+// css import
 import "./PreferenceModal.css";
+// mui imports
 import Slider from "@mui/material/Slider";
 import { Button } from "@mui/material";
 import { distanceMarks } from "./distanceMarks";
