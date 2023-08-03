@@ -342,6 +342,17 @@ const reverseAdjList = (adjList) => {
   return reversedAdjList;
 };
 
+const sortPreReqPaths = (preReqPaths) => {
+  // create enumerable key-value type array to sort
+  const preReqPathsEnumerable = Object.entries(preReqPaths);
+  // since preReqPaths maps a class id to an object containing the count of classes in its prereq path and a set of the classes
+  // sort by the object's count property
+  const sortedPreReqPaths = preReqPathsEnumerable.sort(
+    (a, b) => a[1].count - b[1].count
+  );
+  return sortedPreReqPaths;
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
@@ -564,8 +575,7 @@ router.post("/create", async (req, res) => {
     deleteLengthyPrereqPaths(preReqPaths, tooLongSet, yearsLeft);
 
     // sort to find the smallest prereqpath courses
-    let sortedPreReqPaths = Object.entries(preReqPaths);
-    sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+    let sortedPreReqPaths = sortPreReqPaths(preReqPaths);
 
     // then add until remaining number of electives is 0
     const addedElectiveCourses = new Set();
@@ -607,8 +617,7 @@ router.post("/create", async (req, res) => {
         preReqPaths[intCourse].count = count;
         preReqPaths[intCourse].classes = classes;
       }
-      sortedPreReqPaths = Object.entries(preReqPaths);
-      sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+      sortedPreReqPaths = sortPreReqPaths(preReqPaths);
     }
     if (numberOfRemainingElectives > 0) {
       // schedule not valid
@@ -641,10 +650,7 @@ router.post("/create", async (req, res) => {
 
     if (Object.getOwnPropertyNames(preReqPaths).length !== 0) {
       // Convert the object to an array of key-value pairs (tuples)
-      sortedPreReqPaths = Object.entries(preReqPaths);
-
-      // Sort the array based on the values (second element of each tuple)
-      sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
+      sortedPreReqPaths = sortPreReqPaths(preReqPaths);
 
       const addedPerferredCourses = new Set();
       while (sortedPreReqPaths.length !== 0 && remainingClasses !== 0) {
@@ -680,11 +686,10 @@ router.post("/create", async (req, res) => {
           preReqPaths[course].count = count;
           preReqPaths[course].classes = classes;
         }
-        sortedPreReqPaths = Object.entries(preReqPaths);
+        sortedPreReqPaths = sortPreReqPaths(preReqPaths);
         if (sortedPreReqPaths.length === 0 || remainingClasses === 0) {
           break;
         }
-        sortedPreReqPaths.sort((a, b) => a[1].count - b[1].count);
       }
     }
     //////////////////////////////////////////////////////
