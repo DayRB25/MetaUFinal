@@ -579,7 +579,6 @@ router.post("/create", async (req, res) => {
 
     // then add until remaining number of electives is 0
     const addedElectiveCourses = new Set();
-    const electivesTaken = [];
     while (sortedPreReqPaths.length !== 0 && remainingClasses !== 0) {
       const quickestElectiveCourse = sortedPreReqPaths[0][1];
       if (quickestElectiveCourse.count <= numberOfRemainingElectives) {
@@ -596,9 +595,6 @@ router.post("/create", async (req, res) => {
         numberOfRemainingElectives -= quickestElectiveCourse.count;
         quickestElectiveCourse.classes.forEach((classItem) =>
           newSchedule.add(classItem)
-        );
-        quickestElectiveCourse.classes.forEach((classItem) =>
-          electivesTaken.push(classItem)
         );
         if (numberOfRemainingElectives === 0) {
           break;
