@@ -1,7 +1,10 @@
-import React from "react";
+// css imports
 import "./ScheduleDetails.css";
+// component imports
 import YearDetails from "../YearDetails/YearDetails";
+// mui imports
 import { Button } from "@mui/material";
+
 export default function ScheduleDetails({
   years,
   handleDisplayYear,

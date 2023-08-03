@@ -1,5 +1,6 @@
-import React from "react";
+// css imports
 import "./SemesterDetails.css";
+// component imports
 import ClassDetails from "../ClassDetails/ClassDetails";
 
 export default function SemesterDetails({
