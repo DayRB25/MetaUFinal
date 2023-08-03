@@ -1,5 +1,6 @@
-import React from "react";
+// css imports
 import "./YearDetails.css";
+// component imports
 import SemesterDetails from "../SemesterDetails/SemesterDetails";
 
 export default function YearDetails({

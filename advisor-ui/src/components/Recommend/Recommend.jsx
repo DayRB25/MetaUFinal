@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+// css import
 import "./Recommend.css";
-import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
-import { IconButton } from "@mui/material";
+// library imports
+import { useState } from "react";
+// component imports
 import Modal from "../Modal/Modal";
 import PreferenceModal from "../PreferenceModal/PreferenceModal";
 import OpportunityCard from "../OpportunityCard/OpportunityCard";
+// mui imports
+import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
+import { IconButton } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 
 export default function Recommend({
@@ -19,12 +23,13 @@ export default function Recommend({
   recommendedIsLoading,
   preferencesSubmitted,
 }) {
+  // boolean state controlling the open/closed state of the preference modal
   const [isOpen, setIsOpen] = useState(false);
-
+  // handler function to modify isOpen state, opening modal
   const handleOpenModal = () => {
     setIsOpen(true);
   };
-
+  // handler function to modify isOpen state to false, closing modal
   const handleCloseModal = () => {
     setIsOpen(false);
   };

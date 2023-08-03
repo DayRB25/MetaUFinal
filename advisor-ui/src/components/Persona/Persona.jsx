@@ -1,9 +1,13 @@
+// css imports
+import "./Persona.css";
+// library imports
 import React from "react";
+// mui imports
 import { blue } from "@mui/material/colors";
 import Avatar from "@mui/material/Avatar";
-import "./Persona.css";
 
 export default function Persona({ userInfo }) {
+  // create name abbreviation from first and lastname
   const createNameAbbreviation = (firstname, lastname) => {
     const firstAbbreviation = firstname.charAt(0);
     const lastAbbreviation = lastname.charAt(0);
