@@ -389,6 +389,33 @@ const sortPreReqPaths = (preReqPaths) => {
   return sortedPreReqPaths;
 };
 
+// removes any course that has already been taken from the adjacency list
+const pruneTakenCoursesFromAdjacencyList = (
+  zeroList,
+  takenClassSet,
+  adjList
+) => {
+  for (let i = 0; i < zeroList.length; i++) {
+    const currentClass = zeroList[i];
+    if (takenClassSet.has(currentClass)) {
+      dfsPrune(currentClass, adjList, takenClassSet);
+    }
+  }
+};
+
+// extracts IDs from sequelize data
+const isolateClassIDsFromSequelizeData = (data) => {
+  const IDs = data.map((dataItem) => dataItem.dataValues.ClassId);
+  return IDs;
+};
+
+// fetches class data from sequelize and isolates class ids
+const getTakenClassesIDs = async (StudentId) => {
+  const takenClasses = await TakenClass.findAll({ where: { StudentId } });
+  const takenClassesData = isolateClassIDsFromSequelizeData(takenClasses);
+  return takenClassesData;
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
@@ -435,35 +462,14 @@ router.post("/create", async (req, res) => {
         zeroList.push(parseInt(classId));
       }
     }
-    //////////////////////////////////////////////////////
-    // calculate indegrees
-    //////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////
     // pruning adjacency list of anything that has been taken already
     //////////////////////////////////////////////////////
-    const takenClasses = await TakenClass.findAll({ where: { StudentId } });
-    const takenClassesData = takenClasses.map(
-      (takenClass) => takenClass.dataValues.ClassId
-    );
+    const takenClassesData = await getTakenClassesIDs(StudentId);
     const takenClassSet = new Set(takenClassesData);
 
-    // create taken set from takenClasses
-    const taken = new Set();
-    for (let i = 0; i < takenClassesData.length; i++) {
-      const takenClass = takenClassesData[i];
-      taken.add(takenClass);
-    }
-    // start pruning from zeroList items, dfs
-    for (let i = 0; i < zeroList.length; i++) {
-      const currentClass = zeroList[i];
-      if (takenClassSet.has(currentClass)) {
-        dfsPrune(currentClass, adjList, takenClassSet);
-      }
-    }
-    ///////////////////////////////////////////////////////
-    // pruning adjacency list of anything that has been taken already
-    //////////////////////////////////////////////////////
+    pruneTakenCoursesFromAdjacencyList(zeroList, takenClassSet, adjList);
 
     //////////////////////////////////////////////////////
     // calculate indegrees
@@ -571,7 +577,7 @@ router.post("/create", async (req, res) => {
       // delete it, non-required
       if (
         remainingClassSet.has(parseInt(element)) ||
-        taken.has(parseInt(element))
+        takenClassSet.has(parseInt(element))
       ) {
         delete electiveAdditionAdjList[element];
       }
