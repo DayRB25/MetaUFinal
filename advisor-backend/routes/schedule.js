@@ -548,17 +548,9 @@ router.post("/create", async (req, res) => {
     }
 
     // reverse edges so that I can start at a preferred course, and traverse from post-req to pre-req to determine the longest path to complete each course
-    let reversedAdjList = {};
-    for (const node in electiveAdditionAdjList) {
-      reversedAdjList[node] = [];
-    }
-
-    for (const node in electiveAdditionAdjList) {
-      for (const neighbor of electiveAdditionAdjList[node]) {
-        reversedAdjList[neighbor].push(node);
-      }
-    }
+    let reversedAdjList = reverseAdjList(electiveAdditionAdjList);
     const saveReverseAdjList = JSON.parse(JSON.stringify(reversedAdjList));
+
     // determine pre-req path for all nodes in in reversedAdjList
     let preReqPaths = {};
     determinePrereqPaths(preReqPaths, reversedAdjList);
