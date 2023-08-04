@@ -1,30 +1,38 @@
-import React, { useEffect } from "react";
+// css import
+import "./ConstraintPopover.css";
 import { useState } from "react";
+// component imports
+import InputForm from "../InputForm/InputForm";
+// mui imports
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import "./ConstraintPopover.css";
 import { Button } from "@mui/material";
-import InputForm from "../InputForm/InputForm";
 import FormControl from "@mui/material/FormControl";
 
 export default function ConstraintPopover({ addConstraint, handleClose }) {
+  // type of constraint-- either "Graduation" or "Class"
   const [type, setType] = useState("Graduation");
+  // value of constraint-- grad year for "Graduation" or classname for "Class"
   const [value, setValue] = useState("");
 
+  // handler for changing type of constraint
   const handleChangeType = (event) => {
     setType(event.target.value);
   };
 
+  // handler for changing value of constraint
   const handleChangeValue = (event) => {
     setValue(event.target.value);
   };
 
+  // handler for creation of constraint
   const handleConstraintSubmit = (type, value) => {
     if (type === "" || value === "") {
       alert("Enter both a type and value!");
       return;
     }
+    // add constraint runs some additional tests and returns a boolean indicating the status of the insertion
     const insertionStatus = addConstraint(type, value);
     if (insertionStatus === true) {
       handleClose();
