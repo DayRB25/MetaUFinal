@@ -1,4 +1,6 @@
+// library imports
 import express from "express";
+// model imports
 import { RequiredClass } from "../models/index.js";
 import { TakenClass } from "../models/index.js";
 import { Class } from "../models/index.js";
@@ -7,12 +9,12 @@ const numberElectivesForGraduation = 6;
 
 const router = express.Router();
 
-// Route for
+// endpoint for fetching student's graduation progress
 router.post("/", async (req, res) => {
   const StudentId = req.body.StudentId;
   const SchoolId = req.body.SchoolId;
   try {
-    // fetching all required classes
+    // fetching all required classes and isolating relevant data
     const requiredClasses = await RequiredClass.findAll({
       where: { SchoolId },
       include: Class,
@@ -24,7 +26,7 @@ router.post("/", async (req, res) => {
       requiredClassesData.map((requiredClass) => requiredClass.ClassId)
     );
 
-    // fetching courses a student has taken
+    // fetching courses a student has taken and isolating relevant data
     const takenClasses = await TakenClass.findAll({
       where: { StudentId },
       include: Class,
@@ -54,6 +56,7 @@ router.post("/", async (req, res) => {
     );
 
     const numberElectives = electivesTaken.length;
+    // handles the case that a student has taken more than the required number of electives
     takenClassesCount += Math.min(
       numberElectivesForGraduation,
       numberElectives
