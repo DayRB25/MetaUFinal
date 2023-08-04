@@ -1,9 +1,11 @@
-import React from "react";
+// css imports
 import "./ClassProgressCard.css";
+// mui imports
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 
 export default function ClassProgressCard({ classInfo }) {
+  // if the course has been taken, classInfo.taken is true
   const style = {
     backgroundColor: classInfo.taken === "true" ? "#648144" : "lightgray",
     color: classInfo.taken === "true" ? "black" : "darkgray",
