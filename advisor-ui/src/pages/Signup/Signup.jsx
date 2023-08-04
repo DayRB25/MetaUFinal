@@ -117,7 +117,7 @@ export default function Signup() {
       email,
       year,
       city,
-      statusbar,
+      locationState,
       address,
       updateUser,
       navigate
