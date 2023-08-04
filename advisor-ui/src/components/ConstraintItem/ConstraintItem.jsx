@@ -1,5 +1,6 @@
-import React from "react";
+// css imports
 import "./ConstraintItem.css";
+// mui imports
 import { Button } from "@mui/material";
 
 export default function ConstraintItem({ type, value }) {
