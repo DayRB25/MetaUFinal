@@ -1,9 +1,11 @@
+// library imports
 import express from "express";
-import { EventDetail } from "../models/event.js";
-import { Op } from "sequelize";
-import { sequelize } from "../database.js";
 import Sequelize from "sequelize";
+// model or db imports
+import { sequelize } from "../database.js";
+import { EventDetail } from "../models/event.js";
 import { Student } from "../models/index.js";
+
 // number of elements to be displayed on the page
 const pageLimit = 8;
 // number of elements to be recommended
@@ -25,46 +27,7 @@ const mediumMatch = 5;
 
 const router = express.Router();
 
-const parseAndCreateLocationQueryString = (query) => {
-  let queryString = "(";
-  const locations = query;
-  for (let i = 0; i < locations.length; i++) {
-    const location = locations[i];
-    const [city, state] = location.split(",");
-    if (i === locations.length - 1) {
-      queryString += `('${city}', '${state}'))`;
-    } else {
-      queryString += `('${city}', '${state}'),`;
-    }
-  }
-  return queryString;
-};
-
-const parseAndCreateTimeCommitmentQuery = (query) => {
-  const timeCommitment = query;
-  return {
-    time_commitment: {
-      [Op.lte]: timeCommitment,
-    },
-  };
-};
-
-const parseAndCreateDateRangeQuery = (startDate, endDate) => {
-  return {
-    date: {
-      [Op.between]: [startDate, endDate],
-    },
-  };
-};
-
-const parseAndCreateTimeRangeQuery = (startTime, endTime) => {
-  return {
-    time: {
-      [Op.between]: [startTime, endTime],
-    },
-  };
-};
-
+// endpoint for fetching page count of events
 router.get("/page-count", async (req, res) => {
   try {
     const count = await EventDetail.count();
@@ -89,6 +52,7 @@ router.get("/page/:page", async (req, res) => {
   }
 });
 
+// end point for fetching recommended events
 router.get("/recommended/:studentId", async (req, res) => {
   const studentId = req.params.studentId;
 
@@ -266,12 +230,14 @@ router.get("/recommended/:studentId", async (req, res) => {
 
     `;
 
+    // fetching events based on the query above
     const events = await sequelize.query(query, {
       type: Sequelize.QueryTypes.SELECT,
       model: EventDetail,
       mapToModel: true,
     });
 
+    // providing srength of match tag to events based on total score output from sql query
     const eventsWithMatchTags = events.map((event) => {
       const eventData = event.dataValues;
       if (eventData.total_score >= highMatch) {
@@ -292,6 +258,7 @@ router.get("/recommended/:studentId", async (req, res) => {
   }
 });
 
+// end point for fetching an event's details by id
 router.get("/:eventId", async (req, res) => {
   try {
     const eventId = req.params.eventId;

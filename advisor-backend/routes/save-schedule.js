@@ -1,16 +1,19 @@
+// library imports
 import express from "express";
+// model imports
 import { Schedule } from "../models/index.js";
 import { Year } from "../models/index.js";
 import { Semester } from "../models/index.js";
 import { SemesterClass } from "../models/index.js";
 import { Class } from "../models/index.js";
 
+// number of schedules to display on screen
 const pageLimit = 1;
 
 const router = express.Router();
 
-// create schedule -
-// bottom up creation, start w/ available courses, piece up to the semester, then to year, then to scheduke
+// create schedule
+// top down approach, create schedule, then years, then semesters, then add courses to semester
 router.post("/create", async (req, res) => {
   const schedule = req.body.schedule;
   const StudentId = req.body.StudentId;
@@ -66,6 +69,7 @@ router.get("/:studentId/page-count", async (req, res) => {
 });
 
 // fetch schedules associated with provided studentId
+// use similar top-down approach to reconstruct schedules from ScheduleId
 router.get("/:studentId/:page", async (req, res) => {
   const StudentId = req.params.studentId;
   const page = req.params.page;

@@ -1,4 +1,6 @@
+// library imports
 import express from "express";
+// model imports
 import { Admin } from "../models/index.js";
 
 const router = express.Router();

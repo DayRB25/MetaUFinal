@@ -1,16 +1,21 @@
+// library imports
 import express from "express";
+// model imports
 import { Class } from "../models/index.js";
 import { Prerequisite } from "../models/index.js";
 import { RequiredClass } from "../models/index.js";
 import { TakenClass } from "../models/index.js";
 import { Student } from "../models/index.js";
+// util imports
 import { Queue } from "../utils/Queue.js";
 
 const router = express.Router();
-
+// number of electives required for graduation
 const numberOfElectives = 6;
+// max number of classes that fit in a year
 const classesPerYear = 6;
 
+// initialize in degree object (indegree object maps a class id to its indegree count)
 const initIndegreeObject = (inDegreeObject, classData) => {
   for (let i = 0; i < classData.length; i++) {
     const schoolClass = classData[i];
@@ -18,6 +23,7 @@ const initIndegreeObject = (inDegreeObject, classData) => {
   }
 };
 
+// calculate the indegrees of all classes in indegree object using the disjoint components in the graph
 const calculateInDegrees = (inDegreeObject, disjointComponents, adjList) => {
   for (let i = 0; i < disjointComponents.length; i++) {
     const component = disjointComponents[i];
@@ -36,6 +42,8 @@ const calculateInDegrees = (inDegreeObject, disjointComponents, adjList) => {
   }
 };
 
+// calculate the number of year a student has before graduation
+// if a specified graduation date is not provided, assume a regular 4 year cycle
 const calculateNumberOfYearsBeforeGrad = (gradYear, studentYear) => {
   if (gradYear != null) {
     return gradYear - new Date().getFullYear();
@@ -44,6 +52,7 @@ const calculateNumberOfYearsBeforeGrad = (gradYear, studentYear) => {
   }
 };
 
+// check if the schedule is valid (no violation of prereqs or postreqs)
 const isValidSchedule = (
   scheduleObject,
   desiredYear,
@@ -68,6 +77,8 @@ const isValidSchedule = (
   return validMoveFlag;
 };
 
+// schedule object maps each year to a set of classes that occur in that year
+// create this object using the schedule received from the user
 const createScheduleObject = (schedule, scheduleObject) => {
   for (let i = 0; i < schedule.length; i++) {
     const year = schedule[i];
@@ -82,12 +93,14 @@ const createScheduleObject = (schedule, scheduleObject) => {
   }
 };
 
+// helper function driving the dfs to count function
 const countNodes = (sourceNode, graph) => {
   const visited = new Set();
   dfsToCount(sourceNode, graph, visited);
   return { classes: visited, count: visited.size };
 };
 
+// to prioritize graduation speed, delete pre req paths that will potentially be too long and stall graduation
 const deleteLengthyPrereqPaths = (preReqPaths, tooLongSet, yearsLeft) => {
   for (const course in preReqPaths) {
     if (preReqPaths[course].count > yearsLeft - 2) {
@@ -97,6 +110,9 @@ const deleteLengthyPrereqPaths = (preReqPaths, tooLongSet, yearsLeft) => {
   }
 };
 
+// determine the disjoint components in the graph
+// courses like biology will be in no way connected to a course like enlgish, so
+// identify these separate components
 const determineDisjointComponents = (disjointComponents, adjList) => {
   let visited = new Set();
   for (const classItem in adjList) {
@@ -109,6 +125,8 @@ const determineDisjointComponents = (disjointComponents, adjList) => {
   }
 };
 
+// prereq paths object maps a course id to the length of its prereq path (including itself)
+// and a set containing all of the courses on that path
 const determinePrereqPaths = (preReqPaths, adjList) => {
   for (const course in adjList) {
     const courseInt = parseInt(course);
@@ -120,6 +138,7 @@ const determinePrereqPaths = (preReqPaths, adjList) => {
   }
 };
 
+// general dfs function
 const dfs = (node, graph, visited, component) => {
   visited.add(node);
   component.push(node);
@@ -132,6 +151,8 @@ const dfs = (node, graph, visited, component) => {
   }
 };
 
+// dfs to prune courses that have been taken from the course catalog adjacency
+// list
 const dfsPrune = (node, graph, taken) => {
   if (taken.has(node)) {
     const savePostreqs = graph[node];
@@ -143,6 +164,8 @@ const dfsPrune = (node, graph, taken) => {
   }
 };
 
+// dfs used to count the number of nodes with
+// directed edges connecting them
 const dfsToCount = (node, graph, visited) => {
   if (!visited.has(node)) {
     visited.add(parseInt(node));
@@ -152,6 +175,8 @@ const dfsToCount = (node, graph, visited) => {
   }
 };
 
+// function housing the general recursive logic to identify
+// all courses in a subgroup rooted at the arg course
 const findAllCoursesInSubGraphRootedAtCourse = (
   course,
   graph,
@@ -169,14 +194,17 @@ const findAllCoursesInSubGraphRootedAtCourse = (
   }
 };
 
+// function calling logic above, remain separate from findAllPostreqs for clarity
 const findAllPrerequisites = (course, graph, prereqs) => {
   findAllCoursesInSubGraphRootedAtCourse(course, graph, prereqs);
 };
 
+// function calling logic above, remain separate from findAllPrereqs for clarity
 const findAllPostrequisites = (course, graph, postreqs) => {
   findAllCoursesInSubGraphRootedAtCourse(course, graph, postreqs);
 };
 
+// function to find the year the arg course resides in
 const findCourseYear = (scheduleObject, course) => {
   for (const year in scheduleObject) {
     if (scheduleObject[year].has(course.id)) {
@@ -186,6 +214,9 @@ const findCourseYear = (scheduleObject, course) => {
   return -1;
 };
 
+// function to generate topological sort from the arg adjList
+// start with the zero-indegree nodes contained in zero queue
+// as they are the "source" nodes
 const generateTopologicalSort = (
   topologicalSort,
   zeroQueue,
@@ -205,6 +236,7 @@ const generateTopologicalSort = (
   }
 };
 
+// function to fetch course data from courseId
 const fetchCourseData = async (courseId) => {
   try {
     const res = await Class.findOne({ where: { id: courseId } });
@@ -214,6 +246,7 @@ const fetchCourseData = async (courseId) => {
   }
 };
 
+// function to fetch course ID from a course name
 const fetchCourseDataByName = async (name) => {
   try {
     const res = await Class.findOne({ where: { name } });
@@ -223,6 +256,8 @@ const fetchCourseDataByName = async (name) => {
   }
 };
 
+// function to find the index of a course within the nested class array
+// provided the index of the year and the id of the course
 const findCourseIdx = (courseId, schedule, yearIdx) => {
   const courseIdx = schedule[yearIdx].semesters[0].classes.findIndex(
     (classItem) => classItem.id === courseId
@@ -230,16 +265,21 @@ const findCourseIdx = (courseId, schedule, yearIdx) => {
   return courseIdx;
 };
 
+// function to fetch course object provided course index and year index
+// used in conjunction with the function above
 const findCourseDetails = (courseIdx, schedule, yearIdx) => {
   const courseInfo = schedule[yearIdx].semesters[0].classes[courseIdx];
   return courseInfo;
 };
 
+// function to find the index of the year whose nyear number matches
+// the arg number
 const findYearIdx = (number, schedule) => {
   const yearIdx = schedule.findIndex((year) => year.number === number);
   return yearIdx;
 };
 
+// create the course catalog adjacency list using class data
 const generateAdjList = async (schoolClassesData) => {
   const adjList = {};
   // generating adjacency list
@@ -265,6 +305,10 @@ const generateAdjList = async (schoolClassesData) => {
   return adjList;
 };
 
+// provided a valid topological sort, attempt to generate a schedule
+// in which classes are placed into specific years
+// this algorithm is a greedy approach, and thus, may not always lead to
+// the "optimal" schedule
 const generateSchedule = async (
   topologicalSort,
   reversedFinalAdjList,
@@ -318,11 +362,15 @@ const generateSchedule = async (
   return years;
 };
 
+// isolate date values from sequelize data
+// sequelize raw data includes some additional fields that are not of interest
 const isolateDataValsFromSequelizeData = (data) => {
   const dataValues = data.map((schoolClass) => schoolClass.dataValues);
   return dataValues;
 };
 
+// shift a course to a desired year by removing it from its original year
+// and adding it to the desired year
 const moveCourseToDifferentYear = (
   schedule,
   desiredYear,
@@ -350,6 +398,8 @@ const moveCourseToDifferentYear = (
   }
 };
 
+// function to reverse the edges within an adjacency list
+// s.t. an edge from a to b, is not an edge from b to a
 const reverseAdjList = (adjList) => {
   let reversedAdjList = {};
   for (const node in adjList) {
@@ -375,6 +425,10 @@ const transformCourseNameArrayToID = async (courseNames) => {
   return coursesIDs;
 };
 
+// sort the pre req paths object by converting into an iterable
+// array of arrays where array[0] is an index and array[1] is the pre req path
+// object containing the id of the root course as well as the pre leq path length
+// and the set of classes in the path
 const sortPreReqPaths = (preReqPaths) => {
   // create enumerable key-value type array to sort
   const preReqPathsEnumerable = Object.entries(preReqPaths);
@@ -464,6 +518,7 @@ const addRemainingRequiredCoursesToSchedule = (
   }
 };
 
+// calculate the number of remaining classes in valid schedule
 const calculateNumberOfRemainingClassesInValidSchedule = (
   yearsLeft,
   numberOfPotentialClassesTaken
