@@ -524,4 +524,4 @@ const generateFinalAdjList = (newSchedule, originalAdjList) => {
   return finalScheduleAdjList;
 };
 
-module.exports = { initIndegreeObject };
+module.exports = { initIndegreeObject, determineDisjointComponents };
