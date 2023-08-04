@@ -5,12 +5,11 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 // component imports
 import { UserContext } from "../../UserContext.js";
+import InputForm from "../../components/InputForm/InputForm";
 // mui imports
 import { Button } from "@mui/material";
 // utils imports
-import apiBase from "../../utils/apiBase.js";
-
-import InputForm from "../../components/InputForm/InputForm";
+import { loginToAccount } from "../../utils/loginUtils";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -36,15 +35,7 @@ export default function Login() {
     if (!username || !password) {
       alert("Ensure an email and password have been entered.");
     } else {
-      try {
-        const body = { username, password };
-        const res = await apiBase.post("/student/login", body);
-        const newStudent = res.data.student;
-        updateUser(newStudent);
-        navigate("/student/landing");
-      } catch (err) {
-        alert("Something went wrong. Try again.");
-      }
+      await loginToAccount(username, password, updateUser, navigate);
     }
   };
 
