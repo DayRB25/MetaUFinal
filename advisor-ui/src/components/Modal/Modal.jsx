@@ -1,8 +1,9 @@
-import React from "react";
+// css imports
+import "./Modal.css";
+// mui imports
 import { Modal as ModalUI } from "@mui/material";
 import Box from "@mui/material/Box";
 import CloseIcon from "@mui/icons-material/Close";
-import "./Modal.css";
 
 const style = {
   position: "absolute",
