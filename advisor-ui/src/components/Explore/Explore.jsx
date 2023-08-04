@@ -1,6 +1,8 @@
-import React from "react";
+// css imports
 import "./Explore.css";
+// component imports
 import OpportunityCard from "../OpportunityCard/OpportunityCard";
+// mui imports
 import { CircularProgress } from "@mui/material";
 
 export default function Explore({ events, exploreIsLoading }) {
