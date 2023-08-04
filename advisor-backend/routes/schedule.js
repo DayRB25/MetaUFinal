@@ -11,17 +11,14 @@ const router = express.Router();
 const numberOfElectives = 6;
 const classesPerYear = 6;
 
-const calculateInDegrees = (
-  inDegreeObject,
-  disjointComponents,
-  classData,
-  adjList
-) => {
+const initIndegreeObject = (inDegreeObject, classData) => {
   for (let i = 0; i < classData.length; i++) {
     const schoolClass = classData[i];
     inDegreeObject[schoolClass.id] = 0;
   }
+};
 
+const calculateInDegrees = (inDegreeObject, disjointComponents, adjList) => {
   for (let i = 0; i < disjointComponents.length; i++) {
     const component = disjointComponents[i];
     // recreate adjList for this component
@@ -243,6 +240,31 @@ const findYearIdx = (number, schedule) => {
   return yearIdx;
 };
 
+const generateAdjList = async (schoolClassesData) => {
+  const adjList = {};
+  // generating adjacency list
+  for (let i = 0; i < schoolClassesData.length; i++) {
+    const schoolClass = schoolClassesData[i];
+    adjList[schoolClass.id] = [];
+
+    // fetching courses for which current course is a pre-req
+    const dependentClasses = await Prerequisite.findAll({
+      where: { PrereqId: schoolClass.id },
+    });
+
+    // isolating relevant data from response
+    const dependentClassesData =
+      isolateDataValsFromSequelizeData(dependentClasses);
+
+    // add all classes current class is a pre-req for to adj list
+    for (let j = 0; j < dependentClassesData.length; j++) {
+      const dependentClass = dependentClasses[j];
+      adjList[schoolClass.id].push(dependentClass.PostreqId);
+    }
+  }
+  return adjList;
+};
+
 const generateSchedule = async (
   topologicalSort,
   reversedFinalAdjList,
@@ -342,6 +364,17 @@ const reverseAdjList = (adjList) => {
   return reversedAdjList;
 };
 
+// transform an array of course names to an array of course IDs
+const transformCourseNameArrayToID = async (courseNames) => {
+  const coursesIDs = [];
+  for (let i = 0; i < courseNames.length; i++) {
+    const courseName = courseNames[i];
+    const courseId = await fetchCourseDataByName(courseName);
+    coursesIDs.push(courseId);
+  }
+  return coursesIDs;
+};
+
 const sortPreReqPaths = (preReqPaths) => {
   // create enumerable key-value type array to sort
   const preReqPathsEnumerable = Object.entries(preReqPaths);
@@ -353,6 +386,106 @@ const sortPreReqPaths = (preReqPaths) => {
   return sortedPreReqPaths;
 };
 
+// removes any course that has already been taken from the adjacency list
+const pruneTakenCoursesFromAdjacencyList = (
+  zeroList,
+  takenClassSet,
+  adjList
+) => {
+  for (let i = 0; i < zeroList.length; i++) {
+    const currentClass = zeroList[i];
+    if (takenClassSet.has(currentClass)) {
+      dfsPrune(currentClass, adjList, takenClassSet);
+    }
+  }
+};
+
+// extracts IDs from sequelize data
+const isolateClassIDsFromSequelizeData = (data) => {
+  const IDs = data.map((dataItem) => dataItem.dataValues.ClassId);
+  return IDs;
+};
+
+// fetches class data from sequelize and isolates class ids
+const getTakenClassesIDs = async (StudentId) => {
+  const takenClasses = await TakenClass.findAll({ where: { StudentId } });
+  const takenClassesData = isolateClassIDsFromSequelizeData(takenClasses);
+  return takenClassesData;
+};
+
+// fetches class data from sequelize and isolates class ids
+const getRequiredClassesIDs = async (SchoolId) => {
+  const requiredClasses = await RequiredClass.findAll({ where: { SchoolId } });
+  const requiredClassesData = isolateClassIDsFromSequelizeData(requiredClasses);
+  return requiredClassesData;
+};
+
+// delete any classes that have been taken or that are not required from adjacency list
+const deleteTakenAndNonRequiredClassesFromAdjList = (
+  adjList,
+  takenClassSet,
+  remainingClassSet
+) => {
+  for (const element in adjList) {
+    // delete it, non-required
+    if (takenClassSet.has(parseInt(element))) {
+      delete adjList[element];
+    }
+  }
+
+  for (const element in adjList) {
+    // delete it, non-required
+    if (!remainingClassSet.has(parseInt(element))) {
+      delete adjList[element];
+    } else {
+      // loop through neighbors to find a non-required element and remove them
+      adjList[element] = adjList[element].filter((neighbor) =>
+        remainingClassSet.has(neighbor)
+      );
+    }
+  }
+};
+
+// call delete function to remove non-required and taken classes from adjList
+// then add the remaining items to the newSchedule
+const addRemainingRequiredCoursesToSchedule = (
+  adjList,
+  takenClassSet,
+  remainingClassSet,
+  newSchedule
+) => {
+  deleteTakenAndNonRequiredClassesFromAdjList(
+    adjList,
+    takenClassSet,
+    remainingClassSet
+  );
+  for (const course in adjList) {
+    newSchedule.add(parseInt(course));
+  }
+};
+
+const calculateNumberOfRemainingClassesInValidSchedule = (
+  yearsLeft,
+  numberOfPotentialClassesTaken
+) => {
+  const totalClassesLeft = classesPerYear * yearsLeft;
+  const numberOfRemainingClasses =
+    totalClassesLeft - numberOfPotentialClassesTaken;
+  return numberOfRemainingClasses;
+};
+
+// using the newSchedule set containing all of the courses for the schedule,
+// geenrate the final adjacency list
+const generateFinalAdjList = (newSchedule, originalAdjList) => {
+  const finalScheduleAdjList = {};
+  for (const course of newSchedule) {
+    finalScheduleAdjList[course] = originalAdjList[course].filter((neigbor) =>
+      newSchedule.has(neigbor)
+    );
+  }
+  return finalScheduleAdjList;
+};
+
 // Route for student schedule creation
 router.post("/create", async (req, res) => {
   const SchoolId = req.body.SchoolId;
@@ -360,12 +493,9 @@ router.post("/create", async (req, res) => {
 
   const preferredCoursesByName = req.body.preferredCourses;
   // transform preferredCourses to be an array of course id's
-  const preferredCourses = [];
-  for (let i = 0; i < preferredCoursesByName.length; i++) {
-    const preferredCourse = preferredCoursesByName[i];
-    const courseId = await fetchCourseDataByName(preferredCourse);
-    preferredCourses.push(courseId);
-  }
+  const preferredCourses = await transformCourseNameArrayToID(
+    preferredCoursesByName
+  );
 
   let gradYear = null;
   if (req.body.gradYear) {
@@ -376,29 +506,8 @@ router.post("/create", async (req, res) => {
     const schoolClasses = await Class.findAll({ where: { SchoolId } });
     // isolating relevant data from response
     const schoolClassesData = isolateDataValsFromSequelizeData(schoolClasses);
-
-    const adjList = {};
-    // generating adjacency list
-    for (let i = 0; i < schoolClassesData.length; i++) {
-      const schoolClass = schoolClassesData[i];
-      adjList[schoolClass.id] = [];
-
-      // fetching courses for which current course is a pre-req
-      const dependentClasses = await Prerequisite.findAll({
-        where: { PrereqId: schoolClass.id },
-      });
-
-      // isolating relevant data from response
-      const dependentClassesData =
-        isolateDataValsFromSequelizeData(dependentClasses);
-
-      // add all classes current class is a pre-req for to adj list
-      for (let j = 0; j < dependentClassesData.length; j++) {
-        const dependentClass = dependentClasses[j];
-        adjList[schoolClass.id].push(dependentClass.PostreqId);
-      }
-    }
-
+    // generate adjancency list using school id
+    const adjList = await generateAdjList(schoolClassesData);
     // save for later
     const originalAdjList = JSON.parse(JSON.stringify(adjList));
     const electiveAdditionAdjList = JSON.parse(JSON.stringify(adjList));
@@ -410,12 +519,8 @@ router.post("/create", async (req, res) => {
     determineDisjointComponents(disjointComponents, adjList);
 
     let inDegreeObject = {};
-    calculateInDegrees(
-      inDegreeObject,
-      disjointComponents,
-      schoolClassesData,
-      adjList
-    );
+    initIndegreeObject(inDegreeObject, schoolClassesData);
+    calculateInDegrees(inDegreeObject, disjointComponents, adjList);
 
     let zeroList = [];
     for (const classId in inDegreeObject) {
@@ -423,46 +528,21 @@ router.post("/create", async (req, res) => {
         zeroList.push(parseInt(classId));
       }
     }
-    //////////////////////////////////////////////////////
-    // calculate indegrees
-    //////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////
     // pruning adjacency list of anything that has been taken already
     //////////////////////////////////////////////////////
-    const takenClasses = await TakenClass.findAll({ where: { StudentId } });
-    const takenClassesData = takenClasses.map(
-      (takenClass) => takenClass.dataValues.ClassId
-    );
+    const takenClassesData = await getTakenClassesIDs(StudentId);
     const takenClassSet = new Set(takenClassesData);
 
-    // create taken set from takenClasses
-    const taken = new Set();
-    for (let i = 0; i < takenClassesData.length; i++) {
-      const takenClass = takenClassesData[i];
-      taken.add(takenClass);
-    }
-    // start pruning from zeroList items, dfs
-    for (let i = 0; i < zeroList.length; i++) {
-      const currentClass = zeroList[i];
-      if (takenClassSet.has(currentClass)) {
-        dfsPrune(currentClass, adjList, takenClassSet);
-      }
-    }
-    ///////////////////////////////////////////////////////
-    // pruning adjacency list of anything that has been taken already
-    //////////////////////////////////////////////////////
+    pruneTakenCoursesFromAdjacencyList(zeroList, takenClassSet, adjList);
 
     //////////////////////////////////////////////////////
-    // calculate indegrees
+    // calculate indegrees of adjacency list with taken courss removed
     //////////////////////////////////////////////////////
     inDegreeObject = {};
-    calculateInDegrees(
-      inDegreeObject,
-      disjointComponents,
-      schoolClassesData,
-      adjList
-    );
+    initIndegreeObject(inDegreeObject, schoolClassesData);
+    calculateInDegrees(inDegreeObject, disjointComponents, adjList);
 
     zeroList = [];
     for (const classId in inDegreeObject) {
@@ -473,20 +553,13 @@ router.post("/create", async (req, res) => {
         zeroList.push(parseInt(classId));
       }
     }
-    //////////////////////////////////////////////////////
-    // calculate indegrees
-    //////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////
-    // determine set of remaining classes and prune adjancency list to include them only
+    // determine set of remaining classes and delete adjancency list of any
+    // non-required core courses or taken courses (electives),
+    // then add to new schedule
     //////////////////////////////////////////////////////
-    const requiredClasses = await RequiredClass.findAll({
-      where: { SchoolId },
-    });
-    const requiredClassesData = requiredClasses.map(
-      (requiredClass) => requiredClass.dataValues.ClassId
-    );
-
+    const requiredClassesData = await getRequiredClassesIDs(SchoolId);
     const requiredClassesSet = new Set(requiredClassesData);
 
     const remainingClassArray = requiredClassesData.filter(
@@ -494,32 +567,12 @@ router.post("/create", async (req, res) => {
     );
     const remainingClassSet = new Set(remainingClassArray);
 
-    for (const element in adjList) {
-      // delete it, non-required
-      if (takenClassSet.has(parseInt(element))) {
-        delete adjList[element];
-      }
-    }
-
-    for (const element in adjList) {
-      // delete it, non-required
-      if (!remainingClassSet.has(parseInt(element))) {
-        delete adjList[element];
-      } else {
-        // loop through neighbors to find a non-required element and remove them
-        adjList[element] = adjList[element].filter((neighbor) =>
-          remainingClassSet.has(neighbor)
-        );
-      }
-    }
-    //////////////////////////////////////////////////////
-    // determine set of remaining classes and prune adjancency list to include them only
-    //////////////////////////////////////////////////////
-
-    // add these courses directly to the final schedule set //////
-    for (const key in adjList) {
-      newSchedule.add(parseInt(key));
-    }
+    addRemainingRequiredCoursesToSchedule(
+      adjList,
+      takenClassSet,
+      remainingClassSet,
+      newSchedule
+    );
 
     //////////////////////////////////////////////////////
     // determine how many more classes can fit in the schedule
@@ -527,22 +580,17 @@ router.post("/create", async (req, res) => {
     const numberOfClasses = Object.getOwnPropertyNames(adjList).length;
     const student = await Student.findOne({ where: { id: StudentId } });
 
-    // if goal grad date is present, then use it to determine number of years remaining
-    // otherwise base it off of a standard four year cycle
     const yearsLeft = calculateNumberOfYearsBeforeGrad(gradYear, student.year);
-
-    if (numberOfClasses >= classesPerYear * yearsLeft) {
+    let remainingClasses = calculateNumberOfRemainingClassesInValidSchedule(
+      yearsLeft,
+      numberOfClasses
+    );
+    if (remainingClasses <= 0) {
       // not possible to graduate in the current time frame
       return res.json({
         message: "Not possible to graduate with current time frame",
       });
     }
-
-    // otherwise there is some space left, calculate the number of remaining classes
-    let remainingClasses = classesPerYear * yearsLeft - numberOfClasses;
-    //////////////////////////////////////////////////////
-    // determine how many more classes can fit in the schedule
-    //////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////
     // adding required number of electives
@@ -559,7 +607,7 @@ router.post("/create", async (req, res) => {
       // delete it, non-required
       if (
         remainingClassSet.has(parseInt(element)) ||
-        taken.has(parseInt(element))
+        takenClassSet.has(parseInt(element))
       ) {
         delete electiveAdditionAdjList[element];
       }
@@ -700,12 +748,12 @@ router.post("/create", async (req, res) => {
     //////////////////////////////////////////////////////
     // add schedule elements to final adj list
     //////////////////////////////////////////////////////
-    const finalScheduleAdjList = {};
-    for (const course of newSchedule) {
-      finalScheduleAdjList[course] = originalAdjList[course].filter((neigbor) =>
-        newSchedule.has(neigbor)
-      );
-    }
+
+    const finalScheduleAdjList = generateFinalAdjList(
+      newSchedule,
+      originalAdjList
+    );
+
     //////////////////////////////////////////////////////
     // add schedule elements to final adj list
     //////////////////////////////////////////////////////
@@ -723,21 +771,11 @@ router.post("/create", async (req, res) => {
       inDegreeObject[intId] = 0;
     }
 
-    for (let i = 0; i < disjointComponents.length; i++) {
-      const component = disjointComponents[i];
-      // recreate adjList for this component
-      const componentAdjList = {};
-      for (let j = 0; j < component.length; j++) {
-        const classId = component[j];
-        componentAdjList[classId] = finalScheduleAdjList[classId];
-      }
-      // calculate in degrees
-      for (const classId in componentAdjList) {
-        for (const postreqId of componentAdjList[classId]) {
-          inDegreeObject[postreqId] += 1;
-        }
-      }
-    }
+    calculateInDegrees(
+      inDegreeObject,
+      disjointComponents,
+      finalScheduleAdjList
+    );
     //////////////////////////////////////////////////////
     // calculate in degrees
     //////////////////////////////////////////////////////
