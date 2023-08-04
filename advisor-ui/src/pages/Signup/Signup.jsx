@@ -9,7 +9,8 @@ import { UserContext } from "../../UserContext.js";
 // mui imports
 import { Button } from "@mui/material";
 // utils imports
-import apiBase from "../../utils/apiBase";
+import { createStudentAccount } from "../../utils/signupUtils";
+
 import {
   validateNonEmptyFields,
   validateEmail,
@@ -108,33 +109,19 @@ export default function Signup() {
       );
       return;
     }
-    const body = {
+    await createStudentAccount(
       firstname,
       lastname,
       username,
       password,
       email,
-      year: parseInt(year),
+      year,
       city,
-      state: locationState,
-      address: address,
-    };
-    try {
-      const res = await apiBase.post("/student/create", body);
-      const newStudent = res.data.user;
-      updateUser(newStudent);
-      // navigate to landing page
-      navigate("/student/landing");
-    } catch (err) {
-      const statusCodeLength = 3;
-      // network status code is the last 3 chars in error message, extract
-      if (err.message.slice(-statusCodeLength) === "400") {
-        alert("Username or email taken.");
-        return;
-      } else {
-        alert("Something went wrong. Try again later.");
-      }
-    }
+      statusbar,
+      address,
+      updateUser,
+      navigate
+    );
   };
 
   return (
