@@ -1,9 +1,12 @@
+// library imports
 import express from "express";
 import bcrypt from "bcrypt";
-import { Student } from "../models/student.js";
-import { Op } from "sequelize";
-import { abbreviationLookup } from "../abbreviationLookup.js";
 import axios from "axios";
+import { Op } from "sequelize";
+// model imports
+import { Student } from "../models/student.js";
+// helper imports
+import { abbreviationLookup } from "../abbreviationLookup.js";
 
 const router = express.Router();
 
