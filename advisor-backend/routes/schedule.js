@@ -11,17 +11,14 @@ const router = express.Router();
 const numberOfElectives = 6;
 const classesPerYear = 6;
 
-const calculateInDegrees = (
-  inDegreeObject,
-  disjointComponents,
-  classData,
-  adjList
-) => {
+const initIndegreeObject = (inDegreeObject, classData) => {
   for (let i = 0; i < classData.length; i++) {
     const schoolClass = classData[i];
     inDegreeObject[schoolClass.id] = 0;
   }
+};
 
+const calculateInDegrees = (inDegreeObject, disjointComponents, adjList) => {
   for (let i = 0; i < disjointComponents.length; i++) {
     const component = disjointComponents[i];
     // recreate adjList for this component
@@ -522,12 +519,8 @@ router.post("/create", async (req, res) => {
     determineDisjointComponents(disjointComponents, adjList);
 
     let inDegreeObject = {};
-    calculateInDegrees(
-      inDegreeObject,
-      disjointComponents,
-      schoolClassesData,
-      adjList
-    );
+    initIndegreeObject(inDegreeObject, schoolClassesData);
+    calculateInDegrees(inDegreeObject, disjointComponents, adjList);
 
     let zeroList = [];
     for (const classId in inDegreeObject) {
@@ -548,12 +541,8 @@ router.post("/create", async (req, res) => {
     // calculate indegrees of adjacency list with taken courss removed
     //////////////////////////////////////////////////////
     inDegreeObject = {};
-    calculateInDegrees(
-      inDegreeObject,
-      disjointComponents,
-      schoolClassesData,
-      adjList
-    );
+    initIndegreeObject(inDegreeObject, schoolClassesData);
+    calculateInDegrees(inDegreeObject, disjointComponents, adjList);
 
     zeroList = [];
     for (const classId in inDegreeObject) {
@@ -782,21 +771,11 @@ router.post("/create", async (req, res) => {
       inDegreeObject[intId] = 0;
     }
 
-    for (let i = 0; i < disjointComponents.length; i++) {
-      const component = disjointComponents[i];
-      // recreate adjList for this component
-      const componentAdjList = {};
-      for (let j = 0; j < component.length; j++) {
-        const classId = component[j];
-        componentAdjList[classId] = finalScheduleAdjList[classId];
-      }
-      // calculate in degrees
-      for (const classId in componentAdjList) {
-        for (const postreqId of componentAdjList[classId]) {
-          inDegreeObject[postreqId] += 1;
-        }
-      }
-    }
+    calculateInDegrees(
+      inDegreeObject,
+      disjointComponents,
+      finalScheduleAdjList
+    );
     //////////////////////////////////////////////////////
     // calculate in degrees
     //////////////////////////////////////////////////////
