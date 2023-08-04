@@ -11,7 +11,10 @@ import { Pagination } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { CircularProgress } from "@mui/material";
 // utils imports
-import apiBase from "../../utils/apiBase";
+import {
+  fetchPageCount,
+  fetchSchedulesByPage,
+} from "../../utils/savedSchedulesUtils";
 
 export default function SavedSchedules() {
   // state to track saved schedules returned from endpoint
@@ -23,25 +26,12 @@ export default function SavedSchedules() {
   // contains info about the current user
   const { user } = useContext(UserContext);
 
-  const fetchSchedulesByPage = async (page) => {
-    try {
-      setIsLoading(true);
-      const res = await apiBase.get(`/save-schedule/${user.id}/${page}`);
-      setSchedules(res.data.schedules);
-    } catch (error) {
-      alert("Something went wrong here.");
-    }
-    setIsLoading(false);
+  const handleFetchSchedulesByPage = async (page) => {
+    await fetchSchedulesByPage(page, setIsLoading, setSchedules, user.id);
   };
 
-  const fetchPageCount = async () => {
-    try {
-      const res = await apiBase.get(`/save-schedule/${user.id}/page-count`);
-      const pageCount = res.data.pageCount;
-      setPageCount(pageCount);
-    } catch (error) {
-      alert("Something went wrong. Try again later.");
-    }
+  const handleFetchPageCount = async () => {
+    await fetchPageCount(user.id, setPageCount);
   };
 
   const scheduleDisplay = schedules.map((schedule, idx) => (
@@ -49,8 +39,8 @@ export default function SavedSchedules() {
   ));
 
   useEffect(() => {
-    fetchPageCount();
-    fetchSchedulesByPage(1);
+    handleFetchPageCount();
+    handleFetchSchedulesByPage(1);
   }, []);
 
   return (
@@ -70,7 +60,7 @@ export default function SavedSchedules() {
           <div className="pagination">
             <Pagination
               count={pageCount}
-              onChange={(event, page) => fetchSchedulesByPage(page)}
+              onChange={(event, page) => handleFetchSchedulesByPage(page)}
             />
           </div>
         )}

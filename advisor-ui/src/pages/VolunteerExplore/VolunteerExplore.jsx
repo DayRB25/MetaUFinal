@@ -12,6 +12,11 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Pagination from "@mui/material/Pagination";
 // utils imports
 import apiBase from "../../utils/apiBase";
+import {
+  fetchRecommendedEvents,
+  fetchEventsByPage,
+  fetchPageCount,
+} from "../../utils/eventsUtils";
 import { formatTime, formatDate } from "../../utils/dateTimeUtils";
 
 export default function VolunteerExplore() {
@@ -88,58 +93,27 @@ export default function VolunteerExplore() {
         startDate,
         endDate,
         distance,
-        timeCommitment
+        timeCommitment,
+        setRecommendIsLoading,
+        user.id,
+        setRecommendedEvents
       );
     }
   };
 
-  const fetchRecommendedEvents = async (
-    startTime,
-    endTime,
-    startDate,
-    endDate,
-    distance,
-    timeCommitment
-  ) => {
-    try {
-      setRecommendIsLoading(true);
-      const res = await apiBase.get(
-        `/events/recommended/${user.id}?distance=${distance}&start_date=${startDate}&end_date=${endDate}&start_time=${startTime}&end_time=${endTime}&time_commitment=${timeCommitment}`,
-        { params: { studentId: user.id } }
-      );
-      const fetchedRecommendedEvents = res.data.events;
-      setRecommendedEvents(fetchedRecommendedEvents);
-    } catch (err) {
-      alert("Something went wrong. Try again later.");
-    }
-    setRecommendIsLoading(false);
+  // handler function for fetching events by page
+  const handleFetchEventsByPage = async (page) => {
+    await fetchEventsByPage(page, setExploreIsLoading, setEvents);
   };
 
-  const fetchEventsByPage = async (page) => {
-    try {
-      setExploreIsLoading(true);
-      const res = await apiBase.get(`/events/page/${page}`);
-      const fetchedEvents = res.data.events;
-      setEvents(fetchedEvents);
-    } catch (error) {
-      alert("Something went wrong. Try again later.");
-    }
-    setExploreIsLoading(false);
-  };
-
-  const fetchPageCount = async () => {
-    try {
-      const res = await apiBase.get("/events/page-count");
-      const pageCount = res.data.pageCount;
-      setPageCount(pageCount);
-    } catch (error) {
-      alert("Something went wrong. Try again later.");
-    }
+  // handler function for fetching page count
+  const handleFetchPageCount = async () => {
+    await fetchPageCount(setPageCount);
   };
 
   useEffect(() => {
-    fetchPageCount();
-    fetchEventsByPage(1);
+    handleFetchPageCount();
+    handleFetchEventsByPage(1);
   }, []);
 
   return (
@@ -171,7 +145,7 @@ export default function VolunteerExplore() {
           <div className="pagination">
             <Pagination
               count={pageCount}
-              onChange={(event, page) => fetchEventsByPage(page)}
+              onChange={(event, page) => handleFetchEventsByPage(page)}
             />
           </div>
         )}

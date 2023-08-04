@@ -18,7 +18,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CircularProgress from "@mui/material/CircularProgress";
 // utils imports
 import { createDateFromTimeStamp } from "../../utils/dateTimeUtils.js";
-import apiBase from "../../utils/apiBase.js";
+import { fetchStudentEvents } from "../../utils/studentEventUtils";
+import { deleteStudentEventFromDB } from "../../utils/studentEventUtils";
 
 export default function VolunteerHours() {
   // state to hold event data returned from api
@@ -29,24 +30,6 @@ export default function VolunteerHours() {
   // general isLoading state to control display of progress spinner/content
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchStudentEvents = async () => {
-    try {
-      setIsLoading(true);
-      const res = await apiBase.get(`/student-event/${user.id}`, {
-        params: { studentId: user.id },
-      });
-      const fetchedStudentEvents = res.data.studentEvents;
-      setStudentEvents(fetchedStudentEvents);
-    } catch (error) {
-      alert("Something went wrong!");
-    }
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchStudentEvents();
-  }, []);
-
   // function to delete student events from state array
   const deleteStudentEventFromState = (id) => {
     const filteredEvents = studentEvents.filter(
@@ -55,19 +38,8 @@ export default function VolunteerHours() {
     setStudentEvents(filteredEvents);
   };
 
-  const deleteStudentEventFromDB = async (id) => {
-    try {
-      setIsLoading(true);
-      const res = apiBase.delete(`/student-event/${id}`, {
-        params: { studentEventId: id },
-      });
-      setIsLoading(false);
-      return true;
-    } catch (error) {
-      alert("Unable to delete. Try again later.");
-      setIsLoading(false);
-      return false;
-    }
+  const handleFetchStudentEvents = async () => {
+    await fetchStudentEvents(setIsLoading, user.id, setStudentEvents);
   };
 
   // handler function for deleting student events
@@ -75,12 +47,16 @@ export default function VolunteerHours() {
   // successful delete, the state is deleted from local state
   const handleDeleteStudentEvent = async (id) => {
     // step 1 delete DB record
-    const successfulDelete = await deleteStudentEventFromDB(id);
+    const successfulDelete = await deleteStudentEventFromDB(id, setIsLoading);
     // step 2 delete from local state copy
     if (successfulDelete) {
       deleteStudentEventFromState(id);
     }
   };
+
+  useEffect(() => {
+    handleFetchStudentEvents();
+  }, []);
 
   const studentEventRows = studentEvents.map((studentEvent) => {
     const eventDetails = studentEvent.EventDetail;
