@@ -528,4 +528,6 @@ module.exports = {
   initIndegreeObject,
   determineDisjointComponents,
   reverseAdjList,
+  moveCourseToDifferentYear,
+  generateFinalAdjList,
 };
