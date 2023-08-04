@@ -103,7 +103,7 @@ const countNodes = (sourceNode, graph) => {
 // to prioritize graduation speed, delete pre req paths that will potentially be too long and stall graduation
 const deleteLengthyPrereqPaths = (preReqPaths, tooLongSet, yearsLeft) => {
   for (const course in preReqPaths) {
-    if (preReqPaths[course].count > yearsLeft - 2) {
+    if (preReqPaths[course].count > Math.min(yearsLeft - 1, 1)) {
       tooLongSet.add(parseInt(course));
       delete preReqPaths[course];
     }
