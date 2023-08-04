@@ -1,18 +1,18 @@
 .navbar {
-    padding: 5px 10px;
+  padding: 5px 10px;
 }
 
 .navbar .content {
-    display: flex;
-    align-items: center;
+  align-items: center;
+  display: flex;
 }
 
 .navbar .links {
-    margin-left: auto;
-    list-style: none;
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 650px;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  list-style: none;
+  justify-content: space-between;
+  margin-left: auto;
+  max-width: 650px;
 }
