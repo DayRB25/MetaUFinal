@@ -11,7 +11,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import GraduationProgressSpinner from "../../components/GraduationSpinner/GraduationSpinner";
 import { CircularProgress } from "@mui/material";
 // utils imports
-import apiBase from "../../utils/apiBase";
+import { fetchCompletionInfo } from "../../utils/gradProgressUtils";
 
 export default function Progress() {
   // state tracking the number of grad requirement classes a student has taken
@@ -25,25 +25,20 @@ export default function Progress() {
   // contains info about the user
   const { user } = useContext(UserContext);
 
-  const fetchCompletionInfo = async () => {
-    const body = {
-      SchoolId: user.SchoolId,
-      StudentId: user.id,
-    };
-    try {
-      setIsLoading(true);
-      const res = await apiBase.post("/progress/", body);
-      setTakenCount(res.data.takenClassesCount);
-      setRequiredCount(res.data.requiredClassesCount);
-      setCourseProgressList(res.data.currentAcademicProgress);
-    } catch (error) {
-      alert("Something went wrong");
-    }
-    setIsLoading(false);
+  // hanlder function for fetching completion info
+  const handleFetchCompletionInfo = async () => {
+    await fetchCompletionInfo(
+      user.SchoolId,
+      user.id,
+      setIsLoading,
+      setTakenCount,
+      setRequiredCount,
+      setCourseProgressList
+    );
   };
 
   useEffect(() => {
-    fetchCompletionInfo();
+    handleFetchCompletionInfo();
   }, []);
 
   const requiredClassesDisplay = courseProgressList.map((classInfo, idx) => (
