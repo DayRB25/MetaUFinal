@@ -1,5 +1,6 @@
-import * as React from "react";
+// css imports
 import "./Landing.css";
+// component imports
 import Navbar from "../../components/Navbar/Navbar";
 import Hero from "../../components/Hero/Hero";
 
