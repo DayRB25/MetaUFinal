@@ -11,6 +11,8 @@ import Modal from "../../components/Modal/Modal";
 import SwapModal from "../../components/SwapModal/SwapModal.jsx";
 import { CircularProgress } from "@mui/material";
 import apiBase from "../../utils/apiBase.js";
+import { generateNewSchedule } from "../../utils/scheduleUtils.js";
+import { createSaveScheduleRecord } from "../../utils/savedSchedulesUtils.js";
 
 export default function ScheduleTool() {
   const [constraints, setConstraints] = useState([]);
@@ -87,30 +89,19 @@ export default function ScheduleTool() {
     return gradYearConstraint.map((constraint) => constraint.value);
   };
 
-  const generateNewSchedule = async () => {
+  const handleGenerateNewSchedule = async () => {
     const preferredCourses = isolateCourseConstraints();
     // return is an array
     const gradYear = isolateGradYearConstraint()[0];
-    const body = {
-      SchoolId: user.SchoolId,
-      StudentId: user.id,
+    await generateNewSchedule(
       preferredCourses,
       gradYear,
-    };
-    try {
-      setScheduleIsLoading(true);
-      const res = await apiBase.post("/schedule/create", body);
-      setScheduleIsLoading(false);
-      if (res.data.schedule === undefined || res.data.schedule === null) {
-        alert("Schedule not possible. Enter new constraints.");
-        return;
-      }
-      setSchedule(res.data.schedule);
-      setScheduleAdjList(res.data.finalScheduleAdjList);
-    } catch (error) {
-      alert("Something went wrong");
-    }
-    setScheduleIsLoading(false);
+      user.SchoolId,
+      user.id,
+      setScheduleIsLoading,
+      setSchedule,
+      setScheduleAdjList
+    );
   };
 
   const getYearNumberFromCourse = (course) => {
@@ -220,24 +211,9 @@ export default function ScheduleTool() {
     setSwapOperationIsLoading(false);
   };
 
-  const createSaveScheduleRecord = async () => {
-    const body = {
-      StudentId: user.id,
-      schedule,
-    };
-    try {
-      setScheduleIsLoading(true);
-      const res = await apiBase.post("/save-schedule/create", body);
-      alert("Save successful!");
-    } catch (error) {
-      alert("Something went wrong.");
-    }
-    setScheduleIsLoading(false);
-  };
-
-  const handleSaveSchedule = () => {
+  const handleSaveSchedule = async () => {
     if (schedule.length !== 0) {
-      createSaveScheduleRecord();
+      await createSaveScheduleRecord(user.id, schedule, setScheduleIsLoading);
     } else {
       alert("Generate a schedule first.");
       return;
@@ -257,7 +233,7 @@ export default function ScheduleTool() {
         </div>
         <Constraints constraints={constraints} addConstraint={addConstraint} />
         <div className="btn-container">
-          <Button variant="outlined" onClick={generateNewSchedule}>
+          <Button variant="outlined" onClick={handleGenerateNewSchedule}>
             Generate Schedule
           </Button>
           <Button variant="outlined" onClick={handleSaveSchedule}>

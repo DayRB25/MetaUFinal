@@ -1,5 +1,24 @@
 import apiBase from "./apiBase";
 
+const createSaveScheduleRecord = async (
+  userId,
+  schedule,
+  setScheduleIsLoading
+) => {
+  const body = {
+    StudentId: userId,
+    schedule,
+  };
+  try {
+    setScheduleIsLoading(true);
+    const res = await apiBase.post("/save-schedule/create", body);
+    alert("Save successful!");
+  } catch (error) {
+    alert("Something went wrong.");
+  }
+  setScheduleIsLoading(false);
+};
+
 const fetchSchedulesByPage = async (
   page,
   setIsLoading,
@@ -26,4 +45,4 @@ const fetchPageCount = async (userId, setPageCount) => {
   }
 };
 
-export { fetchSchedulesByPage, fetchPageCount };
+export { fetchSchedulesByPage, fetchPageCount, createSaveScheduleRecord };
