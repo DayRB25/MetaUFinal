@@ -1,4 +1,6 @@
+// library imports
 import express from "express";
+// model imports
 import { Student } from "../models/index.js";
 import { EventDetail } from "../models/index.js";
 import { StudentEvent } from "../models/index.js";
