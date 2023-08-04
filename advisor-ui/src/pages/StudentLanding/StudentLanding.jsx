@@ -1,14 +1,19 @@
-import React, { useContext } from "react";
+// css imports
+import "./StudentLanding.css";
+// library imports
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+// component imports
 import { UserContext } from "../../UserContext.js";
+// mui imports
 import { Button } from "@mui/material";
 
-import "./StudentLanding.css";
-
 export default function StudentLanding() {
+  // user contains current user's info and update user is handler to update current user
   const { user, updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
+  // handler for logout, sets user to null and forces navigate to general landing screen
   const handleLogout = () => {
     updateUser(null);
     navigate("/");

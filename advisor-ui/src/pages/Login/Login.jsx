@@ -1,27 +1,37 @@
-import * as React from "react";
+// css imports
+import "./Login.css";
+// library imports
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+// component imports
 import { UserContext } from "../../UserContext.js";
+// mui imports
 import { Button } from "@mui/material";
+// utils imports
 import apiBase from "../../utils/apiBase.js";
 
-import "./Login.css";
 import InputForm from "../../components/InputForm/InputForm";
 
 export default function Login() {
   const navigate = useNavigate();
+  // state to track username
   const [username, setUsername] = useState("");
+  // state to track password
   const [password, setPassword] = useState("");
+  // function to modify current user
   const { updateUser } = useContext(UserContext);
 
+  // handler to change username
   const handleChangeUsername = (e) => {
     setUsername(e.target.value);
   };
 
+  // handler to change password
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
   };
 
+  // handler for logging in, verify non-empty fields and proceed
   const handleLogin = async () => {
     if (!username || !password) {
       alert("Ensure an email and password have been entered.");

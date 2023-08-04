@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
+// library imports
 import { Link } from "react-router-dom";
 
 import "./Hero.css";

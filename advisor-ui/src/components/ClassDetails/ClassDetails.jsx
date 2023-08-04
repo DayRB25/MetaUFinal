@@ -1,4 +1,4 @@
-import React from "react";
+// css imports
 import "./ClassDetails.css";
 
 export default function ClassDetails({

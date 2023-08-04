@@ -1,24 +1,32 @@
-import React, { useEffect, useContext, useState } from "react";
+// css imports
+import "./VolunteerHours.css";
+// library imports
+import { Link } from "react-router-dom";
+import { useEffect, useContext, useState } from "react";
+// component imports
+import { UserContext } from "../../UserContext.js";
+// mui imports
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { UserContext } from "../../UserContext.js";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Link } from "react-router-dom";
+// utils imports
 import { createDateFromTimeStamp } from "../../utils/dateTimeUtils.js";
 import apiBase from "../../utils/apiBase.js";
-import "./VolunteerHours.css";
 
 export default function VolunteerHours() {
+  // state to hold event data returned from api
   const [studentEvents, setStudentEvents] = useState([]);
+  // contains current user's info
   const { user } = useContext(UserContext);
 
+  // general isLoading state to control display of progress spinner/content
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchStudentEvents = async () => {
@@ -39,6 +47,7 @@ export default function VolunteerHours() {
     fetchStudentEvents();
   }, []);
 
+  // function to delete student events from state array
   const deleteStudentEventFromState = (id) => {
     const filteredEvents = studentEvents.filter(
       (studentEvent) => studentEvent.id !== id
@@ -61,6 +70,9 @@ export default function VolunteerHours() {
     }
   };
 
+  // handler function for deleting student events
+  // attempt to delete record from DB first, upon
+  // successful delete, the state is deleted from local state
   const handleDeleteStudentEvent = async (id) => {
     // step 1 delete DB record
     const successfulDelete = await deleteStudentEventFromDB(id);

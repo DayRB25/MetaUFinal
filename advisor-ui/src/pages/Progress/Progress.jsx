@@ -1,18 +1,28 @@
+// css imports
+import "./Progress.css";
+// library imports
 import { useState, useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
+// component imports
 import { UserContext } from "../../UserContext";
 import ClassProgressCard from "../../components/ClassProgressCard/ClassProgressCard";
-import { Link } from "react-router-dom";
+// mui imorts
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import GraduationProgressSpinner from "../../components/GraduationSpinner/GraduationSpinner";
 import { CircularProgress } from "@mui/material";
+// utils imports
 import apiBase from "../../utils/apiBase";
-import "./Progress.css";
 
 export default function Progress() {
+  // state tracking the number of grad requirement classes a student has taken
   const [takenCount, setTakenCount] = useState(-1);
+  // state tracking the number fo grad requirement classes a student needs to graduate
   const [requiredCount, setRequiredCount] = useState(-1);
+  // state to store courseInformation returned from endpoint
   const [courseProgressList, setCourseProgressList] = useState([]);
+  // is loading state to control display of progress spinner and content
   const [isLoading, setIsLoading] = useState(false);
+  // contains info about the user
   const { user } = useContext(UserContext);
 
   const fetchCompletionInfo = async () => {

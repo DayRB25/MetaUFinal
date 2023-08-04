@@ -1,17 +1,26 @@
+// css imports
+import "./SavedSchedules.css";
+// library imports
 import { useContext, useState, useEffect } from "react";
-import { Pagination } from "@mui/material";
 import { Link } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+// component imports
 import { UserContext } from "../../UserContext";
 import ScheduleDetails from "../../components/ScheduleDetails/ScheduleDetails";
+// mui imports
+import { Pagination } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { CircularProgress } from "@mui/material";
+// utils imports
 import apiBase from "../../utils/apiBase";
-import "./SavedSchedules.css";
 
 export default function SavedSchedules() {
+  // state to track saved schedules returned from endpoint
   const [schedules, setSchedules] = useState([]);
+  // state to track page count returned from endpoint
   const [pageCount, setPageCount] = useState(null);
+  // is loading state to control display of spinner or content
   const [isLoading, setIsLoading] = useState(false);
+  // contains info about the current user
   const { user } = useContext(UserContext);
 
   const fetchSchedulesByPage = async (page) => {

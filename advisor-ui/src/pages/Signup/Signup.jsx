@@ -1,8 +1,14 @@
-import React, { useState, useContext } from "react";
-import InputForm from "../../components/InputForm/InputForm";
+// css imports
+import "./Signup.css";
+// library imports
+import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+// component imports
+import InputForm from "../../components/InputForm/InputForm";
 import { UserContext } from "../../UserContext.js";
+// mui imports
 import { Button } from "@mui/material";
+// utils imports
 import apiBase from "../../utils/apiBase";
 import {
   validateNonEmptyFields,
@@ -12,21 +18,29 @@ import {
   validateCity,
   validateState,
 } from "../../utils/signupValidationUtils";
-import "./Signup.css";
 
 export default function Signup() {
+  // state to track firsname
   const [firstname, setFirstname] = useState("");
+  // state to track lastname
   const [lastname, setLastname] = useState("");
+  // state to track email
   const [email, setEmail] = useState("");
+  // state to track username
   const [username, setUsername] = useState("");
+  // state to track password
   const [password, setPassword] = useState("");
+  // state to track year
   const [year, setYear] = useState("");
+  // stae to track city
   const [city, setCity] = useState("");
+  // state to track state (location)
   const [locationState, setLocationState] = useState("");
+  // state to track address
   const [address, setAddress] = useState("");
-
-  const navigate = useNavigate();
+  // function to modify the current user
   const { updateUser } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleFirstNameChange = (e) => {
     setFirstname(e.target.value);

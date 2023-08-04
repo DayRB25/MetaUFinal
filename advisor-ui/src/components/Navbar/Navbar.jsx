@@ -1,5 +1,6 @@
-import * as React from "react";
+// css imports
 import "./Navbar.css";
+// asset imports
 import img from "../../assets/react.svg";
 
 export default function Navbar() {

@@ -1,10 +1,13 @@
+// css imports
+import "./SwapModal.css";
+// library imports
 import { useState } from "react";
+// mui imports
 import { Button, CircularProgress } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
 import { MenuItem } from "@mui/material";
-import "./SwapModal.css";
 
 export default function SwapModal({
   courseName,
@@ -14,17 +17,23 @@ export default function SwapModal({
   submitCourseSwapRequest,
   swapOperationIsLoading,
 }) {
+  // state to track the year a student wishes to swap a course into
   const [year, setYear] = useState(-1);
+  // state to track the course in the desired year a student wishes to swap the course with
   const [course, setCourse] = useState("");
 
+  // handler function for changing year state
   const handleChangeYear = (event) => {
     setYear(parseInt(event.target.value));
   };
-
+  // handler function for changing the course
   const handleChangeCourse = (event) => {
     setCourse(event.target.value);
   };
 
+  // handler for submission
+  // if options are not null, that means a direct course swap is required
+  // if options are null, call general course swap function from parent
   const handleSubmit = () => {
     if (options !== null) {
       submitCourseSwapRequest(course, year);

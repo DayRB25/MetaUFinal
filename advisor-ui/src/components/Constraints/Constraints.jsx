@@ -1,18 +1,26 @@
-import React from "react";
+// css imports
 import "./Constraints.css";
-import Popover from "@mui/material/Popover";
-
+// library imports
+import React from "react";
+// component imports
 import ConstraintItem from "../ConstraintItem/ConstraintItem";
 import AddConstraint from "../AddConstraint/AddConstraint";
 import ConstraintPopover from "../ConstraintPopover/ConstraintPopover";
+// mui imports
+import Popover from "@mui/material/Popover";
 
 export default function Constraints({ addConstraint, constraints }) {
+  // sets anchor element for popover
   const [anchorElement, setAnchorElement] = React.useState(null);
+  // boolean indicating whether or not achorElement is null, control open/close state of popover
+  const open = Boolean(anchorElement);
 
+  // handler for setting anchor element-- opening popover
   const handleClick = (event) => {
     setAnchorElement(event.target);
   };
 
+  // handler for setting anchor element to null-- closing popover
   const handleClose = () => {
     setAnchorElement(null);
   };
@@ -24,8 +32,6 @@ export default function Constraints({ addConstraint, constraints }) {
       value={constraint.value}
     />
   ));
-
-  const open = Boolean(anchorElement);
 
   return (
     <div className="constraints">

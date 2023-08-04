@@ -1,6 +1,4 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-
+// css imports
 import "./InputForm.css";
 
 export default function InputForm({ value, handleChange, type, placeholder }) {

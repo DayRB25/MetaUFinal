@@ -1,5 +1,6 @@
-import React from "react";
+// css imports
 import "./AddConstraint.css";
+// mui imports
 import { Button } from "@mui/material";
 
 export default function AddConstraint({ openPopover }) {
