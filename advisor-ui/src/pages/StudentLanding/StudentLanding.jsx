@@ -36,13 +36,13 @@ export default function StudentLanding() {
         <div className="main">
           <h1>{`Welcome, ${user.firstname}!`}</h1>
           <div className="buttons">
-            <Link to="/student/schedule">
+            <Link to="/student/schedule" className="nav-text">
               <LandingMenuNav text={"Plan Your Courses"} img={calendar} />
             </Link>
-            <Link to="/student/volunteer">
+            <Link to="/student/volunteer" className="nav-text">
               <LandingMenuNav text={"Explore Volunteer Events"} img={explore} />
             </Link>
-            <Link to="/student/progress">
+            <Link to="/student/progress" className="nav-text">
               <LandingMenuNav text={"Track Your Progress"} img={graduation} />
             </Link>
           </div>
