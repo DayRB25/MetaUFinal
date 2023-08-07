@@ -2,10 +2,9 @@
   background-color: #9921e8;
   background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
   border-radius: 10px;
-  height: 500px;
   padding: 10px;
   transition: 0.5s cubic-bezier(0.075, 0.7, 0.165, 0.5);
-  width: 300px;
+  width: 90%;
 }
 
 .landing-menu-nav:hover {
@@ -23,7 +22,7 @@
 }
 
 .landing-menu-nav > .content > img {
-  width: 350px;
+  width: 100%;
 }
 
 .landing-menu-nav > .content > #text {
