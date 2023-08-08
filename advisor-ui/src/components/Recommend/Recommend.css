@@ -27,3 +27,30 @@
   grid-auto-rows: 255px;
   grid-template-columns: 215px 215px 215px 215px;
 }
+
+@media (max-width: 1150px) {
+  .recommend > .content > .grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 215px 215px 215px;
+    grid-auto-rows: 255px;
+  }
+}
+
+@media (max-width: 800px) {
+  .recommend > .content > .grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 215px 215px;
+    grid-auto-rows: 255px;
+  }
+}
+
+@media (max-width: 600px) {
+  .recommend > .content > .grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 215px;
+    grid-auto-rows: 255px;
+  }
+}
