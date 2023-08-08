@@ -37,3 +37,12 @@
   text-decoration: none;
   width: 100%;
 }
+
+@media (max-width: 1150px) {
+  .landing-menu-nav > .content > img {
+    width: 50%;
+  }
+  .landing-menu-nav > .content {
+    flex-direction: row;
+  }
+}
