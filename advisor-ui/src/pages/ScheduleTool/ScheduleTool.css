@@ -10,6 +10,7 @@
   flex-direction: column;
   gap: 30px;
   margin-top: 30px;
+  width: 900px;
 }
 
 .schedule-tool > .content > .nav-links {
@@ -22,4 +23,22 @@
 .schedule-tool .content .btn-container {
   display: flex;
   gap: 1em;
+}
+
+@media (max-width: 1150px) {
+  .schedule-tool > .content {
+    width: 700px;
+  }
+}
+
+@media (max-width: 800px) {
+  .schedule-tool > .content {
+    width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .schedule-tool > .content {
+    width: 300px;
+  }
 }
