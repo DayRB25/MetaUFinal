@@ -44,3 +44,15 @@
   gap: 10px;
   width: 100%;
 }
+
+@media (max-width: 600px) {
+  .opp-modal .content #map {
+    width: 300px;
+  }
+}
+
+@media (max-width: 400px) {
+  .opp-modal .content #map {
+    width: 250px;
+  }
+}

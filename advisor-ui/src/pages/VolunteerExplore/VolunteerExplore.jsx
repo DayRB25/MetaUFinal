@@ -11,7 +11,6 @@ import { UserContext } from "../../UserContext.js";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Pagination from "@mui/material/Pagination";
 // utils imports
-import apiBase from "../../utils/apiBase";
 import {
   fetchRecommendedEvents,
   fetchEventsByPage,
@@ -124,7 +123,7 @@ export default function VolunteerExplore() {
             <ArrowBackIcon className="back" />
           </Link>
           <Link to="/student/volunteer/hours" className="nav-text">
-            View Your Volunteer History
+            View Volunteer History
           </Link>
         </div>
         <Recommend
