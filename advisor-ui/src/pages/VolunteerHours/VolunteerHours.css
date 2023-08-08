@@ -9,11 +9,29 @@
   gap: 30px;
   margin: 0 auto;
   margin-top: 30px;
-  max-width: 1200px;
+  max-width: 900px;
 }
 
 .table {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+@media (max-width: 1150px) {
+  .volunteer-hours > .content {
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 800px) {
+  .volunteer-hours > .content {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .volunteer-hours > .content {
+    max-width: 300px;
+  }
 }
