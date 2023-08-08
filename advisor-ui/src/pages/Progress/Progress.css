@@ -10,10 +10,11 @@
   gap: 30px;
   margin: 0 auto;
   margin-top: 30px;
-  max-width: 1200px;
+  max-width: 900px;
 }
 
 .progress > .content > .header {
+  align-items: center;
   display: flex;
   justify-content: center;
 }
@@ -23,7 +24,26 @@
 }
 
 .progress > .content > .grid {
-  display: grid;
-  grid-template-columns: 300px 300px 300px;
-  grid-gap: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+@media (max-width: 1150px) {
+  .progress > .content {
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 800px) {
+  .progress > .content {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .progress > .content {
+    max-width: 300px;
+  }
 }
