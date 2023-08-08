@@ -64,14 +64,14 @@ export default function Progress() {
             />
             <div className="text">
               {takenCount !== -1 && requiredCount !== -1 && (
-                <h1>{`You are ${Math.round(
+                <h2>{`You are ${Math.round(
                   (takenCount / requiredCount) * 100
-                )}% complete!`}</h1>
+                )}% complete!`}</h2>
               )}
               {takenCount !== -1 && requiredCount !== -1 && (
-                <h3>{`You have ${
+                <h4>{`You have ${
                   requiredCount - takenCount
-                } classes left until graduation!`}</h3>
+                } classes left until graduation!`}</h4>
               )}
             </div>
           </div>
