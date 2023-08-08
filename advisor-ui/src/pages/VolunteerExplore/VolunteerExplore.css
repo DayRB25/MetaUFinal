@@ -10,6 +10,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 30px;
+  width: 900px;
 }
 
 .nav-links {
@@ -24,4 +25,22 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+
+@media (max-width: 1150px) {
+  .volunteer-explore > .content {
+    width: 700px;
+  }
+}
+
+@media (max-width: 800px) {
+  .volunteer-explore > .content {
+    width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .volunteer-explore > .content {
+    width: 300px;
+  }
 }
