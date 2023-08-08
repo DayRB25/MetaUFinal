@@ -17,6 +17,7 @@
   flex-direction: column;
   gap: 80px;
   justify-content: space-evenly;
+  width: 900px;
 }
 
 .student-landing > .content > .main {
@@ -31,4 +32,27 @@
   display: flex;
   flex-direction: row;
   gap: 30px;
+}
+
+@media (max-width: 1150px) {
+  .student-landing > .content {
+    width: 700px;
+  }
+  .student-landing .buttons {
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 800px) {
+  .student-landing > .content {
+    width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .student-landing > .content {
+    width: 300px;
+  }
 }
