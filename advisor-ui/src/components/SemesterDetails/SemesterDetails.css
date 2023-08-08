@@ -26,3 +26,17 @@
   flex-direction: row;
   gap: 10px;
 }
+
+@media (max-width: 1150px) {
+  .schedule-details
+    > .content
+    > .display-year
+    > .year-details
+    > .content
+    > .semester-details
+    > .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
