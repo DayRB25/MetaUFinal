@@ -10,6 +10,7 @@
   flex-direction: column;
   gap: 30px;
   margin-top: 30px;
+  width: 900px;
 }
 
 .saved-schedules > .content > .back-btn {
@@ -38,9 +39,32 @@
   cursor: default;
 }
 
+.saved-schedules > .content > .schedule-details > .content > .display-years {
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
 .saved-schedules > .pagination {
   align-items: center;
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+
+@media (max-width: 1150px) {
+  .saved-schedules > .content {
+    width: 700px;
+  }
+}
+
+@media (max-width: 800px) {
+  .saved-schedules > .content {
+    width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .saved-schedules > .content {
+    width: 300px;
+  }
 }
